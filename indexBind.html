@@ -749,7 +749,7 @@
           <div class="card-body">
             <h5 class="card-title"><span class="highlight">Wallet As A Service</span></h5>
             <p class="card-text">Te acercamos la infraestructura para que puedas operar más ágilmente con nuestras soluciones de billeteras o PSPs y aplicarlas a tu negocio</p>
-            <button id="btnSimularPrestamo" class="btn" style="background-color: #FF7F00; color: #ffffff; border-color: #FF7F00;">Simular <i class="bi bi-arrow-right"></i></button>
+            <button id="btnSimularPrestamo" class="btn" style="background-color: #FF7F00; color: #ffffff; border-color: #FF7F00;">Solicitar <i class="bi bi-arrow-right"></i></button>
           </div>
         </div>
       </div>
@@ -819,7 +819,7 @@
           <form id="guardiaForm" class="row g-3">
             <div class="col-md-6"><label class="form-label fw-semibold">Nombre</label><input type="text" class="form-control" name="firstName" required></div>
             <div class="col-md-6"><label class="form-label fw-semibold">Apellido</label><input type="text" class="form-control" name="lastName" required></div>
-            <div class="col-md-6"><label class="form-label fw-semibold">RUT</label><input type="text" class="form-control" name="rut" required></div>
+            <div class="col-md-6"><label class="form-label fw-semibold">DNI</label><input type="text" class="form-control" name="rut" required></div>
             <div class="col-md-6"><label class="form-label fw-semibold">Teléfono</label><input type="tel" class="form-control" name="phone" required></div>
             <div class="col-12"><label class="form-label fw-semibold">Email</label><input type="email" class="form-control" name="email" required></div>
           </form>
@@ -923,7 +923,7 @@
           <div class="row g-3">
             <div class="col-md-6"><label class="form-label fw-semibold">Nombre</label><input id="citaFirst" class="form-control" placeholder="Nombre"></div>
             <div class="col-md-6"><label class="form-label fw-semibold">Apellido</label><input id="citaLast" class="form-control" placeholder="Apellido"></div>
-            <div class="col-md-6"><label class="form-label fw-semibold">RUT</label><input id="citaRut" class="form-control" placeholder="12.345.678-9"></div>
+            <div class="col-md-6"><label class="form-label fw-semibold">DNI</label><input id="citaRut" class="form-control" placeholder="12.345.678-9"></div>
             <div class="col-md-6"><label class="form-label fw-semibold">Email</label><input id="citaMail" type="email" class="form-control" placeholder="correo@dominio.com"></div>
           </div>
         </div>
@@ -961,7 +961,7 @@
             <button class="btn btn-outline-light btn-sm" onclick="copyUrlToClipboard()" style="border-color: #ffffff; color: #ffffff;">
               <i class="bi bi-clipboard me-1"></i>Copiar Enlace
             </button>
-            <a href="https://filavirtual.preprod.debmedia.com/Numiabot/#/v6JwKESb58ksc9OcIJR7" 
+            <a href="https://filavirtual.preprod.debmedia.com/Numiabot/#/1bYRqvADFqdDEhnWWqqM" 
                target="_blank" 
                class="btn btn-sm" style="background-color: #FF7F00; color: #ffffff; border-color: #FF7F00;">
               <i class="bi bi-box-arrow-up-right me-1"></i>Abrir en Nueva Ventana
@@ -973,7 +973,7 @@
           <div class="iframe-container" style="background: #1a1a1a; border: 2px solid #333333;">
             <iframe 
               id="popupIframe"
-              src="https://filavirtual.preprod.debmedia.com/Numiabot/#/v6JwKESb58ksc9OcIJR7"
+              src="https://filavirtual.preprod.debmedia.com/Numiabot/#/1bYRqvADFqdDEhnWWqqM"
               allow="camera; microphone; autoplay; fullscreen; clipboard-write; display-capture"
               referrerpolicy="no-referrer"
               allowfullscreen>
@@ -1035,7 +1035,7 @@
                 <input type="text" id="simApellido" class="form-control" placeholder="Tu apellido" required>
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold">RUT</label>
+                <label class="form-label fw-semibold">DNI</label>
                 <input type="text" id="simRut" class="form-control" placeholder="12.345.678-9" required>
               </div>
               <div class="col-md-6">
@@ -1892,7 +1892,7 @@
   <script>
     // Función para copiar URL al portapapeles
     function copyUrlToClipboard() {
-      const url = 'https://filavirtual.preprod.debmedia.com/Numiabot/#/v6JwKESb58ksc9OcIJR7';
+      const url = 'https://filavirtual.preprod.debmedia.com/Numiabot/#/1bYRqvADFqdDEhnWWqqM';
       
       // Intentar usar la API moderna del portapapeles
       if (navigator.clipboard && window.isSecureContext) {
@@ -2053,7 +2053,7 @@
 
   <!-- CHAT -->
   <iframe
-  src="https://filavirtual.preprod.debmedia.com/Numiabot/#/v6JwKESb58ksc9OcIJR7" 
+  src="https://filavirtual.preprod.debmedia.com/Numiabot/#/1bYRqvADFqdDEhnWWqqM" 
 //  https://filavirtual.preprod.debmedia.com/Numiabot/#/v6JwKESb58ksc9OcIJR7"
     id="numia-chat-bubble"
     style="position: fixed; bottom: 24px; right: 24px; width: 1070px; height: 1150px; border: none; z-index: 9999; border-radius: 18px; overflow: hidden; transition: width .3s, height .3s, right .3s, bottom .3s; display: none;"
