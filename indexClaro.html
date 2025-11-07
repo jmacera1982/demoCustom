@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Claro Planes - Portabilidad y Línea Nueva</title>
+  <link rel="icon" type="image/png" href="images/img-isotipo-imagen.png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <script src="https://debq2.debmedia.com/api/cobrowse/widget/5d8b569d2466aa0cd5b8b4756829f014"></script>
+ 
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --claro-red: #E2001A;
+      --claro-red-dark: #B80015;
+      --claro-red-light: #FF1A3A;
+      --claro-orange: #FF6B00;
+      --claro-orange-dark: #E55A00;
+      --claro-orange-light: #FF8533;
+      --claro-blue: #0066CC;
+      --claro-gray: #666666;
+      --claro-gray-light: #F5F5F5;
+      --claro-white: #FFFFFF;
+      --claro-black: #000000;
+    }
+    
+    body { 
+      font-family: 'Roboto', Arial, sans-serif; 
+      background: #ffffff; 
+      color: #333;
+    }
+    
+    /* Header Claro */
+    .claro-header {
+      background: var(--claro-red);
+      padding: 1rem 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .claro-header .navbar-brand img {
+      max-height: 50px;
+    }
+    
+    .claro-header .nav-link {
+      color: white;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      transition: background-color 0.3s;
+    }
+    
+    .claro-header .nav-link:hover {
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 4px;
+    }
+    
+    .claro-btn-primary {
+      background: var(--claro-orange);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-weight: 700;
+      transition: all 0.3s;
+    }
+    
+    .claro-btn-primary:hover {
+      background: var(--claro-orange-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255,107,0,0.3);
+    }
+    
+    /* Hero Section */
+    .claro-hero {
+      background: linear-gradient(135deg, var(--claro-red) 0%, var(--claro-red-dark) 100%);
+      color: white;
+      padding: 4rem 0;
+      text-align: center;
+    }
+    
+    .claro-hero h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+    }
+    
+    .claro-hero .subtitle {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 2rem;
+      opacity: 0.95;
+    }
+    
+    /* Plan Cards */
+    .plan-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+      height: 100%;
+      border: 2px solid transparent;
+    }
+    
+    .plan-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      border-color: var(--claro-orange);
+    }
+    
+    .plan-card.featured {
+      border-color: var(--claro-orange);
+      position: relative;
+    }
+    
+    .plan-card.featured::before {
+      content: 'MÁS POPULAR';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--claro-orange);
+      color: white;
+      padding: 0.25rem 1rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    
+    .plan-badge {
+      display: inline-block;
+      background: var(--claro-red);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+    
+    .plan-gigas {
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--claro-red);
+      margin: 1rem 0;
+    }
+    
+    .plan-price {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--claro-black);
+    }
+    
+    .plan-price-old {
+      font-size: 1rem;
+      color: var(--claro-gray);
+      text-decoration: line-through;
+      margin-left: 0.5rem;
+    }
+    
+    .plan-benefits {
+      list-style: none;
+      padding: 0;
+      margin: 1.5rem 0;
+    }
+    
+    .plan-benefits li {
+      padding: 0.5rem 0;
+      color: var(--claro-gray);
+    }
+    
+    .plan-benefits li i {
+      color: var(--claro-orange);
+      margin-right: 0.5rem;
+    }
+    
+    /* Portabilidad Steps */
+    .portabilidad-steps {
+      background: var(--claro-gray-light);
+      padding: 4rem 0;
+    }
+    
+    .step-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      height: 100%;
+      transition: all 0.3s;
+    }
+    
+    .step-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .step-number {
+      width: 60px;
+      height: 60px;
+      background: var(--claro-red);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 900;
+      margin: 0 auto 1rem;
+    }
+    
+    .step-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--claro-black);
+      margin-bottom: 0.5rem;
+    }
+    
+    .step-description {
+      color: var(--claro-gray);
+      font-size: 0.95rem;
+    }
+    
+    /* Modal Portabilidad */
+    .portabilidad-modal .step-indicator {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    
+    .portabilidad-modal .step-indicator .step {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e9ecef;
+      color: #6c757d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin: 0 0.5rem;
+      position: relative;
+    }
+    
+    .portabilidad-modal .step-indicator .step.active {
+      background: var(--claro-red);
+      color: white;
+    }
+    
+    .portabilidad-modal .step-indicator .step.completed {
+      background: var(--claro-orange);
+      color: white;
+    }
+    
+    .portabilidad-modal .step-indicator .step::after {
+      content: '';
+      position: absolute;
+      right: -1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1rem;
+      height: 2px;
+      background: #e9ecef;
+    }
+    
+    .portabilidad-modal .step-indicator .step:last-child::after {
+      display: none;
+    }
+    
+    .portabilidad-modal .step-content {
+      min-height: 400px;
+    }
+    
+    /* Sala de espera / Videollamada */
+    .modal-wait .info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      border: 1px solid #e6f2ff;
+      border-radius: 0.6rem;
+      background: linear-gradient(135deg, #f0f7ff, #e6f2ff);
+      margin-bottom: 0.5rem;
+    }
+    
+    .modal-wait .info-label {
+      font-weight: 600;
+      color: #4b5563;
+    }
+    
+    .modal-wait .info-value {
+      font-weight: 700;
+      color: var(--claro-red);
+    }
+    
+    .badge-live {
+      background: #22c55e;
+      color: white;
+    }
+    
+    .status-warn { color: #f59e0b; font-weight: 700; }
+    .status-ok { color: #22c55e; font-weight: 700; }
+    .status-done { color: #06b6d4; font-weight: 700; }
+    .status-err { color: #ef4444; font-weight: 700; }
+    
+    .modal-video .modal-dialog {
+      width: var(--video-width, 90vw);
+      max-width: 100%;
+    }
+    
+    .modal-video .modal-content {
+      height: var(--video-height, 80vh);
+    }
+    
+    .modal-video iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-radius: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      .claro-hero h1 {
+        font-size: 2rem;
+      }
+      
+      .claro-hero .subtitle {
+        font-size: 1.25rem;
+      }
+      
+      .plan-gigas {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Claro -->
+  <header class="claro-header">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <span style="color: white; font-size: 1.75rem; font-weight: 900;">CLARO</span>
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="#planes">Planes Móviles</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#portabilidad">Portabilidad</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#linea-nueva">Línea Nueva</a>
+              </li>
+            </ul>
+            <button class="btn claro-btn-primary ms-3" id="btnIniciarPortabilidad">
+              <i class="bi bi-telephone me-2"></i>Iniciar Portabilidad
+            </button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="claro-hero">
+    <div class="container">
+      <h1>Planes Pospago para tu celu</h1>
+      <p class="subtitle">¡Conocé nuestras promos exclusivas en Línea Nueva y Portabilidad para vos!</p>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <button class="btn claro-btn-primary" style="background: var(--claro-orange);" id="btnPromoLineaNueva">
+          PROMO LÍNEA NUEVA
+        </button>
+        <button class="btn claro-btn-primary" style="background: var(--claro-orange);" id="btnPromoPortabilidad">
+          PROMO PORTABILIDAD
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Planes Pospago -->
+  <section id="planes" class="py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="display-4 fw-bold" style="color: var(--claro-red);">Planes Pospago</h2>
+        <p class="lead">Elegí el plan que mejor se adapte a tus necesidades</p>
+      </div>
+      
+      <div class="row g-4">
+        <!-- Plan 7 GB -->
+        <div class="col-lg-4 col-md-6">
+          <div class="plan-card">
+            <span class="plan-badge">PROMO LÍNEA NUEVA</span>
+            <div class="text-center">
+              <div class="plan-gigas">7 GIGAS</div>
+              <div class="plan-price">
+                DESDE: $10.440/mes
+                <span class="plan-price-old">$52,200/mes</span>
+              </div>
+              <small class="text-muted d-block mb-3">x 12 meses</small>
+            </div>
+            <ul class="plan-benefits">
+              <li><i class="bi bi-check-circle-fill"></i> WhatsApp ilimitado</li>
+              <li><i class="bi bi-check-circle-fill"></i> Minutos y SMS Ilimitadas</li>
+              <li><i class="bi bi-check-circle-fill"></i> HBO MAX Gratis x 1 mes</li>
+              <li><i class="bi bi-check-circle-fill"></i> Claro Drive 25 GB exclusivos</li>
+              <li><i class="bi bi-check-circle-fill"></i> Paramount+ en Claro Video</li>
+              <li><i class="bi bi-check-circle-fill"></i> Roaming de datos incluido en América</li>
+            </ul>
+            <button class="btn claro-btn-primary w-100" onclick="iniciarPortabilidad(7)">
+              LO QUIERO
+            </button>
+          </div>
+        </div>
+        
+        <!-- Plan 10 GB -->
+        <div class="col-lg-4 col-md-6">
+          <div class="plan-card featured">
+            <span class="plan-badge">PROMO LÍNEA NUEVA</span>
+            <div class="text-center">
+              <div class="plan-gigas">10 GIGAS</div>
+              <div class="plan-price">
+                DESDE: $15.512/mes
+                <span class="plan-price-old">$77,560/mes</span>
+              </div>
+              <small class="text-muted d-block mb-3">x 12 meses</small>
+            </div>
+            <ul class="plan-benefits">
+              <li><i class="bi bi-check-circle-fill"></i> WhatsApp ilimitado</li>
+              <li><i class="bi bi-check-circle-fill"></i> Minutos y SMS Ilimitadas</li>
+              <li><i class="bi bi-check-circle-fill"></i> HBO MAX Gratis x 1 mes</li>
+              <li><i class="bi bi-check-circle-fill"></i> Claro Drive 25 GB exclusivos</li>
+              <li><i class="bi bi-check-circle-fill"></i> Paramount+ en Claro Video</li>
+              <li><i class="bi bi-check-circle-fill"></i> Roaming de datos incluido en América y Europa</li>
+            </ul>
+            <button class="btn claro-btn-primary w-100" onclick="iniciarPortabilidad(10)">
+              LO QUIERO
+            </button>
+          </div>
+        </div>
+        
+        <!-- Plan 20 GB -->
+        <div class="col-lg-4 col-md-6">
+          <div class="plan-card">
+            <span class="plan-badge" style="background: var(--claro-blue);">PROMO PORTABILIDAD</span>
+            <div class="text-center">
+              <div class="plan-gigas">20 GIGAS</div>
+              <div class="plan-price">
+                DESDE: $35.049/mes
+                <span class="plan-price-old">$100,140/mes</span>
+              </div>
+              <small class="text-muted d-block mb-3">x 12 meses</small>
+            </div>
+            <ul class="plan-benefits">
+              <li><i class="bi bi-check-circle-fill"></i> WhatsApp ilimitado</li>
+              <li><i class="bi bi-check-circle-fill"></i> Minutos y SMS Ilimitadas</li>
+              <li><i class="bi bi-check-circle-fill"></i> MAX Gratis x 1 mes</li>
+              <li><i class="bi bi-check-circle-fill"></i> Claro Drive 25 GB exclusivos</li>
+              <li><i class="bi bi-check-circle-fill"></i> Paramount+ en Claro Video</li>
+              <li><i class="bi bi-check-circle-fill"></i> Roaming de datos incluido en América y Europa</li>
+            </ul>
+            <button class="btn claro-btn-primary w-100" onclick="iniciarPortabilidad(20)">
+              LO QUIERO
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proceso de Portabilidad -->
+  <section id="portabilidad" class="portabilidad-steps">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="display-4 fw-bold" style="color: var(--claro-red);">Proceso de Portabilidad</h2>
+        <p class="lead">Pasá a Claro en simples pasos</p>
+      </div>
+      
+      <div class="row g-4">
+        <div class="col-md-3">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-title">Elegí tu Plan</div>
+            <div class="step-description">Seleccioná el plan que mejor se adapte a tus necesidades</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-title">Completá tus Datos</div>
+            <div class="step-description">Ingresá tu información personal y del número a portar</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-title">Validación</div>
+            <div class="step-description">Verificamos que puedas portar tu número a Claro</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="step-card">
+            <div class="step-number">4</div>
+            <div class="step-title">Activación</div>
+            <div class="step-description">Tu número quedará activo en Claro en 24-48 horas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white py-4 mt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <p class="mb-0">&copy; 2024 Claro Argentina. Todos los derechos reservados.</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <a href="#" class="text-white me-3">Aviso legal</a>
+          <a href="#" class="text-white">Política de privacidad</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Portabilidad Paso a Paso -->
+  <div class="modal fade portabilidad-modal" id="modalPortabilidad" tabindex="-1" aria-labelledby="modalPortabilidadLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header" style="background: var(--claro-red); color: white;">
+          <h5 class="modal-title" id="modalPortabilidadLabel">
+            <i class="bi bi-phone me-2"></i>Proceso de Portabilidad a Claro
+          </h5>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div id="portabilidadAlert" class="alert d-none"></div>
+          
+          <!-- Indicador de pasos -->
+          <div class="step-indicator">
+            <div class="step active" data-step="1">1</div>
+            <div class="step" data-step="2">2</div>
+            <div class="step" data-step="3">3</div>
+            <div class="step" data-step="4">4</div>
+          </div>
+
+          <!-- Paso 1: Información Personal -->
+          <div id="portabilidadStep1" class="step-content">
+            <h6 class="mb-3"><i class="bi bi-person-fill me-2"></i>Información Personal</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Nombre</label>
+                <input type="text" id="portNombre" class="form-control" placeholder="Tu nombre" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Apellido</label>
+                <input type="text" id="portApellido" class="form-control" placeholder="Tu apellido" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">DNI</label>
+                <input type="text" id="portDni" class="form-control" placeholder="12.345.678-9" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Teléfono</label>
+                <input type="tel" id="portTelefono" class="form-control" placeholder="Tu teléfono" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-semibold">Email</label>
+                <input type="email" id="portEmail" class="form-control" placeholder="correo@ejemplo.com" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paso 2: Información del Número a Portar -->
+          <div id="portabilidadStep2" class="step-content d-none">
+            <h6 class="mb-3"><i class="bi bi-phone me-2"></i>Información del Número</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Número a Portar</label>
+                <input type="tel" id="portNumero" class="form-control" placeholder="11 1234-5678" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Operador Actual</label>
+                <select id="portOperador" class="form-select" required>
+                  <option value="">Selecciona tu operador</option>
+                  <option value="movistar">Movistar</option>
+                  <option value="personal">Personal</option>
+                  <option value="tuenti">Tuenti</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Plan Seleccionado</label>
+                <input type="text" id="portPlan" class="form-control" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">¿Tenés factura del operador actual?</label>
+                <select id="portFactura" class="form-select" required>
+                  <option value="">Selecciona</option>
+                  <option value="si">Sí, tengo factura</option>
+                  <option value="no">No, no tengo factura</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paso 3: Validación -->
+          <div id="portabilidadStep3" class="step-content d-none">
+            <h6 class="mb-3"><i class="bi bi-shield-check me-2"></i>Validación</h6>
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle me-2"></i>
+              <strong>Validando tu solicitud...</strong><br>
+              Estamos verificando que tu número pueda ser portado a Claro. Esto puede tardar unos minutos.
+            </div>
+            <div class="text-center py-4">
+              <div class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Validando...</span>
+              </div>
+              <p class="mt-3">Por favor espera mientras validamos tu información...</p>
+            </div>
+          </div>
+
+          <!-- Paso 4: Confirmación y Videollamada -->
+          <div id="portabilidadStep4" class="step-content d-none">
+            <h6 class="mb-3"><i class="bi bi-check-circle me-2"></i>Confirmación</h6>
+            <div class="alert alert-success">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              <strong>¡Solicitud recibida!</strong><br>
+              Tu solicitud de portabilidad ha sido registrada. Un asesor se comunicará contigo para finalizar el proceso.
+            </div>
+            <div class="text-center py-4">
+              <p class="mb-4">¿Querés hablar con un asesor ahora mismo?</p>
+              <button id="btnSolicitarVideollamada" class="btn claro-btn-primary btn-lg">
+                <i class="bi bi-camera-video me-2"></i>Solicitar Videollamada con Asesor
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btnSolicitarAsistenciaPortabilidad" class="btn me-auto" style="background-color: var(--claro-orange); border-color: var(--claro-orange); color: #ffffff;">
+            <i class="bi bi-headset me-1"></i>Solicitar Asistencia
+          </button>
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button id="btnAnteriorPortabilidad" class="btn btn-outline-secondary d-none">Anterior</button>
+          <button id="btnSiguientePortabilidad" class="btn claro-btn-primary">Siguiente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Sala de Espera -->
+  <div class="modal fade modal-wait" id="modalSalaEspera" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header" style="background: var(--claro-red); color: white;">
+          <h5 class="modal-title"><i class="bi bi-clock-history me-2"></i>RESERVA TU TURNO</h5>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar" id="btnCloseWait"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center mb-3">
+            <div class="mb-2"><span class="badge badge-live rounded-pill px-3 py-2"><i class="bi bi-check2-circle me-1"></i>Turno Reservado Exitosamente</span></div>
+            <div class="text-success fw-semibold">¡Tu turno ha sido generado en el sistema!</div>
+          </div>
+          <div class="row g-3">
+            <div class="col-12"><div class="info-item"><div class="info-label">Código del Turno:</div><div class="info-value"><a href="#" id="turnCodeDisplay" class="link-primary fw-bold" onclick="return false;">—</a></div></div></div>
+            <div class="col-md-6"><div class="info-item"><div class="info-label">Número de Turno:</div><div class="info-value" id="turnNumber">—</div></div></div>
+            <div class="col-md-6"><div class="info-item"><div class="info-label">Estado del Turno:</div><div class="info-value" id="turnStatus" class="status-warn">Consultando...</div></div></div>
+            <div class="col-md-6"><div class="info-item"><div class="info-label">Tiempo de Espera Actual:</div><div class="info-value" id="currentWaitingTime">N/A</div></div></div>
+            <div class="col-md-6"><div class="info-item"><div class="info-label">Tiempo Promedio de Espera:</div><div class="info-value" id="avgWaitingTime">N/A</div></div></div>
+            <div class="col-md-6"><div class="info-item"><div class="info-label">Cola/Servicio:</div><div class="info-value" id="queueName">—</div></div></div>
+            <div class="col-md-6"><div class="info-item"><div class="info-label">Sala de Espera:</div><div class="info-value" id="waitingRoomName">—</div></div></div>
+          </div>
+          <div class="text-center mt-4">
+            <button id="btnAbrirVideo" class="btn claro-btn-primary" disabled><i class="bi bi-camera-video me-1"></i>Conectarme a videollamada</button>
+            <div class="form-text mt-2">El botón se habilitará cuando el agente te llame.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Videollamada -->
+  <div class="modal fade modal-video" id="modalVideo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content p-2">
+        <div class="d-flex justify-content-between align-items-center px-2">
+          <h6 class="m-0"><i class="bi bi-camera-video me-2"></i>Videollamada con Asesor Claro</h6>
+          <button class="btn btn-sm btn-outline-secondary" id="btnResizeVideo">Cambiar tamaño</button>
+        </div>
+        <div class="mt-2 h-100">
+          <iframe id="videoFrame" src="about:blank"
+            allow="camera; microphone; autoplay; fullscreen; clipboard-write; display-capture"
+            referrerpolicy="no-referrer" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Scripts -->
+  <script>
+    // Variables globales
+    const FV_TOKEN = 'm7NCbNDBShZOV83fu6RGJV1DbkhSkWI6JSTxmT2e';
+    const FV_QUEUE = 5007;
+    const FV_BRANCH = 11;
+    const FV_BASE = 'https://filavirtual2.debmedia.com/api/v1';
+    
+    let pollingInterval = null;
+    window.currentVideoCallUrl = 'about:blank';
+    let currentPortabilidadStep = 1;
+    let selectedPlanGB = null;
+    
+    // Modal de portabilidad
+    const modalPortabilidad = new bootstrap.Modal(document.getElementById('modalPortabilidad'));
+    const modalWait = new bootstrap.Modal(document.getElementById('modalSalaEspera'), { backdrop: 'static', keyboard: false });
+    const modalVideo = new bootstrap.Modal(document.getElementById('modalVideo'), { backdrop:'static' });
+    
+    // Función para iniciar portabilidad
+    function iniciarPortabilidad(planGB) {
+      selectedPlanGB = planGB;
+      currentPortabilidadStep = 1;
+      resetPortabilidadForm();
+      document.getElementById('portPlan').value = `${planGB} GB - Plan Pospago`;
+      updatePortabilidadSteps();
+      modalPortabilidad.show();
+    }
+    
+    // Event listeners
+    document.getElementById('btnIniciarPortabilidad').addEventListener('click', () => {
+      iniciarPortabilidad(10);
+    });
+    
+    document.getElementById('btnSiguientePortabilidad').addEventListener('click', () => {
+      if (validateCurrentStep()) {
+        if (currentPortabilidadStep < 4) {
+          currentPortabilidadStep++;
+          updatePortabilidadSteps();
+          
+          // Si es el paso 3, simular validación
+          if (currentPortabilidadStep === 3) {
+            setTimeout(() => {
+              currentPortabilidadStep++;
+              updatePortabilidadSteps();
+            }, 2000);
+          }
+        }
+      }
+    });
+    
+    document.getElementById('btnAnteriorPortabilidad').addEventListener('click', () => {
+      if (currentPortabilidadStep > 1) {
+        currentPortabilidadStep--;
+        updatePortabilidadSteps();
+      }
+    });
+    
+    document.getElementById('btnSolicitarVideollamada').addEventListener('click', () => {
+      solicitarVideollamada();
+    });
+    
+    document.getElementById('btnSolicitarAsistenciaPortabilidad').addEventListener('click', () => {
+      solicitarAsistenciaPortabilidad();
+    });
+    
+    function resetPortabilidadForm() {
+      document.getElementById('portNombre').value = '';
+      document.getElementById('portApellido').value = '';
+      document.getElementById('portDni').value = '';
+      document.getElementById('portTelefono').value = '';
+      document.getElementById('portEmail').value = '';
+      document.getElementById('portNumero').value = '';
+      document.getElementById('portOperador').value = '';
+      document.getElementById('portFactura').value = '';
+    }
+    
+    function updatePortabilidadSteps() {
+      // Actualizar indicadores
+      document.querySelectorAll('.portabilidad-modal .step').forEach((step, index) => {
+        const stepNum = index + 1;
+        step.classList.remove('active', 'completed');
+        if (stepNum < currentPortabilidadStep) {
+          step.classList.add('completed');
+        } else if (stepNum === currentPortabilidadStep) {
+          step.classList.add('active');
+        }
+      });
+      
+      // Mostrar/ocultar contenido
+      for (let i = 1; i <= 4; i++) {
+        const stepContent = document.getElementById(`portabilidadStep${i}`);
+        if (i === currentPortabilidadStep) {
+          stepContent.classList.remove('d-none');
+        } else {
+          stepContent.classList.add('d-none');
+        }
+      }
+      
+      // Actualizar botones
+      document.getElementById('btnAnteriorPortabilidad').classList.toggle('d-none', currentPortabilidadStep === 1);
+      
+      if (currentPortabilidadStep === 4) {
+        document.getElementById('btnSiguientePortabilidad').classList.add('d-none');
+      } else {
+        document.getElementById('btnSiguientePortabilidad').classList.remove('d-none');
+        if (currentPortabilidadStep === 3) {
+          document.getElementById('btnSiguientePortabilidad').textContent = 'Validando...';
+          document.getElementById('btnSiguientePortabilidad').disabled = true;
+        } else {
+          document.getElementById('btnSiguientePortabilidad').textContent = 'Siguiente';
+          document.getElementById('btnSiguientePortabilidad').disabled = false;
+        }
+      }
+    }
+    
+    function validateCurrentStep() {
+      const alertBox = document.getElementById('portabilidadAlert');
+      alertBox.classList.add('d-none');
+      
+      if (currentPortabilidadStep === 1) {
+        const nombre = document.getElementById('portNombre').value.trim();
+        const apellido = document.getElementById('portApellido').value.trim();
+        const dni = document.getElementById('portDni').value.trim();
+        const telefono = document.getElementById('portTelefono').value.trim();
+        const email = document.getElementById('portEmail').value.trim();
+        
+        if (!nombre || !apellido || !dni || !telefono || !email) {
+          alertBox.className = 'alert alert-danger';
+          alertBox.textContent = 'Por favor completa todos los campos requeridos.';
+          alertBox.classList.remove('d-none');
+          return false;
+        }
+      } else if (currentPortabilidadStep === 2) {
+        const numero = document.getElementById('portNumero').value.trim();
+        const operador = document.getElementById('portOperador').value;
+        const factura = document.getElementById('portFactura').value;
+        
+        if (!numero || !operador || !factura) {
+          alertBox.className = 'alert alert-danger';
+          alertBox.textContent = 'Por favor completa todos los campos requeridos.';
+          alertBox.classList.remove('d-none');
+          return false;
+        }
+      }
+      
+      return true;
+    }
+    
+    // Función para solicitar videollamada (similar a solicitar asistencia)
+    function solicitarVideollamada() {
+      const nombre = document.getElementById('portNombre').value.trim();
+      const apellido = document.getElementById('portApellido').value.trim();
+      const dni = document.getElementById('portDni').value.trim();
+      const telefono = document.getElementById('portTelefono').value.trim();
+      const email = document.getElementById('portEmail').value.trim();
+      
+      if (!nombre || !apellido || !email) {
+        const alertBox = document.getElementById('portabilidadAlert');
+        alertBox.className = 'alert alert-danger';
+        alertBox.textContent = 'Por favor completa al menos el nombre, apellido y email antes de solicitar videollamada.';
+        alertBox.classList.remove('d-none');
+        return;
+      }
+      
+      const btnSolicitar = document.getElementById('btnSolicitarVideollamada');
+      btnSolicitar.disabled = true;
+      btnSolicitar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Solicitando...';
+      
+      const data = {
+        firstName: nombre,
+        lastName: apellido,
+        dni: dni || 'N/A',
+        email: email,
+        phone: telefono || 'N/A'
+      };
+      
+      fetch(`${FV_BASE}/queue/${FV_QUEUE}/branch/${FV_BRANCH}/enqueue`, {
+        method: 'POST',
+        headers: {
+          'x-api-token': FV_TOKEN,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(out => {
+        if (out.code) {
+          // Cerrar modal de portabilidad
+          modalPortabilidad.hide();
+          
+          // Usar las funciones existentes para mostrar el modal de sala de espera
+          const turnCode = out.code;
+          const turnNumber = out.jsonDetails?.turn || out.jsonDetails?.actualTurn || '—';
+          const avgWait = out.jsonDetails?.averageWaitingTime ?? out.jsonDetails?.serviceTime ?? 'N/A';
+          const queueName = out.jsonDetails?.queue?.name || '—';
+          const wrName = out.jsonDetails?.waitingRoom?.name || '—';
+          const videoCallUrl = out.jsonDetails?.videoCallUrl || 'about:blank';
+          
+          // Almacenar la URL de videollamada globalmente
+          window.currentVideoCallUrl = videoCallUrl;
+          
+          // Actualizar el src del iframe con la URL de videollamada
+          const urlWithParam = videoCallUrl.includes('?') ? `${videoCallUrl}&videocallUser=mobile` : `${videoCallUrl}?videocallUser=mobile`;
+          document.getElementById('videoFrame').src = urlWithParam;
+          
+          // Llenar el modal de sala de espera con los datos
+          fillWaitModal({ 
+            code: turnCode, 
+            number: turnNumber, 
+            avgWait: isFinite(avgWait) ? `${Math.floor(parseFloat(avgWait))} min` : 'N/A', 
+            queueName, 
+            waitingRoom: wrName 
+          });
+          
+          // Mostrar el modal de sala de espera
+          modalWait.show();
+          
+          // Iniciar el polling para verificar el estado del turno
+          startPolling(turnCode);
+        } else {
+          throw new Error('No se pudo generar el turno');
+        }
+      })
+      .catch(err => {
+        const alertBox = document.getElementById('portabilidadAlert');
+        alertBox.className = 'alert alert-danger';
+        alertBox.textContent = `Error al solicitar videollamada: ${err.message}`;
+        alertBox.classList.remove('d-none');
+      })
+      .finally(() => {
+        btnSolicitar.disabled = false;
+        btnSolicitar.innerHTML = '<i class="bi bi-camera-video me-2"></i>Solicitar Videollamada con Asesor';
+      });
+    }
+    
+    // Función para solicitar asistencia (replica de index.html)
+    function solicitarAsistenciaPortabilidad() {
+      // Validar solo nombre, apellido y email
+      const nombre = document.getElementById('portNombre').value.trim();
+      const apellido = document.getElementById('portApellido').value.trim();
+      const email = document.getElementById('portEmail').value.trim();
+      
+      const alertBox = document.getElementById('portabilidadAlert');
+      
+      if (!nombre || !apellido || !email) {
+        alertBox.className = 'alert alert-danger';
+        alertBox.textContent = 'Por favor completa al menos el nombre, apellido y email antes de solicitar asistencia.';
+        alertBox.classList.remove('d-none');
+        return;
+      }
+      
+      const btnSolicitar = document.getElementById('btnSolicitarAsistenciaPortabilidad');
+      btnSolicitar.disabled = true;
+      btnSolicitar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Solicitando...';
+      
+      const data = {
+        firstName: nombre,
+        lastName: apellido,
+        dni: document.getElementById('portDni').value.trim() || 'N/A',
+        email: email,
+        phone: document.getElementById('portTelefono').value.trim() || 'N/A'
+      };
+      
+      fetch(`${FV_BASE}/queue/${FV_QUEUE}/branch/${FV_BRANCH}/enqueue`, {
+        method: 'POST',
+        headers: {
+          'x-api-token': FV_TOKEN,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(out => {
+        if (out.code) {
+          // Cerrar el modal de portabilidad
+          modalPortabilidad.hide();
+          
+          // Usar las funciones existentes para mostrar el modal de sala de espera
+          const turnCode = out.code;
+          const turnNumber = out.jsonDetails?.turn || out.jsonDetails?.actualTurn || '—';
+          const avgWait = out.jsonDetails?.averageWaitingTime ?? out.jsonDetails?.serviceTime ?? 'N/A';
+          const queueName = out.jsonDetails?.queue?.name || '—';
+          const wrName = out.jsonDetails?.waitingRoom?.name || '—';
+          const videoCallUrl = out.jsonDetails?.videoCallUrl || 'about:blank';
+          
+          // Almacenar la URL de videollamada globalmente
+          window.currentVideoCallUrl = videoCallUrl;
+          
+          // Actualizar el src del iframe con la URL de videollamada
+          const urlWithParam = videoCallUrl.includes('?') ? `${videoCallUrl}&videocallUser=mobile` : `${videoCallUrl}?videocallUser=mobile`;
+          document.getElementById('videoFrame').src = urlWithParam;
+          
+          // Llenar el modal de sala de espera con los datos
+          fillWaitModal({ 
+            code: turnCode, 
+            number: turnNumber, 
+            avgWait: isFinite(avgWait) ? `${Math.floor(parseFloat(avgWait))} min` : 'N/A', 
+            queueName, 
+            waitingRoom: wrName 
+          });
+          
+          // Mostrar el modal de sala de espera
+          modalWait.show();
+          
+          // Iniciar el polling para verificar el estado del turno
+          startPolling(turnCode);
+        } else {
+          throw new Error('No se pudo generar el turno');
+        }
+      })
+      .catch(err => {
+        alertBox.className = 'alert alert-danger';
+        alertBox.textContent = `Error al solicitar asistencia: ${err.message}`;
+        alertBox.classList.remove('d-none');
+      })
+      .finally(() => {
+        btnSolicitar.disabled = false;
+        btnSolicitar.innerHTML = '<i class="bi bi-headset me-1"></i>Solicitar Asistencia';
+      });
+    }
+    
+    // Función global para llenar el modal de sala de espera
+    function fillWaitModal({code, number, avgWait, queueName, waitingRoom}){
+      document.getElementById('turnCodeDisplay').textContent = code;
+      document.getElementById('turnNumber').textContent = number;
+      document.getElementById('avgWaitingTime').textContent = avgWait;
+      document.getElementById('queueName').textContent = queueName;
+      document.getElementById('waitingRoomName').textContent = waitingRoom;
+      document.getElementById('turnStatus').textContent = 'Consultando...';
+      document.getElementById('turnStatus').className = 'info-value status-warn';
+      document.getElementById('currentWaitingTime').textContent = 'N/A';
+      document.getElementById('btnAbrirVideo').disabled = true;
+    }
+    
+    // Función global para iniciar el polling del turno
+    function startPolling(turnCode){
+      stopPolling();
+      const url = `${FV_BASE}/turn/code/${encodeURIComponent(turnCode)}`;
+      const mapStatus = (s)=> s==='ANNOUNCED'?{text:'Lo estamos llamando',cls:'status-ok'}: s==='WAITING_TO_BE_CALLED'?{text:'En breve lo llamaremos',cls:'status-warn'}: s==='FINALIZED'?{text:'Atención finalizada',cls:'status-done'}:{text:s||'Desconocido',cls:'status-warn'};
+      const tick = async ()=>{
+        try{
+          const res = await fetch(url, { headers: { 'x-api-token': FV_TOKEN, 'Content-Type':'text/plain' }});
+          if(!res.ok) throw new Error(`Estado no disponible (${res.status})`);
+          const data = await res.json();
+          const m = mapStatus(data.status);
+          document.getElementById('turnStatus').textContent = m.text;
+          document.getElementById('turnStatus').className = `info-value ${m.cls}`;
+          const avg = (data.averageWaitingTime ?? data.serviceTime);
+          if(avg!==undefined && avg!==null && !isNaN(avg)){
+            document.getElementById('currentWaitingTime').textContent = `${Math.floor(parseFloat(avg))} min`;
+          }
+          if(data.status === 'ANNOUNCED'){
+            document.getElementById('btnAbrirVideo').disabled = false;
+          }
+        }catch(e){
+          document.getElementById('turnStatus').textContent = 'Error al consultar';
+          document.getElementById('turnStatus').className = 'info-value status-err';
+        }
+      };
+      tick();
+      pollingInterval = setInterval(tick, 5000);
+    }
+    
+    function stopPolling(){
+      if(pollingInterval){
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+      }
+    }
+    
+    document.getElementById('btnCloseWait').addEventListener('click', stopPolling);
+    
+    document.getElementById('btnAbrirVideo').addEventListener('click', ()=>{
+      openVideoModal({ width:'90vw', height:'80vh', url: window.currentVideoCallUrl });
+    });
+    
+    document.getElementById('btnResizeVideo').addEventListener('click', ()=>{
+      const dlg = document.querySelector('#modalVideo .modal-dialog');
+      const curW = dlg.style.getPropertyValue('--video-width') || '90vw';
+      const nextW = (curW.trim()==='90vw') ? '70vw' : '90vw';
+      const nextH = (nextW==='70vw') ? '60vh' : '80vh';
+      dlg.style.setProperty('--video-width', nextW);
+      document.querySelector('#modalVideo .modal-content').style.setProperty('--video-height', nextH);
+    });
+    
+    function openVideoModal({width='90vw', height='80vh', url=null}={}){
+      const dlg = document.querySelector('#modalVideo .modal-dialog');
+      const content = document.querySelector('#modalVideo .modal-content');
+      dlg.style.setProperty('--video-width', width);
+      content.style.setProperty('--video-height', height);
+      
+      const videoUrl = url || window.currentVideoCallUrl || 'about:blank';
+      const urlWithParam = videoUrl.includes('?') ? `${videoUrl}&videocallUser=mobile` : `${videoUrl}?videocallUser=mobile`;
+      
+      document.getElementById('videoFrame').src = urlWithParam;
+      modalVideo.show();
+    }
+  </script>
+</body>
+</html>
