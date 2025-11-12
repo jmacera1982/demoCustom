@@ -333,6 +333,9 @@
     .main-cards .card-body {
       padding: 24px;
       background: white;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
     }
     .main-cards .card-title {
       font-size: 1.4rem;
@@ -355,6 +358,7 @@
       min-height: auto;
       display: block;
       text-align: left;
+      flex-grow: 1;
     }
     .main-cards .btn {
       background: transparent;
@@ -366,6 +370,11 @@
       font-size: 0.95rem;
       transition: all 0.3s;
       width: 100%;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: auto;
     }
     .main-cards .btn:hover {
       background: var(--afp-azul-principal);
