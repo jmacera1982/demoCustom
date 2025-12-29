@@ -1,0 +1,2105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>La Araucana - Servicios Sociales y Financieros</title>
+  <link rel="icon" type="image/png" href="images/img-isotipo-imagen.png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+   <script src="https://debq2.debmedia.com/api/cobrowse/widget/5d8b569d2466aa0cd5b8b4756829f014"></script>
+ 
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      /* Colores inspirados en La Araucana */
+      --araucana-primary: #00539B; /* Azul principal de La Araucana */
+      --araucana-orange: #ff9600; /* Naranja característico */
+      --araucana-orange-dark: #e08500;
+      --araucana-secondary: #ffffff;
+      --araucana-muted: #6b7280;
+      --araucana-border: #e5e7eb;
+      --araucana-bg: #f8fafc;
+      
+      /* Mantener variables para compatibilidad */
+      --caja-azul-principal: #00539B;
+      --caja-azul-claro: #3b82f6;
+      --caja-azul-muy-claro: #dbeafe;
+      --caja-verde: #ff9600;
+      --caja-verde-claro: #10b981;
+      --caja-verde-muy-claro: #d1fae5;
+      --caja-gris: #6b7280;
+      --caja-gris-claro: #f3f4f6;
+      --caja-blanco: #ffffff;
+      --caja-negro: #111827;
+      --caja-accent: #ff9600;
+      --caja-accent-dark: #e08500;
+      --caja-accent-light: #ff9600;
+    }
+    body { font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Arial, sans-serif; background: var(--araucana-bg); }
+    
+    /* Sección superior con botones de sitio */
+    .site-selector { background: #fff; padding: 1rem 0; border-bottom: 1px solid var(--araucana-border); }
+    .site-selector .container { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .site-selector-text { color: var(--araucana-muted); font-size: 0.9rem; margin: 0; }
+    .site-buttons { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .site-btn { border-radius: 50px; padding: 0.5rem 1.25rem; font-weight: 500; font-size: 0.9rem; border: none; display: flex; align-items: center; gap: 0.5rem; text-decoration: none; transition: all 0.2s; }
+    .site-btn.active { background: var(--araucana-primary); color: var(--araucana-secondary); }
+    .site-btn:not(.active) { background: #e3f2fd; color: var(--araucana-primary); }
+    .site-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .site-btn i { font-size: 1rem; }
+    
+    .araucana-navbar { background: var(--araucana-primary); padding: 0.75rem 0; }
+    .araucana-navbar .container { display: flex !important; align-items: center; flex-direction: row !important; }
+    .araucana-navbar .navbar-brand { color: var(--araucana-secondary); font-weight: 500; letter-spacing: .2px; text-decoration: none; flex-shrink: 0; margin-right: 2rem; }
+    .araucana-navbar .navbar-brand img { height: 50px; width: auto; }
+    .araucana-navbar .navbar-nav { display: flex !important; flex-direction: row !important; align-items: center; justify-content: space-around; flex: 1; gap: 0; list-style: none; margin: 0; padding: 0; }
+    .araucana-navbar .nav-link { color: var(--araucana-secondary); text-decoration: none; font-weight: 400; font-size: 0.95rem; padding: 0.5rem 0.75rem; transition: opacity 0.2s; white-space: nowrap; display: inline-block; }
+    .araucana-navbar .nav-link:hover { opacity: 0.8; }
+    .araucana-navbar .nav-link i { font-size: 0.7rem; margin-left: 0.25rem; }
+    .card.ad-card { border-radius: 1.2rem; box-shadow: 0 4px 18px rgba(0,0,0,0.08); transition: transform .18s, box-shadow .18s; min-width:210px; min-height:380px; display:flex; flex-direction:column; justify-content:stretch; height:100%; }
+    .card.ad-card:hover { transform: translateY(-4px) scale(1.025); box-shadow: 0 8px 32px rgba(0,56,118,0.17); }
+    .card-img-top-holder { width:100%; height:180px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#fff8f8; border-top-left-radius:1.2rem; border-top-right-radius:1.2rem; }
+    .card-img-top-holder img { width:100%; height:100%; object-fit:cover; object-position:center; transition: transform .3s; }
+    .ad-card .card-body { display:flex; flex-direction:column; justify-content:flex-start; height:100%; padding-bottom:1.5rem; }
+    .ad-card .card-title { font-weight:700; color:var(--caja-azul-principal); font-size:1.25rem; margin-bottom:.25rem; margin-top:1rem; min-height:3rem; display:flex; align-items:center; justify-content:center; text-align:center; }
+    .ad-card .card-text { font-size:1.01rem; color:#2d2d2d; font-weight:500; opacity:.88; margin-bottom:1.1rem; min-height:56px; text-align:center; display:flex; align-items:center; justify-content:center; }
+    .carousel-item img { object-fit:cover; width:100%; height:340px; border-radius:.7rem; }
+    @media (max-width:991px){ .main-cards .col-lg-3 {flex:0 0 50%; max-width:50%; margin-bottom:1rem;} .carousel-item img{height:180px;} }
+    @media (max-width:767px){ .main-cards .col-lg-3 {flex:0 0 100%; max-width:100%;} .carousel-item img{height:140px;} .card-img-top-holder{height:140px;} .ad-card .card-title{font-size:1.08rem;} }
+
+    /* --------- Carousel estilo bind (tarjetas oscuras) --------- */
+    .bind-cards-carousel .hero-card {
+      background:#1a1a1a; color:#fff; border-radius:16px; overflow:hidden; display:flex; min-height:350px; box-shadow:0 8px 24px rgba(0,0,0,0.25);
+    }
+    .bind-cards-carousel .hero-card .hero-media { flex:1 1 50%; position:relative; background:#0f0f0f; }
+    .bind-cards-carousel .hero-card .hero-media img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+    .bind-cards-carousel .hero-card .hero-content { flex:1 1 50%; padding:24px; display:flex; flex-direction:column; justify-content:center; }
+    .bind-cards-carousel .hero-eyebrow { font-size:.85rem; color:#b3b3b3; letter-spacing:.08em; text-transform:uppercase; margin-bottom:.25rem; }
+    .bind-cards-carousel .hero-title { font-size:1.4rem; font-weight:800; line-height:1.25; color:#fff; }
+    .bind-cards-carousel .hero-title .accent { color:#FFEB00; }
+    .bind-cards-carousel .hero-desc { color:#d1d1d1; margin:.75rem 0 1rem; font-weight:500; }
+    .bind-cards-carousel .link-cta { color:#FFEB00; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; gap:.35rem; }
+    .bind-cards-carousel .link-cta:hover { color:#ffe100; }
+    .bind-cards-carousel .carousel-indicators [data-bs-target] { background:#c9c9c9; }
+    .bind-cards-carousel .carousel-indicators .active { background:#000; }
+    @media (max-width:991px){ .bind-cards-carousel .hero-card{min-height:280px;} }
+    @media (max-width:576px){ .bind-cards-carousel .hero-card{flex-direction:column; min-height:220px;} .bind-cards-carousel .hero-card .hero-media{height:220px;}
+    }
+
+    .rates-section{ display:flex; gap:2.2rem; align-items:stretch; margin:36px 0 0; width:100%; flex-wrap:wrap;}
+    .rates-col-table, .rates-col-side { background:#fff; border-radius:1.1rem; box-shadow:0 2px 12px rgba(0,0,0,0.07); padding:2.1rem 1.6rem 1.6rem 1.7rem; }
+    .rates-col-table{ min-width:340px; flex:2 1 540px; max-width:1000px; display:flex; flex-direction:column; justify-content:flex-start;}
+    .rates-col-side{ min-width:220px; flex:1 1 320px; max-width:420px; display:flex; flex-direction:column; justify-content:center; align-items:flex-start;}
+    .rates-col-side .bi{ font-size:2.6rem; color:var(--caja-azul-principal); margin-bottom:.7rem;}
+    .rates-col-side h5{ color:var(--caja-azul-principal); font-weight:700; margin-bottom:.5rem; font-size:1.2rem;}
+    .rates-col-side p{ color:#444; font-size:1.07rem; font-weight:500; margin-bottom:1.2rem; opacity:.93;}
+    .rates-col-side .btn{ background:var(--araucana-orange); border:none; color:#fff; font-weight:500; border-radius:25px; padding:.7rem 2.1rem; font-size:1.07rem; box-shadow:0 2px 7px rgba(243,147,19,0.2);}
+    .rates-col-side .btn:hover{ background:var(--araucana-orange-dark); color:#fff;}
+    .rates-tab-btn{ padding:.7rem 0; border:none; border-radius:25px; font-weight:bold; font-size:1.1rem; background:#fff; color:var(--araucana-primary); margin-bottom:0; cursor:pointer; border:2px solid #dbeafe; min-width:70px;}
+    .rates-tab-btn.active,.rates-tab-btn:focus{ background:var(--araucana-primary); color:#fff; border:2px solid var(--araucana-primary);}
+    .rates-table{ width:100%; border-collapse:separate; border-spacing:0; background:#fff; border-radius:.8rem; overflow:hidden; margin-top:.7rem;}
+    .rates-table th,.rates-table td{ padding:12px 18px; font-size:1.04rem; text-align:left;}
+    .rates-table th{ color:var(--caja-azul-principal); background:var(--caja-azul-muy-claro); border:none; font-size:1.08rem; font-weight:700; text-align:center; letter-spacing:.02em;}
+    .rates-table tr:not(:last-child){ border-bottom:1px solid #dbeafe;}
+    .rates-table tr:nth-child(2){ background:var(--caja-azul-muy-claro);} .rates-table tr:nth-child(3){ background:var(--caja-gris-claro);}
+    .rates-table td{ color:#222; font-weight:500; text-align:center; vertical-align:middle;}
+    .rates-table td:first-child,.rates-table th:first-child{ text-align:left;}
+    @media (max-width:1300px){ .rates-col-table{min-width:0; flex-basis:400px;} .rates-col-side{min-width:0;} }
+    @media (max-width:991px){ .rates-section{flex-direction:column; gap:1.4rem;} .rates-col-table,.rates-col-side{min-width:0; max-width:100%;} .rates-col-side{align-items:flex-start; padding-top:1.2rem;} }
+
+    .btn-primary{ background-color:var(--araucana-orange)!important; border-color:var(--araucana-orange)!important; border-radius:25px!important;}
+    .btn-primary:hover{ background-color:var(--araucana-orange-dark)!important; border-color:var(--araucana-orange-dark)!important;}
+    .btn-outline-primary{ color:var(--araucana-primary)!important; border-color:var(--araucana-primary)!important; border-radius:25px!important;}
+    .btn-outline-primary:hover{ background-color:var(--araucana-primary)!important; color:#fff!important;}
+    #max-chat{ background:var(--araucana-primary)!important;} #open-chat{ background:var(--araucana-primary)!important;}
+
+    /* --------- Sala de espera / Videollamada --------- */
+    .modal-wait .info-item{ display:flex; justify-content:space-between; align-items:center; padding:.8rem 1rem; border:1px solid #e6f2ff; border-radius:.6rem; background:linear-gradient(135deg,#f0f7ff,#e6f2ff);}
+    .modal-wait .info-label{ font-weight:600; color:#4b5563; }
+    .modal-wait .info-value{ font-weight:700; color:var(--numia-azul); }
+    .badge-live{ background:#22c55e; }
+    .status-warn{ color:#f59e0b; font-weight:700; }
+    .status-ok{ color:#22c55e; font-weight:700; }
+    .status-done{ color:#06b6d4; font-weight:700; }
+    .status-err{ color:#ef4444; font-weight:700; }
+    .modal-video .modal-dialog{ width:var(--video-width, 90vw); max-width:100%; }
+    .modal-video .modal-content{ height:var(--video-height, 80vh); }
+    .modal-video iframe{ width:100%; height:100%; border:0; border-radius:.5rem; }
+
+    /* --------- Citas (estilos chips/horas) --------- */
+    #modalCita .modal-dialog { max-width: 920px; }
+    #modalCita .modal-content { border-radius: 16px; border: 0; box-shadow: 0 14px 40px rgba(0,0,0,.12); }
+    #modalCita .modal-header { border-bottom: 1px solid #eef2fc; }
+    #modalCita .modal-body { padding-top: .75rem; }
+    .cita-toolbar { position: sticky; top: 0; z-index: 2; background: #fff; padding-bottom: .5rem; margin-bottom: .75rem; border-bottom: 1px solid #eef2fc; }
+    #citaSchedule, #citaBranch, #citaFecha { border-radius: 10px; }
+    #citaSlots { display:grid; grid-template-columns:repeat(auto-fill,minmax(88px,1fr)); gap:.5rem; max-height:320px; overflow:auto; padding-right:.25rem; }
+    #citaSlots .btn { border-radius:10px; border:1px solid #e6f2ff; font-weight:600; padding:.45rem .3rem; }
+    #citaSlots .btn:hover { background:var(--numia-azul-muy-claro); }
+    #citaSlots .btn.active, #citaSlots .btn:focus { background:var(--numia-azul); color:#fff; border-color:var(--numia-azul); }
+    .cita-legend { font-size:.8rem; color:#6c6c7a; }
+    @media (max-width:576px){ #citaSlots { max-height:260px; } }
+
+    /* --------- Simulador de Crédito --------- */
+    .step-indicator { display: flex; flex-direction: column; align-items: center; position: relative; }
+    .step-number { width: 40px; height: 40px; border-radius: 50%; background: #e9ecef; color: #6c757d; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-bottom: 8px; transition: all 0.3s; }
+    .step-indicator.active .step-number { background: var(--numia-azul); color: white; }
+    .step-indicator.completed .step-number { background: #28a745; color: white; }
+    .step-label { font-size: 0.875rem; font-weight: 600; color: #6c757d; }
+    .step-indicator.active .step-label { color: var(--numia-azul); }
+    .step-indicator.completed .step-label { color: #28a745; }
+    .step-line { width: 60px; height: 2px; background: #e9ecef; margin: 0 10px; margin-top: -20px; }
+    .step-indicator.completed + .step-line { background: #28a745; }
+    .step-content { min-height: 400px; }
+    .credit-type-card { cursor: pointer; transition: all 0.3s; border: 2px solid #e9ecef; }
+    .credit-type-card:hover { border-color: var(--numia-azul); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 56, 118, 0.15); }
+    .credit-type-card.selected { border-color: var(--numia-azul); background: var(--numia-azul-muy-claro); }
+    .credit-details { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e9ecef; }
+
+    /* --------- Cabecera estilo Bind --------- */
+    .coopeuch-header-top {
+      background: var(--araucana-primary);
+      border-bottom: 1px solid var(--araucana-primary);
+      padding: 8px 0;
+      font-size: 0.875rem;
+    }
+    .coopeuch-header-top .nav-link {
+      color: #ffffff;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 25px;
+      transition: opacity 0.2s;
+    }
+    .coopeuch-header-top .navbar-brand img { max-height: 56px; }
+    .coopeuch-header-top .nav-link:hover {
+      opacity: 0.8;
+      color: #ffffff;
+    }
+    .coopeuch-header-top .btn-action {
+      background-color: var(--araucana-orange);
+      color: #ffffff;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 25px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: background-color 0.2s;
+    }
+    .coopeuch-header-top .btn-action:hover {
+      background-color: var(--araucana-orange-dark);
+      color: #ffffff;
+    }
+    .coopeuch-header-main {
+      background-color: #ffffff;
+      padding: 10px 0;
+      border-bottom: 1px solid #eeeeee;
+    }
+    .coopeuch-header-main .navbar-brand img {
+      max-height: 48px;
+    }
+    .coopeuch-header-main .nav-link {
+      color: #000000;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    .coopeuch-header-main .nav-link:hover {
+      background-color: rgba(0,0,0,0.06);
+      color: #000000;
+    }
+    .coopeuch-header-main .btn-access { display:none; }
+    .header-separator {
+      width: 1px;
+      height: 20px;
+      background-color: #d1d5db;
+      margin: 0 8px;
+    }
+
+    /* Tabs secundarias bind (Billeteras / Alycs / Aseguradoras / Consorcios) */
+    .bind-tabs { background:#ffffff; border-bottom:1px solid #efefef; }
+    .bind-tabs .container { display:flex; gap:36px; align-items:center; }
+    .bind-tab { display:inline-block; padding:14px 6px; font-weight:700; color:#000; border-bottom:4px solid transparent; cursor:pointer; }
+    .bind-tab.active { border-color:#5b7cfa; }
+
+    /* --------- Productos Destacados --------- */
+    .productos-destacados {
+      background: #f8fafc;
+      padding: 20px 0;
+      margin: 20px 0;
+    }
+    .productos-destacados .section-title {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--numia-azul);
+    }
+    .productos-destacados .section-title .star-icon {
+      color: #fbbf24;
+      margin-right: 10px;
+    }
+    .product-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: transform 0.3s, box-shadow 0.3s;
+      height: 100%;
+    }
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+    .product-header {
+      padding: 12px 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .product-header.beneficios { background-color: #dbeafe; color: #1e40af; }
+    .product-header.anos { background-color: #fed7aa; color: #ea580c; }
+    .product-header.desde { background-color: #dcfce7; color: #16a34a; }
+    .product-header.abre { background-color: #fce7f3; color: #be185d; }
+    .product-image {
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+    }
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .product-content {
+      padding: 24px;
+    }
+    .product-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--numia-azul);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .product-title .highlight {
+      color: var(--coopeuch-azul-nav);
+    }
+    .product-description {
+      color: #64748b;
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .product-btn {
+      background: transparent;
+      border: 2px solid var(--numia-azul);
+      color: var(--numia-azul);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      width: 100%;
+    }
+    .product-btn:hover {
+      background: var(--numia-azul);
+      color: white;
+    }
+    .product-btn i {
+      margin-left: 8px;
+    }
+
+    /* --------- Tarjetas Centrales con formato de productos destacados --------- */
+    .main-cards .ad-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: none;
+    }
+    .main-cards .ad-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+    .main-cards .card-header {
+      padding: 12px 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-align: center;
+      margin: 0;
+      border: none;
+    }
+    .main-cards .card-header.agenda { background-color: #dbeafe; color: #1e40af; }
+    .main-cards .card-header.cuenta { background-color: #dcfce7; color: #16a34a; }
+    .main-cards .card-header.credito { background-color: #fed7aa; color: #ea580c; }
+    .main-cards .card-header.seguros { background-color: #fce7f3; color: #be185d; }
+    .main-cards .card-img-top-holder {
+      height: 200px;
+      border-radius: 0;
+      background: white;
+    }
+    .main-cards .card-body {
+      padding: 24px;
+      background: white;
+    }
+    .main-cards .card-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--numia-azul);
+      margin-bottom: 12px;
+      line-height: 1.3;
+      min-height: auto;
+      display: block;
+      text-align: left;
+    }
+    .main-cards .card-title .highlight {
+      color: var(--coopeuch-azul-nav);
+    }
+    .main-cards .card-text {
+      color: #64748b;
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      min-height: auto;
+      display: block;
+      text-align: left;
+    }
+    .main-cards .btn {
+      background: transparent;
+      border: 2px solid var(--numia-azul);
+      color: var(--numia-azul);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      width: 100%;
+    }
+    .main-cards .btn:hover {
+      background: var(--numia-azul);
+      color: white;
+    }
+    .main-cards .btn i {
+      margin-left: 8px;
+    }
+
+    /* --------- Estilos para el popup con iframe --------- */
+    .iframe-container {
+      position: relative;
+      width: 100%;
+      height: 90vh;
+      min-height: 700px;
+      background: #1a1a1a;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      resize: both;
+      border: 2px solid #333333;
+    }
+    
+    .iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 0.5rem;
+    }
+    
+    /* Indicador de redimensionamiento */
+    .iframe-container::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(-45deg, transparent 0%, transparent 30%, #333333 30%, #333333 40%, transparent 40%, transparent 60%, #333333 60%, #333333 70%, transparent 70%);
+      cursor: nw-resize;
+      opacity: 0.7;
+    }
+    
+    .iframe-container:hover::after {
+      opacity: 1;
+    }
+    
+    /* Estilos para diferentes tamaños */
+    .iframe-container.size-small {
+      height: 60vh !important;
+      min-height: 500px !important;
+    }
+    
+    .iframe-container.size-medium {
+      height: 75vh !important;
+      min-height: 600px !important;
+    }
+    
+    .iframe-container.size-large {
+      height: 90vh !important;
+      min-height: 700px !important;
+    }
+    
+    .iframe-container.size-fullscreen {
+      height: calc(100vh - 100px) !important;
+      min-height: calc(100vh - 100px) !important;
+    }
+    
+    /* Posicionamiento del modal más arriba */
+    #modalPopupUrl .modal-dialog {
+      margin-top: 2vh !important;
+      margin-bottom: 2vh !important;
+    }
+    
+    /* Modal fullscreen */
+    .modal-fullscreen {
+      width: 100vw !important;
+      max-width: 100vw !important;
+      height: 100vh !important;
+      margin: 0 !important;
+    }
+    
+    .modal-fullscreen .modal-content {
+      height: 100vh !important;
+      border-radius: 0 !important;
+    }
+    
+    /* Estilos adicionales para integración con bind.com.ar */
+    #modalPopupUrl .modal-content {
+      border: 1px solid #333333 !important;
+      box-shadow: 0 0.5rem 1rem rgba(255, 127, 0, 0.15) !important;
+      background-color: #000000 !important;
+    }
+    
+    #modalPopupUrl .modal-header {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+      border-bottom: 1px solid #333333 !important;
+    }
+    
+    #modalPopupUrl .modal-title {
+      color: #ffffff !important;
+    }
+    
+    #modalPopupUrl .modal-title i {
+      color: #FF7F00 !important;
+    }
+    
+    #modalPopupUrl .btn-outline-light {
+      border-color: #ffffff !important;
+      color: #ffffff !important;
+    }
+    
+    #modalPopupUrl .btn-outline-light:hover {
+      background-color: #FF7F00 !important;
+      color: #ffffff !important;
+      border-color: #FF7F00 !important;
+    }
+    
+    #modalPopupUrl .btn-outline-light.active {
+      background-color: #FF7F00 !important;
+      border-color: #FF7F00 !important;
+      color: #ffffff !important;
+    }
+    
+    #modalPopupUrl .btn-sm {
+      background-color: #FF7F00 !important;
+      color: #ffffff !important;
+      border-color: #FF7F00 !important;
+    }
+    
+    #modalPopupUrl .btn-sm:hover {
+      background-color: #e66a00 !important;
+      border-color: #e66a00 !important;
+    }
+    
+    #modalPopupUrl .modal-footer {
+      background-color: #1a1a1a !important;
+      border-top: 1px solid #333333 !important;
+    }
+    
+    #modalPopupUrl .modal-footer small {
+      color: #cccccc !important;
+    }
+    
+    #modalPopupUrl .modal-footer i {
+      color: #FF7F00 !important;
+    }
+    
+    #modalPopupUrl .modal-footer .btn-outline-secondary {
+      border-color: #333333 !important;
+      color: #cccccc !important;
+    }
+    
+    #modalPopupUrl .btn-close {
+      filter: invert(1);
+    }
+    
+    #modalPopupUrl .btn-close:hover {
+      filter: invert(1) brightness(0.8);
+    }
+    
+    #modalPopupUrl .vr {
+      background-color: #ffffff !important;
+    }
+    
+    /* Responsive para dispositivos móviles */
+    @media (max-width: 768px) {
+      .iframe-container {
+        height: 75vh;
+        min-height: 500px;
+        resize: vertical; /* Solo redimensionamiento vertical en móviles */
+      }
+      
+      #modalPopupUrl .modal-dialog {
+        margin-top: 1vh !important;
+        margin-bottom: 1vh !important;
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        max-width: calc(100% - 1rem);
+      }
+      
+      .btn-group {
+        flex-wrap: wrap;
+      }
+      
+      .btn-group .btn {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.4rem;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .iframe-container {
+        height: 70vh;
+        min-height: 400px;
+      }
+      
+      #modalPopupUrl .modal-dialog {
+        margin-top: 0.5vh !important;
+        margin-bottom: 0.5vh !important;
+      }
+      
+      #modalPopupUrl .modal-header .d-flex {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start !important;
+      }
+      
+      #modalPopupUrl .modal-header .btn {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+      }
+      
+      .btn-group {
+        order: 2;
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .btn-group .btn {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+  </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+  <!-- Sección selector de sitio -->
+  <div class="site-selector">
+    <div class="container">
+      <p class="site-selector-text mb-0">Estas en el sitio de</p>
+      <div class="site-buttons">
+        <a href="#" class="site-btn active">
+          <i class="bi bi-person-circle"></i>
+          <span>Trabajadores</span>
+        </a>
+        <a href="#" class="site-btn">
+          <i class="bi bi-person-circle"></i>
+          <span>Pensionados</span>
+        </a>
+        <a href="#" class="site-btn">
+          <i class="bi bi-building"></i>
+          <span>Empresas</span>
+        </a>
+        <a href="#" class="site-btn">
+          <i class="bi bi-info-circle"></i>
+          <span>Sobre Nosotros</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de navegación principal -->
+  <nav class="navbar araucana-navbar mb-3">
+    <div class="container">
+      <a href="index.html" class="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
+        <img src="images/Araucana.png" alt="La Araucana" />
+      </a>
+      <div class="navbar-nav">
+        <a href="#" class="nav-link">Licencias Médicas <i class="bi bi-chevron-down"></i></a>
+        <a href="#" class="nav-link">Apoyo Social <i class="bi bi-chevron-down"></i></a>
+        <a href="#" class="nav-link">Beneficios <i class="bi bi-chevron-down"></i></a>
+        <a href="#" class="nav-link">Créditos <i class="bi bi-chevron-down"></i></a>
+        <a href="#" class="nav-link">Seguros y Ahorro <i class="bi bi-chevron-down"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Tabs secundarias La Araucana -->
+  <div class="bind-tabs">
+    <div class="container">
+      <div class="bind-tab">Licencias Médicas</div>
+      <div class="bind-tab active">Créditos</div>
+      <div class="bind-tab">Seguros</div>
+      <div class="bind-tab">Ahorro</div>
+    </div>
+  </div>
+
+
+  <!-- Carrusel estilo La Araucana -->
+  <div class="container mb-4 mt-3 bind-cards-carousel">
+    <div id="carouselMain" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <!-- Slide 1 -->
+        <div class="carousel-item active">
+          <div class="hero-card">
+            <div class="hero-content">
+              <div class="hero-eyebrow">LICENCIAS MÉDICAS</div>
+              <h3 class="hero-title">Gestiona tu <span class="accent">bienestar</span></h3>
+              <p class="hero-desc">con nuestras licencias médicas electrónicas y prescritas.</p>
+              <a href="#" class="link-cta">VER MÁS <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="hero-media">
+              <img src="images/Apertura de cuenta.png" alt="licencias médicas"/>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 2 -->
+        <div class="carousel-item">
+          <div class="hero-card">
+            <div class="hero-content">
+              <div class="hero-eyebrow">CRÉDITOS</div>
+              <h3 class="hero-title">Financia tus <span class="accent">proyectos</span></h3>
+              <p class="hero-desc">con créditos universales, de salud y consolidación de deuda.</p>
+              <a href="#" class="link-cta">MÁS INFO <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="hero-media">
+              <img src="images/Prestamo personal.png" alt="créditos"/>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 3 -->
+        <div class="carousel-item">
+          <div class="hero-card">
+            <div class="hero-content">
+              <div class="hero-eyebrow">SEGUROS</div>
+              <h3 class="hero-title">Protege lo que <span class="accent">más quieres</span></h3>
+              <p class="hero-desc">con seguros automotriz, vida, hogar y asistencia en viajes.</p>
+              <a href="#" class="link-cta">CONOCÉ MÁS <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="hero-media">
+              <img src="images/seguros.png" alt="seguros"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselMain" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselMain" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselMain" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselMain" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselMain" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Productos Destacados -->
+
+
+  <!-- Tarjetas -->
+  <main class="container mb-5">
+    <section class="productos-destacados">
+      <div class="container">
+        <h2 class="section-title" style="color: var(--caja-azul-principal);">
+          <i class="bi bi-star-fill star-icon" style="color: var(--caja-verde);"></i>
+          Nuestros servicios destacados
+        </h2>
+       </div>
+    </section>
+    <div class="row g-4 justify-content-center main-cards">
+      <!-- Licencias Médicas -->
+      <div class="col-lg-3 col-md-6">
+        <div class="card ad-card h-100">
+          <div class="card-header agenda" style="background-color: #dbeafe; color: #1e40af;">Gestión digital</div>
+          <div class="card-img-top-holder">
+            <img src="images/Tarjeta de credito.jpg" alt="Licencias Médicas">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Licencias <span class="highlight">Médicas</span></h5>
+            <p class="card-text">Gestiona tus licencias médicas electrónicas y prescritas de manera fácil y rápida.</p>
+            <button id="btnAgendarCita" class="btn" style="background-color: var(--caja-verde); color: #ffffff; border-color: var(--caja-verde);">Gestionar <i class="bi bi-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Créditos -->
+      <div class="col-lg-3 col-md-6">
+        <div class="card ad-card h-100">
+          <div class="card-header cuenta" style="background-color: #dcfce7; color: #16a34a;">Canales</div>
+          <div class="card-img-top-holder">
+            <img src="images/Apertura de cuenta.png" alt="Créditos">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Sucursal <span class="highlight">virtual</span></h5>
+            <p class="card-text">Ahórrate las filas realizando tus trámites en línea. Podrás gestionarte desde cualquier lugar. </p>
+            <button id="btnNominaComenzar" class="btn" style="background-color: var(--caja-verde); color: #ffffff; border-color: var(--caja-verde);">Simular <i class="bi bi-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seguros -->
+      <div class="col-lg-3 col-md-6">
+        <div class="card ad-card h-100">
+          <div class="card-header credito" style="background-color: #fed7aa; color: #ea580c;">Financiación</div>
+          <div class="card-img-top-holder">
+            <img src="images/Prestamo personal.png" alt="Seguros">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Créditos <span class="highlight">Universales</span></h5>
+            <p class="card-text">Financia tus proyectos con créditos universales, de salud y consolidación de deuda.</p>
+            <button id="btnSimularPrestamo" class="btn" style="background-color: var(--caja-verde); color: #ffffff; border-color: var(--caja-verde);">Cotizar <i class="bi bi-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+      <!-- Ahorro -->
+      <div class="col-lg-3 col-md-6">
+        <div class="card ad-card h-100">
+          <div class="card-header seguros" style="background-color: #fce7f3; color: #be185d;">Inversión</div>
+          <div class="card-img-top-holder">
+            <img src="images/seguros.png" alt="Ahorro">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Ahorro <span class="highlight">Inteligente</span></h5>
+            <p class="card-text">Alcanza tus metas financieras con fondos mutuos, APV y ahorro vivienda.</p>
+            <button class="btn" style="background-color: var(--caja-verde); color: #ffffff; border-color: var(--caja-verde);">Ahorrar <i class="bi bi-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rates -->
+    <div class="rates-section mt-5 mb-4">
+      <div class="rates-col-table">
+        <div class="d-flex gap-3 mb-2">
+          <button class="rates-tab-btn active" id="tabDivisas" onclick="showRatesTab('divisas')">Divisas</button>
+          <button class="rates-tab-btn" id="tabTasas" onclick="showRatesTab('tasas')">Tasas</button>
+        </div>
+        <table class="rates-table" id="tablaDivisas">
+          <thead><tr><th>Divisa</th><th>Compra</th><th>Venta</th></tr></thead>
+          <tbody>
+            <tr><td>Dólar USD</td><td>17.12</td><td>17.45</td></tr>
+            <tr><td>Euro</td><td>18.65</td><td>19.15</td></tr>
+            <tr><td>Libra esterlina</td><td>21.15</td><td>21.75</td></tr>
+          </tbody>
+        </table>
+        <table class="rates-table" id="tablaTasas" style="display:none;">
+          <thead><tr><th></th><th>Tasa Bruta al<br><span style="font-size:1rem;font-weight:700;">02/06/2025</span></th><th>Tasa Bruta<br>Anual</th></tr></thead>
+          <tbody>
+            <tr><td>cete Diario</td><td>8.12 %</td><td>9.18 %</td></tr>
+            <tr><td>cete Anualizado</td><td>8.12 %</td><td>9.18 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rates-col-side">
+        <i class="bi bi-piggy-bank"></i>
+        <h5 class="mb-1" style="font-weight:700;">Tu ahorro La Araucana</h5>
+        <p><strong>Fondo Mutuo:</strong> $150,000.00 CLP<br><span style="font-size:0.95rem; color:var(--caja-azul-principal); font-weight:700;">¡Estás generando $1,200/mes en rentabilidad!</span></p>
+        <p>¿Quieres diversificar? Simula tus ganancias potenciales en fondos mutuos, APV o ahorro vivienda.</p>
+        <button class="btn" style="background-color: var(--caja-verde); color: #ffffff; border-color: var(--caja-verde);">Ahorrar ahora</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-center py-4 mt-auto border-top" style="background-color: var(--caja-azul-principal); color: white; border-top: 1px solid var(--caja-azul-claro);">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-md-start">
+          <small>&copy; 2024 La Araucana. Todos los derechos reservados.</small>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <small>Las Cajas de Compensación son fiscalizadas por la Superintendencia de Seguridad Social</small>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== MODALES: Turno/Sala/Video ===== -->
+  <div class="modal fade" id="modalGuardiaForm" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-person-vcard me-2"></i>Apertura de cuenta vista</h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">  
+          <div id="formAlert" class="alert d-none"></div>
+          <form id="guardiaForm" class="row g-3">
+            <div class="col-md-6"><label class="form-label fw-semibold">Nombre</label><input type="text" class="form-control" name="firstName" required></div>
+            <div class="col-md-6"><label class="form-label fw-semibold">Apellido</label><input type="text" class="form-control" name="lastName" required></div>
+            <div class="col-md-6"><label class="form-label fw-semibold">RUT</label><input type="text" class="form-control" name="rut" required></div>
+            <div class="col-md-6"><label class="form-label fw-semibold">Teléfono</label><input type="tel" class="form-control" name="phone" required></div>
+            <div class="col-12"><label class="form-label fw-semibold">Email</label><input type="email" class="form-control" name="email" required></div>
+          </form>
+          <div class="small text-muted mt-3">Al continuar, te asignaremos un turno y verás una sala de espera. Cuando el agente esté listo, podrás iniciar una videollamada.</div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button id="btnEnviarTurno" class="btn" style="background-color: #FF7F00; color: #ffffff; border-color: #FF7F00;"><i class="bi bi-check2-circle me-1"></i>Generar turno</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade modal-wait" id="modalSalaEspera" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-clock-history me-2"></i>RESERVA TU TURNO</h5>
+          <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" id="btnCloseWait"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center mb-3">
+            <div class="mb-2"><span class="badge badge-live rounded-pill px-3 py-2"><i class="bi bi-check2-circle me-1"></i>Turno Reservado Exitosamente</span></div>
+            <div class="text-success fw-semibold">¡Tu turno ha sido generado en el sistema!</div>
+          </div>
+          <div class="row g-3">
+            <div class="col-12"><div class="info-item"><div class="info-label">Código del Turno:</div><div class="info-value"><a href="#" id="turnCodeDisplay" class="link-primary fw-bold" onclick="return false;">—</a></div></div></div>
+            <div class="col-md-6"><div class="info-item"><div class="info-label">Número de Turno:</div><div class="info-value" id="turnNumber">—</div></div></div>
+            <div class="col-md-6"><div class="info-item"><div class="info-label">Estado del Turno:</div><div class="info-value" id="turnStatus" class="status-warn">Consultando...</div></div></div>
+            <div class="col-md-6"><div class="info-item"><div class="info-label">Tiempo de Espera Actual:</div><div class="info-value" id="currentWaitingTime">N/A</div></div></div>
+            <div class="col-md-6"><div class="info-item"><div class="info-label">Tiempo Promedio de Espera:</div><div class="info-value" id="avgWaitingTime">N/A</div></div></div>
+            <div class="col-md-6"><div class="info-item"><div class="info-label">Cola/Servicio:</div><div class="info-value" id="queueName">—</div></div></div>
+            <div class="col-md-6"><div class="info-item"><div class="info-label">Sala de Espera:</div><div class="info-value" id="waitingRoomName">—</div></div></div>
+          </div>
+          <div class="text-center mt-4">
+            <button id="btnAbrirVideo" class="btn" style="background-color: #FF7F00; color: #ffffff; border-color: #FF7F00;" disabled><i class="bi bi-camera-video me-1"></i>Conectarme a videollamada</button>
+            <div class="form-text mt-2">El botón se habilitará cuando el agente te llame.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade modal-video" id="modalVideo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content p-2">
+        <div class="d-flex justify-content-between align-items-center px-2">
+          <h6 class="m-0"><i class="bi bi-camera-video me-2"></i>Videollamada</h6>
+          <button class="btn btn-sm btn-outline-secondary" id="btnResizeVideo">Cambiar tamaño</button>
+        </div>
+        <div class="mt-2 h-100">
+          <iframe id="videoFrame" src="about:blank"
+            allow="camera; microphone; autoplay; fullscreen; clipboard-write; display-capture"
+            referrerpolicy="no-referrer" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL CITAS ===== -->
+  <div class="modal fade" id="modalCita" tabindex="-1" aria-labelledby="modalCitaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalCitaLabel"><i class="bi bi-calendar2-week me-2"></i>Agenda tu cita</h5>
+          <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div id="citaAlert" class="alert d-none"></div>
+
+          <div class="cita-toolbar">
+            <div class="row g-3 align-items-end">
+              <div class="col-lg-4">
+                <label class="form-label fw-semibold">Servicio / Agenda</label>
+                <select id="citaSchedule" class="form-select">
+                  <option value="">Cargando...</option>
+                </select>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label fw-semibold">Sucursal</label>
+                <select id="citaBranch" class="form-select" disabled>
+                  <option value="">Selecciona un servicio</option>
+                </select>
+              </div>
+              <div class="col-lg-4">
+                <label class="form-label fw-semibold">Fecha</label>
+                <div class="d-flex gap-2">
+                  <input id="citaFecha" type="date" class="form-control" disabled/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Horarios disponibles</label>
+            <div id="citaSlots"></div>
+          </div>
+
+          <hr class="my-3">
+
+          <div class="row g-3">
+            <div class="col-md-6"><label class="form-label fw-semibold">Nombre</label><input id="citaFirst" class="form-control" placeholder="Nombre"></div>
+            <div class="col-md-6"><label class="form-label fw-semibold">Apellido</label><input id="citaLast" class="form-control" placeholder="Apellido"></div>
+            <div class="col-md-6"><label class="form-label fw-semibold">DNI</label><input id="citaRut" class="form-control" placeholder="12.345.678-9"></div>
+            <div class="col-md-6"><label class="form-label fw-semibold">Email</label><input id="citaMail" type="email" class="form-control" placeholder="correo@dominio.com"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="me-auto cita-legend">Selecciona un horario para habilitar la confirmación.</div>
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button id="citaConfirmar" class="btn" style="background-color: #FF7F00; color: #ffffff; border-color: #FF7F00;" disabled>Confirmar cita</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL POPUP URL ===== -->
+  <div class="modal fade" id="modalPopupUrl" tabindex="-1" aria-labelledby="modalPopupUrlLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-top">
+      <div class="modal-content" style="background-color: #000000; border: 1px solid #333333;">
+        <div class="modal-header" style="background-color: #000000; color: #ffffff; border-bottom: 1px solid #333333;">
+          <h5 class="modal-title" id="modalPopupUrlLabel" style="color: #ffffff;"><i class="bi bi-globe me-2" style="color: #FF7F00;"></i>Servicio Virtual</h5>
+          <div class="d-flex gap-2 align-items-center">
+            <div class="btn-group btn-group-sm" role="group">
+              <button class="btn btn-outline-light" onclick="resizeIframe('small')" title="Tamaño pequeño" style="border-color: #ffffff; color: #ffffff;">
+                <i class="bi bi-arrows-angle-contract"></i>
+              </button>
+              <button class="btn btn-outline-light" onclick="resizeIframe('medium')" title="Tamaño mediano" style="border-color: #ffffff; color: #ffffff;">
+                <i class="bi bi-arrows-angle-contract"></i>
+              </button>
+              <button class="btn btn-outline-light" onclick="resizeIframe('large')" title="Tamaño grande" style="border-color: #ffffff; color: #ffffff;">
+                <i class="bi bi-arrows-angle-expand"></i>
+              </button>
+              <button class="btn btn-outline-light" onclick="resizeIframe('fullscreen')" title="Pantalla completa" style="border-color: #ffffff; color: #ffffff;">
+                <i class="bi bi-fullscreen"></i>
+              </button>
+            </div>
+            <div class="vr" style="background-color: #ffffff;"></div>
+            <button class="btn btn-outline-light btn-sm" onclick="copyUrlToClipboard()" style="border-color: #ffffff; color: #ffffff;">
+              <i class="bi bi-clipboard me-1"></i>Copiar Enlace
+            </button>
+            <a href="https://filavirtual.preprod.debmedia.com/Numiabot/#/1bYRqvADFqdDEhnWWqqM" 
+               target="_blank" 
+               class="btn btn-sm" style="background-color: #FF7F00; color: #ffffff; border-color: #FF7F00;">
+              <i class="bi bi-box-arrow-up-right me-1"></i>Abrir en Nueva Ventana
+            </a>
+            <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" style="filter: invert(1);"></button>
+          </div>
+        </div>
+        <div class="modal-body p-0">
+          <div class="iframe-container" style="background: #1a1a1a; border: 2px solid #333333;">
+            <iframe 
+              id="popupIframe"
+              src="https://filavirtual.preprod.debmedia.com/Numiabot/#/1bYRqvADFqdDEhnWWqqM"
+              allow="camera; microphone; autoplay; fullscreen; clipboard-write; display-capture"
+              referrerpolicy="no-referrer"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+        <div class="modal-footer" style="background-color: #1a1a1a; border-top: 1px solid #333333;">
+          <small class="text-muted me-auto" style="color: #cccccc;">
+            <i class="bi bi-info-circle me-1" style="color: #FF7F00;"></i>
+            Si tienes problemas para cargar el contenido, usa el botón "Abrir en Nueva Ventana"
+          </small>
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-color: #333333; color: #cccccc;">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL SIMULADOR DE CRÉDITO ===== -->
+  <div class="modal fade" id="modalSimuladorCredito" tabindex="-1" aria-labelledby="modalSimuladorCreditoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalSimuladorCreditoLabel"><i class="bi bi-calculator me-2"></i>Solicita tu financiación</h5>
+          <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div id="simuladorAlert" class="alert d-none"></div>
+          
+          <!-- Indicador de pasos -->
+          <div class="d-flex justify-content-center mb-4">
+            <div class="d-flex align-items-center">
+              <div class="step-indicator active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-label">Información</div>
+              </div>
+              <div class="step-line"></div>
+              <div class="step-indicator" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-label">Tipo de Crédito</div>
+              </div>
+              <div class="step-line"></div>
+              <div class="step-indicator" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-label">Resultados</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paso 1: Información del Cliente -->
+          <div id="step1" class="step-content">
+            <h6 class="mb-3"><i class="bi bi-person-fill me-2"></i>Información Personal</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Nombre</label>
+                <input type="text" id="simNombre" class="form-control" placeholder="Tu nombre" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Apellido</label>
+                <input type="text" id="simApellido" class="form-control" placeholder="Tu apellido" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">RUT</label>
+                <input type="text" id="simRut" class="form-control" placeholder="12.345.678-9" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Teléfono</label>
+                <input type="tel" id="simTelefono" class="form-control" placeholder="Tu teléfono" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-semibold">Email</label>
+                <input type="email" id="simEmail" class="form-control" placeholder="correo@ejemplo.com" required>
+              </div>
+              
+            </div>
+          </div>
+
+          <!-- Paso 2: Tipo de Crédito -->
+          <div id="step2" class="step-content d-none">
+            <h6 class="mb-3"><i class="bi bi-cash-stack me-2"></i>Selecciona tu Crédito</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="card h-100 credit-type-card" data-type="personal">
+                  <div class="card-body text-center">
+                    <i class="bi bi-person-workspace text-primary mb-3" style="font-size: 2rem;"></i>
+                    <h6 class="card-title">Préstamo Personal</h6>
+                    <p class="card-text small">Para necesidades personales, consolidación de deudas o proyectos.</p>
+                    <div class="credit-details">
+                      <small class="text-muted">Tasa desde: 12.5% anual</small><br>
+                      <small class="text-muted">Plazo: 12-60 meses</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card h-100 credit-type-card" data-type="auto">
+                  <div class="card-body text-center">
+                    <i class="bi bi-car-front text-primary mb-3" style="font-size: 2rem;"></i>
+                    <h6 class="card-title">Crédito de Auto</h6>
+                    <p class="card-text small">Financia tu vehículo nuevo o usado con las mejores condiciones.</p>
+                    <div class="credit-details">
+                      <small class="text-muted">Tasa desde: 8.9% anual</small><br>
+                      <small class="text-muted">Plazo: 12-84 meses</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card h-100 credit-type-card" data-type="hipotecario">
+                  <div class="card-body text-center">
+                    <i class="bi bi-house-door text-primary mb-3" style="font-size: 2rem;"></i>
+                    <h6 class="card-title">Crédito Hipotecario</h6>
+                    <p class="card-text small">Tu casa propia con financiamiento a largo plazo.</p>
+                    <div class="credit-details">
+                      <small class="text-muted">Tasa desde: 6.5% anual</small><br>
+                      <small class="text-muted">Plazo: 10-30 años</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card h-100 credit-type-card" data-type="libre">
+                  <div class="card-body text-center">
+                    <i class="bi bi-credit-card text-primary mb-3" style="font-size: 2rem;"></i>
+                    <h6 class="card-title">Crédito Libre Inversión</h6>
+                    <p class="card-text small">Para cualquier propósito con flexibilidad total.</p>
+                    <div class="credit-details">
+                      <small class="text-muted">Tasa desde: 14.2% anual</small><br>
+                      <small class="text-muted">Plazo: 6-48 meses</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-4">
+              <label class="form-label fw-semibold">Monto Solicitado</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" id="simMonto" class="form-control" placeholder="0" min="1000" max="50000000" required>
+              </div>
+              <div class="form-text">Monto mínimo: $1,000 - Máximo: $50,000,000</div>
+            </div>
+            
+            <div class="mt-3">
+              <label class="form-label fw-semibold">Plazo en Meses</label>
+              <select id="simPlazo" class="form-select" required>
+                <option value="">Selecciona el plazo</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Paso 3: Resultados -->
+          <div id="step3" class="step-content d-none">
+            <h6 class="mb-3"><i class="bi bi-graph-up me-2"></i>Resultado de tu Simulación</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="card bg-light">
+                  <div class="card-body text-center">
+                    <h6 class="card-title text-primary">Cuota Mensual</h6>
+                    <h4 class="text-primary" id="resultadoCuota">$0</h4>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card bg-light">
+                  <div class="card-body text-center">
+                    <h6 class="card-title text-primary">Total a Pagar</h6>
+                    <h4 class="text-primary" id="resultadoTotal">$0</h4>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card bg-light">
+                  <div class="card-body text-center">
+                    <h6 class="card-title text-primary">Tasa de Interés</h6>
+                    <h4 class="text-primary" id="resultadoTasa">0%</h4>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card bg-light">
+                  <div class="card-body text-center">
+                    <h6 class="card-title text-primary">Capacidad de Pago</h6>
+                    <h4 class="text-success" id="resultadoCapacidad">Aprobado</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-4">
+              <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Información importante:</strong> Esta es una simulación preliminar. Los términos finales pueden variar según la evaluación crediticia completa.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button id="btnSolicitarAsistencia" class="btn me-auto" style="background-color: #FF7F00; border-color: #FF7F00; color: #ffffff;">
+            <i class="bi bi-headset me-1"></i>Solicitar Asistencia
+          </button>
+          <button id="btnAnterior" class="btn btn-outline-secondary d-none">Anterior</button>
+          <button id="btnSiguiente" class="btn" style="background-color: #FF7F00; color: #ffffff; border-color: #FF7F00;">Siguiente</button>
+          <button id="btnFinalizar" class="btn d-none" style="background-color: #FF7F00; border-color: #FF7F00; color: #ffffff;">Finalizar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- ===== Pestañas + Chat bubble ===== -->
+  <script>
+    function showRatesTab(tab){
+      const tabDivisas=document.getElementById('tabDivisas');
+      const tabTasas=document.getElementById('tabTasas');
+      const tablaDivisas=document.getElementById('tablaDivisas');
+      const tablaTasas=document.getElementById('tablaTasas');
+      if(tab==='divisas'){ tabDivisas.classList.add('active'); tabTasas.classList.remove('active'); tablaDivisas.style.display=''; tablaTasas.style.display='none'; }
+      else { tabDivisas.classList.remove('active'); tabTasas.classList.add('active'); tablaDivisas.style.display='none'; tablaTasas.style.display=''; }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      const iframe = document.getElementById('numia-chat-bubble');
+      const btn = document.getElementById('max-chat');
+      const openBtn = document.getElementById('open-chat');
+      let maximized = false;
+      openBtn.onclick = function() { iframe.style.display='block'; btn.style.display='flex'; openBtn.style.display='none'; };
+      btn.onclick = function() {
+        if (!maximized) { iframe.style.width='98vw'; iframe.style.height='94vh'; iframe.style.bottom='3vh'; iframe.style.right='1vw'; iframe.style.boxShadow='none'; btn.style.bottom='calc(94vh + 3vh + 12px)'; btn.textContent='🗗'; maximized = true; }
+        else { iframe.style.width='370px'; iframe.style.height='950px'; iframe.style.bottom='24px'; iframe.style.right='24px'; iframe.style.boxShadow='none'; btn.style.bottom='590px'; btn.textContent='⛶'; maximized = false; }
+      };
+    });
+  </script>
+
+  <!-- ===== Flujo Turno / Videollamada ===== -->
+  <script>
+    const FV_TOKEN   = 'm7NCbNDBShZOV83fu6RGJV1DbkhSkWI6JSTxmT2e';
+    const FV_QUEUE   = 5007;
+    const FV_BRANCH  = 11;
+    const FV_BASE    = 'https://filavirtual2.debmedia.com/api/v1';
+    const VIDEO_CALL_URL = 'about:blank';
+
+    let pollingInterval = null;
+    let lastTurnCode = null;
+    window.currentVideoCallUrl = 'about:blank';
+
+    const btnNominaComenzar = document.getElementById('btnNominaComenzar');
+    const modalForm = new bootstrap.Modal(document.getElementById('modalGuardiaForm'));
+    const modalWait = new bootstrap.Modal(document.getElementById('modalSalaEspera'), { backdrop: 'static', keyboard: false });
+    const modalVideo = new bootstrap.Modal(document.getElementById('modalVideo'), { backdrop:'static' });
+    const formEl = document.getElementById('guardiaForm');
+    const formAlert = document.getElementById('formAlert');
+    const btnEnviarTurno = document.getElementById('btnEnviarTurno');
+    const $ = (id)=> document.getElementById(id);
+
+    function setFormAlert(type, msg){ formAlert.className = `alert alert-${type}`; formAlert.textContent = msg; formAlert.classList.remove('d-none'); }
+    function clearFormAlert(){ formAlert.className = 'alert d-none'; formAlert.textContent = ''; }
+
+    btnNominaComenzar.addEventListener('click', ()=>{ clearFormAlert(); formEl.reset(); modalForm.show(); });
+
+    btnEnviarTurno.addEventListener('click', async ()=>{
+      clearFormAlert();
+      const data = Object.fromEntries(new FormData(formEl).entries());
+      if(!data.firstName || !data.lastName || !data.rut || !data.email || !data.phone){ setFormAlert('danger','Completa todos los campos.'); return; }
+      btnEnviarTurno.disabled = true; btnEnviarTurno.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generando...';
+      try{
+        const url = `${FV_BASE}/queue/${FV_QUEUE}/branch/${FV_BRANCH}/enqueue`;
+        const res = await fetch(url, { method:'POST', headers:{ 'x-api-token': FV_TOKEN, 'Content-Type':'application/json' }, body: JSON.stringify({ firstName:data.firstName, lastName:data.lastName, dni:data.rut, email:data.email, phone:data.phone })});
+        const out = await res.json().catch(()=> ({}));
+        if(!res.ok) throw new Error(out?.message || `Error en servidor (${res.status})`);
+        const turnCode = out.code || '—'; lastTurnCode = turnCode; localStorage.setItem('turnCode', turnCode);
+        const turnNumber = out.jsonDetails?.turn || out.jsonDetails?.actualTurn || '—';
+        const avgWait    = out.jsonDetails?.averageWaitingTime ?? out.jsonDetails?.serviceTime ?? 'N/A';
+        const queueName  = out.jsonDetails?.queue?.name || '—';
+        const wrName     = out.jsonDetails?.waitingRoom?.name || '—';
+        const videoCallUrl = out.jsonDetails?.videoCallUrl || 'about:blank';
+        window.currentVideoCallUrl = videoCallUrl; // Almacenar la URL de videollamada
+        
+        // Actualizar el src del iframe con la URL de videollamada
+        const urlWithParam = videoCallUrl.includes('?') ? `${videoCallUrl}&videocallUser=mobile` : `${videoCallUrl}?videocallUser=mobile`;
+        document.getElementById('videoFrame').src = urlWithParam;
+        fillWaitModal({ code:turnCode, number:turnNumber, avgWait:isFinite(avgWait)?`${Math.floor(parseFloat(avgWait))} min`:'N/A', queueName, waitingRoom:wrName });
+        modalForm.hide(); modalWait.show(); startPolling(turnCode);
+      }catch(err){ setFormAlert('danger', err.message);
+      }finally{ btnEnviarTurno.disabled = false; btnEnviarTurno.innerHTML = '<i class="bi bi-check2-circle me-1"></i>Generar turno'; }
+    });
+
+    // Función global para llenar el modal de sala de espera
+    window.fillWaitModal = function({code, number, avgWait, queueName, waitingRoom}){
+      $('turnCodeDisplay').textContent = code; $('turnNumber').textContent = number; $('avgWaitingTime').textContent = avgWait;
+      $('queueName').textContent = queueName; $('waitingRoomName').textContent = waitingRoom;
+      $('turnStatus').textContent = 'Consultando...'; $('turnStatus').className = 'info-value status-warn';
+      $('currentWaitingTime').textContent = 'N/A'; $('btnAbrirVideo').disabled = true;
+    }
+
+    // Función global para iniciar el polling del turno
+    window.startPolling = function(turnCode){
+      stopPolling();
+      const url = `${FV_BASE}/turn/code/${encodeURIComponent(turnCode)}`;
+      const mapStatus = (s)=> s==='ANNOUNCED'?{text:'Lo estamos llamando',cls:'status-ok'}: s==='WAITING_TO_BE_CALLED'?{text:'En breve lo llamaremos',cls:'status-warn'}: s==='FINALIZED'?{text:'Atención finalizada',cls:'status-done'}:{text:s||'Desconocido',cls:'status-warn'};
+      const tick = async ()=>{
+        try{
+          const res = await fetch(url, { headers: { 'x-api-token': FV_TOKEN, 'Content-Type':'text/plain' }});
+          if(!res.ok) throw new Error(`Estado no disponible (${res.status})`);
+          const data = await res.json();
+          const m = mapStatus(data.status); $('turnStatus').textContent = m.text; $('turnStatus').className = `info-value ${m.cls}`;
+          const avg = (data.averageWaitingTime ?? data.serviceTime); if(avg!==undefined && avg!==null && !isNaN(avg)){ $('currentWaitingTime').textContent = `${Math.floor(parseFloat(avg))} min`; }
+          if(data.status === 'ANNOUNCED'){ $('btnAbrirVideo').disabled = false; }
+        }catch(e){ $('turnStatus').textContent = 'Error al consultar'; $('turnStatus').className = 'info-value status-err'; }
+      };
+      tick(); pollingInterval = setInterval(tick, 5000);
+    }
+    function stopPolling(){ if(pollingInterval){ clearInterval(pollingInterval); pollingInterval = null; } }
+    document.getElementById('btnCloseWait').addEventListener('click', stopPolling);
+    document.getElementById('btnAbrirVideo').addEventListener('click', ()=>{ openVideoModal({ width:'90vw', height:'80vh', url: window.currentVideoCallUrl }); });
+    document.getElementById('btnResizeVideo').addEventListener('click', ()=>{
+      const dlg = document.querySelector('#modalVideo .modal-dialog');
+      const curW = dlg.style.getPropertyValue('--video-width') || '90vw';
+      const nextW = (curW.trim()==='90vw') ? '70vw' : '90vw';
+      const nextH = (nextW==='70vw') ? '60vh' : '80vh';
+      dlg.style.setProperty('--video-width', nextW);
+      document.querySelector('#modalVideo .modal-content').style.setProperty('--video-height', nextH);
+    });
+    function openVideoModal({width='90vw', height='80vh', url=null}={}){ 
+      const dlg=document.querySelector('#modalVideo .modal-dialog'); 
+      const content=document.querySelector('#modalVideo .modal-content'); 
+      dlg.style.setProperty('--video-width',width); 
+      content.style.setProperty('--video-height',height); 
+      
+      // Usar la URL almacenada globalmente o la proporcionada como parámetro
+      const videoUrl = url || window.currentVideoCallUrl || 'about:blank';
+      
+      // Agregar el parámetro ?videocallUser=mobile a la URL
+      const urlWithParam = videoUrl.includes('?') ? `${videoUrl}&videocallUser=mobile` : `${videoUrl}?videocallUser=mobile`;
+      
+      document.getElementById('videoFrame').src=urlWithParam; 
+      modalVideo.show(); 
+    }
+  </script>
+
+  <!-- ===== MÓDULO DE CITAS ===== -->
+  <script>
+    (function(){
+      const API_TOKEN = 's9ZmCOGzuRz0OlxtZyJYIvnG7WQVBtnLlNFrHD2U';
+      const SVC_LIST   = 'https://citas2.debmedia.com/api/v2/reducedSchedules';
+      const AVAIL_BASE = 'https://citas2.debmedia.com/api/v2/schedules';
+      const APPT_URL   = 'https://citas2.debmedia.com/api/v2/appointments';
+
+      const modalEl = document.getElementById('modalCita');
+      const modal = new bootstrap.Modal(modalEl);
+      const btnPrimaryCards = document.querySelectorAll('.ad-card .btn.btn-primary');
+      const alertBox = document.getElementById('citaAlert');
+      const selSchedule = document.getElementById('citaSchedule');
+      const selBranch   = document.getElementById('citaBranch');
+      const inputFecha  = document.getElementById('citaFecha');
+      const slotsWrap   = document.getElementById('citaSlots');
+      const btnConfirm  = document.getElementById('citaConfirmar');
+
+      const inFirst = document.getElementById('citaFirst');
+      const inLast  = document.getElementById('citaLast');
+      const inRut   = document.getElementById('citaRut');
+      const inMail  = document.getElementById('citaMail');
+
+      let schedules = [];
+      let selectedSlot = null; // { startAt: 'YYYY-MM-DDTHH:mm:ss-0300', defaultDuration: n }
+
+      // habilita el primer botón primario ("Agendar")
+      if (btnPrimaryCards && btnPrimaryCards.length) {
+        const btnSolicitar = btnPrimaryCards[0];
+        btnSolicitar.removeAttribute('disabled');
+        btnSolicitar.addEventListener('click', async () => {
+          resetForm();
+          modal.show();
+          await loadSchedules();
+        });
+      }
+
+      // habilita el botón "Agendar" de la tarjeta "Agenda tu hora"
+      const btnAgendarCita = document.getElementById('btnAgendarCita');
+      if (btnAgendarCita) {
+        btnAgendarCita.addEventListener('click', async () => {
+          resetForm();
+          modal.show();
+          await loadSchedules();
+        });
+      }
+
+      const pad = n => String(n).padStart(2,'0');
+
+      function setAlert(type, msg){ alertBox.className = `alert alert-${type}`; alertBox.textContent = msg; alertBox.classList.remove('d-none'); }
+      function clearAlert(){ alertBox.className = 'alert d-none'; alertBox.textContent=''; }
+
+      function resetForm(){
+        clearAlert();
+        selSchedule.innerHTML = `<option value="">Cargando...</option>`;
+        selBranch.innerHTML   = `<option value="">Selecciona un servicio</option>`;
+        selBranch.disabled = true;
+        inputFecha.value = '';
+        inputFecha.disabled = true;
+        slotsWrap.innerHTML = '';
+        selectedSlot = null;
+        btnConfirm.disabled = true;
+        inFirst.value = ''; inLast.value = ''; inRut.value = ''; inMail.value = '';
+      }
+
+      async function loadSchedules(){
+        try{
+          const res = await fetch(SVC_LIST, { headers: { 'x-api-token': API_TOKEN } });
+          if(!res.ok) throw new Error(`No se pudieron obtener las agendas (${res.status})`);
+          schedules = await res.json();
+
+          selSchedule.innerHTML = `<option value="">Selecciona un servicio...</option>`;
+          schedules.forEach(s => selSchedule.insertAdjacentHTML('beforeend', `<option value="${s.id}">${s.name}</option>`));
+
+          const today = new Date();
+          const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+          inputFecha.min = ymd(today);
+          inputFecha.disabled = false;
+
+          selSchedule.onchange = handleScheduleChange;
+          selBranch.onchange = handleBranchOrDateChange;
+          inputFecha.onchange = handleBranchOrDateChange;
+
+        }catch(err){ setAlert('danger', err.message); }
+      }
+
+      function handleScheduleChange(){
+        const schedId = selSchedule.value;
+        selBranch.innerHTML = `<option value="">Selecciona sucursal...</option>`;
+        selBranch.disabled = true;
+        slotsWrap.innerHTML = '';
+        btnConfirm.disabled = true;
+
+        if(!schedId){ return; }
+        const sched = schedules.find(s => String(s.id) === String(schedId));
+        if(!sched || !Array.isArray(sched.branches)) { setAlert('danger','Esta agenda no tiene sucursales asociadas.'); return; }
+        const seen = new Set();
+        sched.branches.forEach(b=>{ if(!seen.has(b.id)){ selBranch.insertAdjacentHTML('beforeend', `<option value="${b.id}">${b.name}</option>`); seen.add(b.id); }});
+        selBranch.disabled = false; clearAlert();
+      }
+
+      async function handleBranchOrDateChange(){
+        clearAlert();
+        slotsWrap.innerHTML = '';
+        selectedSlot = null;
+        btnConfirm.disabled = true;
+
+        const schedId = selSchedule.value;
+        const branchId = selBranch.value;
+        const dateStr  = inputFecha.value;
+
+        if(!schedId || !branchId || !dateStr){ return; }
+
+        try{
+          const url = `${AVAIL_BASE}/${encodeURIComponent(schedId)}/branch/${encodeURIComponent(branchId)}/availability?strDate=${encodeURIComponent(dateStr)}`;
+          const res = await fetch(url, { headers: { 'x-api-token': API_TOKEN }});
+          if(!res.ok) throw new Error(`No se pudo obtener disponibilidad (${res.status})`);
+          const data = await res.json();
+
+          const slots = Array.isArray(data) ? data : (Array.isArray(data.slots) ? data.slots : []);
+          if(slots.length === 0){ setAlert('info','No hay horarios disponibles para la fecha seleccionada.'); return; }
+
+          const frag = document.createDocumentFragment();
+          slots.forEach(slot=>{
+            const hora = slot.zonedStartDate.substring(11,16);
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn btn-light';
+            btn.textContent = hora;
+            btn.addEventListener('click', ()=>{
+              [...slotsWrap.querySelectorAll('.btn')].forEach(b=>b.classList.remove('active'));
+              btn.classList.add('active');
+              selectedSlot = { startAt: slot.zonedStartDate, defaultDuration: (slot.defaultDuration||0) };
+              btnConfirm.disabled = false;
+            });
+            frag.appendChild(btn);
+          });
+          slotsWrap.appendChild(frag);
+
+        }catch(err){ setAlert('danger', err.message); }
+      }
+
+      // Helpers para generar endAt con el MISMO offset que startAt (formato ...HH:mm:ss-0300)
+      function minutesOffsetFromSuffix(suffix){ // "-0300" -> -180
+        const m = suffix.match(/^([+-])(\d{2})(\d{2})$/);
+        if(!m) return 0;
+        const sign = m[1] === '-' ? -1 : 1;
+        return sign * (parseInt(m[2],10)*60 + parseInt(m[3],10));
+        }
+      function buildEndAtLikeStart(startAtStr, addMinutes){
+        // startAtStr: "YYYY-MM-DDTHH:mm:ss-0300"
+        const offsetMatch = startAtStr.match(/([+-]\d{4}|Z)$/);
+        const offsetSuffix = offsetMatch ? offsetMatch[1] : 'Z';
+        const offsetMin = offsetSuffix==='Z' ? 0 : minutesOffsetFromSuffix(offsetSuffix);
+
+        const msStart = new Date(startAtStr).getTime();
+        const msEnd = msStart + (addMinutes*60000);
+
+        // Convertimos a "hora local" de ese offset: sumamos offset al UTC para leer UTC* como local de zona
+        const d = new Date(msEnd + offsetMin*60000);
+        const Y = d.getUTCFullYear(), M = d.getUTCMonth()+1, D = d.getUTCDate();
+        const H = d.getUTCHours(), m = d.getUTCMinutes(), S = d.getUTCSeconds();
+        return `${Y}-${pad(M)}-${pad(D)}T${pad(H)}:${pad(m)}:${pad(S)}${offsetSuffix}`;
+      }
+
+      btnConfirm.addEventListener('click', async ()=>{
+        clearAlert();
+        if(!selectedSlot){ setAlert('danger','Selecciona un horario primero.'); return; }
+        const schedId = selSchedule.value;
+        const branchId = selBranch.value;
+        if(!schedId || !branchId){ setAlert('danger','Faltan servicio o sucursal.'); return; }
+        if(!inFirst.value || !inLast.value || !inRut.value){ setAlert('danger','Completa Nombre, Apellido y RUT.'); return; }
+
+        // start/end con el MISMO offset y formato que la API entrega
+        const startAt = selectedSlot.startAt; // usar tal cual "....-0300"
+        const endAt   = buildEndAtLikeStart(startAt, selectedSlot.defaultDuration || 0);
+
+        const body = {
+          branch:   { id: Number(branchId) },
+          schedule: { id: Number(schedId) },
+          startAt,  // "YYYY-MM-DDTHH:mm:ss-0300"
+          endAt,    // "YYYY-MM-DDTHH:mm:ss-0300"
+          customer: {
+            firstName: inFirst.value,
+            lastName:  inLast.value,
+            dni:       String(inRut.value || '').trim(),
+            email:     (inMail.value || '').trim() || undefined
+          },
+          reason: "Solicitud de Tarjeta de Crédito"
+        };
+
+        btnConfirm.disabled = true; btnConfirm.textContent = 'Confirmando...';
+
+        try{
+          const res = await fetch(APPT_URL, {
+            method: 'POST',
+            headers: { 'x-api-token': API_TOKEN, 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+          const out = await res.json().catch(()=> ({}));
+          if(!res.ok){ throw new Error(out?.message || `Error al crear la cita (${res.status})`); }
+          setAlert('success', `¡Cita creada! ID: ${out.id || '(recibido)'}`);
+          setTimeout(()=> modal.hide(), 1400);
+        }catch(err){
+          setAlert('danger', err.message);
+        }finally{
+          btnConfirm.disabled = false; btnConfirm.textContent = 'Confirmar cita';
+        }
+      });
+    })();
+  </script>
+
+  <!-- ===== SIMULADOR DE CRÉDITO ===== -->
+  <script>
+    (function(){
+      const modalEl = document.getElementById('modalSimuladorCredito');
+      const modal = new bootstrap.Modal(modalEl);
+      const btnSimular = document.getElementById('btnSimularPrestamo');
+      const alertBox = document.getElementById('simuladorAlert');
+      
+      // Elementos del formulario
+      const inputs = {
+        nombre: document.getElementById('simNombre'),
+        apellido: document.getElementById('simApellido'),
+        rut: document.getElementById('simRut'),
+        telefono: document.getElementById('simTelefono'),
+        email: document.getElementById('simEmail'),
+        monto: document.getElementById('simMonto'),
+        plazo: document.getElementById('simPlazo')
+      };
+      
+      // Elementos de navegación
+      const btnAnterior = document.getElementById('btnAnterior');
+      const btnSiguiente = document.getElementById('btnSiguiente');
+      const btnFinalizar = document.getElementById('btnFinalizar');
+      const btnSolicitarAsistencia = document.getElementById('btnSolicitarAsistencia');
+      
+      // Elementos de pasos
+      const stepIndicators = document.querySelectorAll('.step-indicator');
+      const stepContents = document.querySelectorAll('.step-content');
+      
+      // Elementos de resultados
+      const resultadoCuota = document.getElementById('resultadoCuota');
+      const resultadoTotal = document.getElementById('resultadoTotal');
+      const resultadoTasa = document.getElementById('resultadoTasa');
+      const resultadoCapacidad = document.getElementById('resultadoCapacidad');
+      
+      let currentStep = 1;
+      let selectedCreditType = null;
+      let simulacionData = {};
+      
+      // Configuración de tipos de crédito
+      const creditTypes = {
+        personal: { tasa: 12.5, minPlazo: 12, maxPlazo: 60, minMonto: 1000, maxMonto: 5000000 },
+        auto: { tasa: 8.9, minPlazo: 12, maxPlazo: 84, minMonto: 50000, maxMonto: 20000000 },
+        hipotecario: { tasa: 6.5, minPlazo: 120, maxPlazo: 360, minMonto: 500000, maxMonto: 50000000 },
+        libre: { tasa: 14.2, minPlazo: 6, maxPlazo: 48, minMonto: 1000, maxMonto: 10000000 }
+      };
+      
+      // Event listeners
+      btnSimular.addEventListener('click', () => {
+        resetSimulador();
+        modal.show();
+      });
+      
+      btnAnterior.addEventListener('click', () => {
+        if (currentStep > 1) {
+          currentStep--;
+          updateStep();
+        }
+      });
+      
+      btnSiguiente.addEventListener('click', () => {
+        if (validateCurrentStep()) {
+          if (currentStep < 3) {
+            currentStep++;
+            updateStep();
+          }
+        }
+      });
+      
+      btnFinalizar.addEventListener('click', () => {
+        modal.hide();
+        resetSimulador();
+      });
+      
+      btnSolicitarAsistencia.addEventListener('click', () => {
+        solicitarAsistencia();
+      });
+      
+      // Event listeners para tarjetas de tipo de crédito
+      document.querySelectorAll('.credit-type-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.credit-type-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          selectedCreditType = card.dataset.type;
+          updatePlazoOptions();
+        });
+      });
+      
+      function resetSimulador() {
+        currentStep = 1;
+        selectedCreditType = null;
+        simulacionData = {};
+        
+        // Limpiar formularios
+        Object.values(inputs).forEach(input => {
+          if (input) input.value = '';
+        });
+        
+        // Limpiar selecciones
+        document.querySelectorAll('.credit-type-card').forEach(card => {
+          card.classList.remove('selected');
+        });
+        
+        // Resetear pasos
+        updateStep();
+        clearAlert();
+      }
+      
+      function updateStep() {
+        // Actualizar indicadores
+        stepIndicators.forEach((indicator, index) => {
+          const stepNum = index + 1;
+          indicator.classList.remove('active', 'completed');
+          
+          if (stepNum < currentStep) {
+            indicator.classList.add('completed');
+          } else if (stepNum === currentStep) {
+            indicator.classList.add('active');
+          }
+        });
+        
+        // Mostrar/ocultar contenido
+        stepContents.forEach((content, index) => {
+          const stepNum = index + 1;
+          if (stepNum === currentStep) {
+            content.classList.remove('d-none');
+          } else {
+            content.classList.add('d-none');
+          }
+        });
+        
+        // Actualizar botones
+        btnAnterior.classList.toggle('d-none', currentStep === 1);
+        btnSiguiente.classList.toggle('d-none', currentStep === 3);
+        btnFinalizar.classList.toggle('d-none', currentStep !== 3);
+        
+        // Actualizar texto del botón siguiente
+        if (currentStep === 2) {
+          btnSiguiente.textContent = 'Calcular';
+          btnSiguiente.style.backgroundColor = 'var(--coopeuch-verde)';
+          btnSiguiente.style.borderColor = 'var(--coopeuch-verde)';
+        } else if (currentStep === 3) {
+          btnSiguiente.textContent = 'Siguiente';
+          btnSiguiente.style.backgroundColor = '';
+          btnSiguiente.style.borderColor = '';
+        } else {
+          btnSiguiente.textContent = 'Siguiente';
+          btnSiguiente.style.backgroundColor = '';
+          btnSiguiente.style.borderColor = '';
+        }
+      }
+      
+      function validateCurrentStep() {
+        clearAlert();
+        
+        if (currentStep === 1) {
+          const required = ['nombre', 'apellido', 'dni', 'telefono', 'email'];
+          const missing = required.filter(field => !inputs[field].value.trim());
+          
+          if (missing.length > 0) {
+            setAlert('danger', 'Por favor completa todos los campos requeridos.');
+            return false;
+          }
+          
+          // Guardar datos del paso 1
+          simulacionData.personal = {
+            nombre: inputs.nombre.value,
+            apellido: inputs.apellido.value,
+            dni: inputs.dni.value,
+            telefono: inputs.telefono.value,
+            email: inputs.email.value
+          };
+          
+        } else if (currentStep === 2) {
+          if (!selectedCreditType) {
+            setAlert('danger', 'Por favor selecciona un tipo de crédito.');
+            return false;
+          }
+          
+          if (!inputs.monto.value || !inputs.plazo.value) {
+            setAlert('danger', 'Por favor completa el monto y plazo.');
+            return false;
+          }
+          
+          const monto = parseFloat(inputs.monto.value);
+          const plazo = parseInt(inputs.plazo.value);
+          const config = creditTypes[selectedCreditType];
+          
+          if (monto < config.minMonto || monto > config.maxMonto) {
+            setAlert('danger', `El monto debe estar entre $${config.minMonto.toLocaleString()} y $${config.maxMonto.toLocaleString()}.`);
+            return false;
+          }
+          
+          if (plazo < config.minPlazo || plazo > config.maxPlazo) {
+            setAlert('danger', `El plazo debe estar entre ${config.minPlazo} y ${config.maxPlazo} meses.`);
+            return false;
+          }
+          
+          // Guardar datos del paso 2
+          simulacionData.credito = {
+            tipo: selectedCreditType,
+            monto: monto,
+            plazo: plazo,
+            tasa: config.tasa
+          };
+          
+          // Calcular simulación
+          calcularSimulacion();
+        }
+        
+        return true;
+      }
+      
+      function updatePlazoOptions() {
+        if (!selectedCreditType) return;
+        
+        const config = creditTypes[selectedCreditType];
+        const plazoSelect = inputs.plazo;
+        
+        plazoSelect.innerHTML = '<option value="">Selecciona el plazo</option>';
+        
+        for (let i = config.minPlazo; i <= config.maxPlazo; i += 6) {
+          const option = document.createElement('option');
+          option.value = i;
+          option.textContent = `${i} meses`;
+          plazoSelect.appendChild(option);
+        }
+        
+        // Actualizar límites del monto
+        inputs.monto.min = config.minMonto;
+        inputs.monto.max = config.maxMonto;
+        inputs.monto.placeholder = `Mínimo: $${config.minMonto.toLocaleString()}`;
+      }
+      
+      function calcularSimulacion() {
+        const { credito } = simulacionData;
+        const tasaMensual = credito.tasa / 100 / 12;
+        const cuota = credito.monto * (tasaMensual * Math.pow(1 + tasaMensual, credito.plazo)) / (Math.pow(1 + tasaMensual, credito.plazo) - 1);
+        const total = cuota * credito.plazo;
+        const interes = total - credito.monto;
+        
+        // Sin validación de ingresos/gastos: marcamos como "A evaluar" por defecto
+        const aprobado = true;
+        
+        // Mostrar resultados
+        resultadoCuota.textContent = `$${cuota.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        resultadoTotal.textContent = `$${total.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        resultadoTasa.textContent = `${credito.tasa}%`;
+        resultadoCapacidad.textContent = aprobado ? 'Aprobado' : 'Revisar';
+        resultadoCapacidad.className = aprobado ? 'text-success' : 'text-warning';
+        
+        // Guardar datos de la simulación
+        simulacionData.resultado = {
+          cuota: cuota,
+          total: total,
+          interes: interes,
+          aprobado: aprobado
+        };
+      }
+      
+      function solicitarAsistencia() {
+        // Validar solo nombre, apellido y email
+        const nombre = inputs.nombre.value.trim();
+        const apellido = inputs.apellido.value.trim();
+        const email = inputs.email.value.trim();
+        
+        if (!nombre || !apellido || !email) {
+          setAlert('danger', 'Por favor completa al menos el nombre, apellido y email antes de solicitar asistencia.');
+          return;
+        }
+        
+        // Usar la misma API que el "generar turno"
+        const FV_TOKEN = 'm7NCbNDBShZOV83fu6RGJV1DbkhSkWI6JSTxmT2e';
+        const FV_QUEUE = 5007;
+        const FV_BRANCH = 11;
+        const FV_BASE = 'https://filavirtual2.debmedia.com/api/v1';
+        
+        const data = {
+          firstName: nombre,
+          lastName: apellido,
+          dni: inputs.rut.value.trim() || 'N/A', // Usar valor del campo o 'N/A' si está vacío
+          email: email,
+          phone: inputs.telefono.value.trim() || 'N/A' // Usar valor del campo o 'N/A' si está vacío
+        };
+        
+        btnSolicitarAsistencia.disabled = true;
+        btnSolicitarAsistencia.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Solicitando...';
+        
+        fetch(`${FV_BASE}/queue/${FV_QUEUE}/branch/${FV_BRANCH}/enqueue`, {
+          method: 'POST',
+          headers: {
+            'x-api-token': FV_TOKEN,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(out => {
+          if (out.code) {
+            // Cerrar el modal del simulador
+            modal.hide();
+            resetSimulador();
+            
+            // Usar las funciones existentes para mostrar el modal de sala de espera
+            const turnCode = out.code;
+            const turnNumber = out.jsonDetails?.turn || out.jsonDetails?.actualTurn || '—';
+            const avgWait = out.jsonDetails?.averageWaitingTime ?? out.jsonDetails?.serviceTime ?? 'N/A';
+            const queueName = out.jsonDetails?.queue?.name || '—';
+            const wrName = out.jsonDetails?.waitingRoom?.name || '—';
+            const videoCallUrl = out.jsonDetails?.videoCallUrl || 'about:blank';
+            
+            // Almacenar la URL de videollamada globalmente
+            window.currentVideoCallUrl = videoCallUrl;
+            
+            // Actualizar el src del iframe con la URL de videollamada
+            const urlWithParam = videoCallUrl.includes('?') ? `${videoCallUrl}&videocallUser=mobile` : `${videoCallUrl}?videocallUser=mobile`;
+            document.getElementById('videoFrame').src = urlWithParam;
+            
+            // Llenar el modal de sala de espera con los datos
+            window.fillWaitModal({ 
+              code: turnCode, 
+              number: turnNumber, 
+              avgWait: isFinite(avgWait) ? `${Math.floor(parseFloat(avgWait))} min` : 'N/A', 
+              queueName, 
+              waitingRoom: wrName 
+            });
+            
+            // Mostrar el modal de sala de espera
+            const modalWait = new bootstrap.Modal(document.getElementById('modalSalaEspera'), { backdrop: 'static', keyboard: false });
+            modalWait.show();
+            
+            // Iniciar el polling para verificar el estado del turno
+            window.startPolling(turnCode);
+            
+          } else {
+            throw new Error('No se pudo generar el turno');
+          }
+        })
+        .catch(err => {
+          setAlert('danger', `Error al solicitar asistencia: ${err.message}`);
+        })
+        .finally(() => {
+          btnSolicitarAsistencia.disabled = false;
+          btnSolicitarAsistencia.innerHTML = '<i class="bi bi-headset me-1"></i>Solicitar Asistencia';
+        });
+      }
+      
+      function setAlert(type, msg) {
+        alertBox.className = `alert alert-${type}`;
+        alertBox.textContent = msg;
+        alertBox.classList.remove('d-none');
+      }
+      
+      function clearAlert() {
+        alertBox.className = 'alert d-none';
+        alertBox.textContent = '';
+      }
+    })();
+  </script>
+
+  <!-- ===== POPUP URL FUNCTIONALITY ===== -->
+  <script>
+    // Función para copiar URL al portapapeles
+    function copyUrlToClipboard() {
+      const url = 'https://filavirtual.preprod.debmedia.com/Numiabot/#/1bYRqvADFqdDEhnWWqqM';
+      
+      // Intentar usar la API moderna del portapapeles
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(url).then(() => {
+          showCopySuccess();
+        }).catch(() => {
+          fallbackCopyTextToClipboard(url);
+        });
+      } else {
+        fallbackCopyTextToClipboard(url);
+      }
+    }
+    
+    // Función de respaldo para navegadores más antiguos
+    function fallbackCopyTextToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          showCopySuccess();
+        } else {
+          showCopyError();
+        }
+      } catch (err) {
+        showCopyError();
+      }
+      
+      document.body.removeChild(textArea);
+    }
+    
+    // Mostrar mensaje de éxito
+    function showCopySuccess() {
+      const button = event.target;
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="bi bi-check me-2"></i>¡Copiado!';
+      button.classList.remove('btn-outline-secondary');
+      button.classList.add('btn-success');
+      
+      setTimeout(() => {
+        button.innerHTML = originalText;
+        button.classList.remove('btn-success');
+        button.classList.add('btn-outline-secondary');
+      }, 2000);
+    }
+    
+    // Mostrar mensaje de error
+    function showCopyError() {
+      const button = event.target;
+      const originalText = button.innerHTML;
+      button.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Error';
+      button.classList.remove('btn-outline-secondary');
+      button.classList.add('btn-danger');
+      
+      setTimeout(() => {
+        button.innerHTML = originalText;
+        button.classList.remove('btn-danger');
+        button.classList.add('btn-outline-secondary');
+      }, 2000);
+    }
+    
+    // Función para redimensionar el iframe
+    function resizeIframe(size) {
+      const iframeContainer = document.querySelector('.iframe-container');
+      const modalDialog = document.querySelector('#modalPopupUrl .modal-dialog');
+      
+      if (!iframeContainer) return;
+      
+      // Remover clases de tamaño anteriores
+      iframeContainer.classList.remove('size-small', 'size-medium', 'size-large', 'size-fullscreen');
+      modalDialog.classList.remove('modal-fullscreen');
+      
+      switch(size) {
+        case 'small':
+          iframeContainer.style.height = '60vh';
+          iframeContainer.style.minHeight = '500px';
+          iframeContainer.classList.add('size-small');
+          break;
+        case 'medium':
+          iframeContainer.style.height = '75vh';
+          iframeContainer.style.minHeight = '600px';
+          iframeContainer.classList.add('size-medium');
+          break;
+        case 'large':
+          iframeContainer.style.height = '90vh';
+          iframeContainer.style.minHeight = '700px';
+          iframeContainer.classList.add('size-large');
+          break;
+        case 'fullscreen':
+          modalDialog.classList.add('modal-fullscreen');
+          iframeContainer.style.height = 'calc(100vh - 100px)';
+          iframeContainer.style.minHeight = 'calc(100vh - 100px)';
+          iframeContainer.classList.add('size-fullscreen');
+          break;
+      }
+      
+      // Actualizar estado de botones
+      updateResizeButtons(size);
+    }
+    
+    // Función para actualizar el estado visual de los botones de redimensionamiento
+    function updateResizeButtons(activeSize) {
+      const buttons = document.querySelectorAll('#modalPopupUrl .btn-group button');
+      buttons.forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.backgroundColor = 'transparent';
+        btn.style.borderColor = '#ffffff';
+        btn.style.color = '#ffffff';
+      });
+      
+      const sizeMap = {
+        'small': 0,
+        'medium': 1,
+        'large': 2,
+        'fullscreen': 3
+      };
+      
+      const activeIndex = sizeMap[activeSize];
+      if (activeIndex !== undefined && buttons[activeIndex]) {
+        buttons[activeIndex].classList.add('active');
+        buttons[activeIndex].style.backgroundColor = '#FF7F00';
+        buttons[activeIndex].style.borderColor = '#FF7F00';
+        buttons[activeIndex].style.color = '#ffffff';
+      }
+    }
+    
+    // Event listener para el botón del popup
+    document.addEventListener('DOMContentLoaded', function() {
+      const btnPopupUrl = document.getElementById('btnPopupUrl');
+      const modalPopupUrl = new bootstrap.Modal(document.getElementById('modalPopupUrl'));
+      
+      if (btnPopupUrl) {
+        btnPopupUrl.addEventListener('click', function() {
+          modalPopupUrl.show();
+          // Establecer tamaño por defecto
+          setTimeout(() => {
+            resizeIframe('large');
+          }, 100);
+        });
+      }
+      
+      // Event listener para cuando se abre el modal
+      const modalElement = document.getElementById('modalPopupUrl');
+      if (modalElement) {
+        modalElement.addEventListener('shown.bs.modal', function() {
+          resizeIframe('large');
+        });
+      }
+    });
+  </script>
+
+  <!-- CHAT -->
+  <iframe
+  src="https://filavirtual.preprod.debmedia.com/Numiabot/#/1bYRqvADFqdDEhnWWqqM" 
+//  https://filavirtual.preprod.debmedia.com/Numiabot/#/v6JwKESb58ksc9OcIJR7"
+    id="numia-chat-bubble"
+    style="position: fixed; bottom: 24px; right: 24px; width: 1070px; height: 1150px; border: none; z-index: 9999; border-radius: 18px; overflow: hidden; transition: width .3s, height .3s, right .3s, bottom .3s; display: none;"
+    allow="camera; microphone"
+  ></iframe>
+  <button id="max-chat"
+    style="position: fixed; bottom: 590px; right: 24px; z-index: 10000; background: #FF7F00; color: #fff; border: none; border-radius: 50%; width: 48px; height: 48px; font-size: 1.6rem; box-shadow: 0 2px 8px rgba(0,0,0,0.18); cursor: pointer; display: none; align-items: center; justify-content: center; transition: background .2s;"
+    title="Maximizar/minimizar chat">⛶</button>
+  <button id="open-chat"
+    style="position: fixed; bottom: 24px; right: 24px; z-index: 10001; background: #FF7F00; color: #fff; border: none; border-radius: 50%; width: 64px; height: 64px; font-size: 2.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.18); cursor: pointer; display: flex; align-items: center; justify-content: center;"
+    title="Abrir chat">
+    <span style="font-weight:bold;font-size:2rem;">B</span>
+  </button>
+</body>
+</html>
+
