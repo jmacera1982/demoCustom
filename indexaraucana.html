@@ -636,7 +636,7 @@
         <img src="images/Araucana.png" alt="La Araucana" />
       </a>
       <div class="navbar-nav">
-        <a href="#" class="nav-link">Licencias Médicas <i class="bi bi-chevron-down"></i></a>
+        <a href="#" class="nav-link">Agende una visita <i class="bi bi-chevron-down"></i></a>
         <a href="#" class="nav-link">Apoyo Social <i class="bi bi-chevron-down"></i></a>
         <a href="#" class="nav-link">Beneficios <i class="bi bi-chevron-down"></i></a>
         <a href="#" class="nav-link">Créditos <i class="bi bi-chevron-down"></i></a>
@@ -648,7 +648,7 @@
   <!-- Tabs secundarias La Araucana -->
   <div class="bind-tabs">
     <div class="container">
-      <div class="bind-tab">Licencias Médicas</div>
+      <div class="bind-tab">Agende una visita</div>
       <div class="bind-tab active">Créditos</div>
       <div class="bind-tab">Seguros</div>
       <div class="bind-tab">Ahorro</div>
@@ -664,13 +664,13 @@
         <div class="carousel-item active">
           <div class="hero-card">
             <div class="hero-content">
-              <div class="hero-eyebrow">LICENCIAS MÉDICAS</div>
+              <div class="hero-eyebrow">AGENDE UNA VISITA</div>
               <h3 class="hero-title">Gestiona tu <span class="accent">bienestar</span></h3>
-              <p class="hero-desc">con nuestras licencias médicas electrónicas y prescritas.</p>
+              <p class="hero-desc">Gestione sus visitas a sucursal con anticipación para una mejor experiencia.</p>
               <a href="#" class="link-cta">VER MÁS <i class="bi bi-arrow-right"></i></a>
             </div>
             <div class="hero-media">
-              <img src="images/Apertura de cuenta.png" alt="licencias médicas"/>
+              <img src="images/Apertura de cuenta.png" alt="Agende una visita"/>
             </div>
           </div>
         </div>
@@ -733,16 +733,16 @@
        </div>
     </section>
     <div class="row g-4 justify-content-center main-cards">
-      <!-- Licencias Médicas -->
+      <!-- Agende una visita -->
       <div class="col-lg-3 col-md-6">
         <div class="card ad-card h-100">
           <div class="card-header agenda" style="background-color: #dbeafe; color: #1e40af;">Gestión digital</div>
           <div class="card-img-top-holder">
-            <img src="images/Tarjeta de credito.jpg" alt="Licencias Médicas">
+            <img src="images/Tarjeta de credito.jpg" alt="Agende una visita">
           </div>
           <div class="card-body">
-            <h5 class="card-title">Licencias <span class="highlight">Médicas</span></h5>
-            <p class="card-text">Gestiona tus licencias médicas electrónicas y prescritas de manera fácil y rápida.</p>
+            <h5 class="card-title">Agende una <span class="highlight">visita</span></h5>
+            <p class="card-text">Gestione sus visitas a sucursal con anticipación para una mejor experiencia.</p>
             <button id="btnAgendarCita" class="btn" style="background-color: var(--caja-verde); color: #ffffff; border-color: var(--caja-verde);">Gestionar <i class="bi bi-arrow-right"></i></button>
           </div>
         </div>
@@ -1353,8 +1353,8 @@
   <script>
     (function(){
       const API_TOKEN = 's9ZmCOGzuRz0OlxtZyJYIvnG7WQVBtnLlNFrHD2U';
-      const SVC_LIST   = 'https://citas2.debmedia.com/api/v2/reducedSchedules';
-      const AVAIL_BASE = 'https://citas2.debmedia.com/api/v2/schedules';
+      const SVC_LIST   = 'https://citas2.debmedia.com/api/v2/reducedSchedules?tags.name=Caja';
+      const AVAIL_BASE = 'https://citas2.debmedia.com/api/v2/schedules?tags.name=Caja';
       const APPT_URL   = 'https://citas2.debmedia.com/api/v2/appointments';
 
       const modalEl = document.getElementById('modalCita');
