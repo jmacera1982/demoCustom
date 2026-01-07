@@ -159,6 +159,47 @@
       margin-right: 0.5rem;
     }
     
+    .security-message {
+      background: #FFF3CD;
+      border: 2px solid var(--bac-warning);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .security-message p {
+      margin: 0.5rem 0;
+      color: var(--bac-text);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    
+    .security-message .main-text {
+      font-weight: 600;
+      color: var(--bac-text);
+      margin-bottom: 1rem;
+    }
+    
+    .security-message .warning-text {
+      font-weight: 600;
+      color: var(--bac-danger);
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .security-message .warning-list {
+      text-align: left;
+      margin: 0.5rem 0;
+      padding-left: 1.5rem;
+      color: var(--bac-text);
+    }
+    
+    .security-message .warning-list li {
+      margin: 0.4rem 0;
+    }
+    
     /* Sala de espera */
     .waiting-room {
       display: none;
@@ -381,7 +422,7 @@
     <div class="form-card" id="formSection">
       <div class="form-header">
         <h1><i class="bi bi-person-vcard me-2"></i>Atención por videollamada</h1>
-        <p>Completa tus datos para continuar</p
+        <p>Completa tus datos para continuar</p>
       </div>
       
       <div id="formAlert" class="alert d-none"></div>
@@ -396,8 +437,11 @@
           <input type="text" class="form-control" name="lastName" required>
         </div>
         <div class="col-md-6">
-          <label class="form-label">DNI</label>
-          <input type="text" class="form-control" name="rut" required>
+          <label class="form-label">Número de identificación</label>
+          <input type="text" class="form-control" name="rut" id="rutInput" placeholder="Ej: 123456789-0" maxlength="16" required>
+          <small class="form-text text-muted" style="font-size: 0.85rem; margin-top: 0.25rem; display: block;">
+            Formato: 9 a 14 dígitos + dígito de control (DV)
+          </small>
         </div>
         <div class="col-md-6">
           <label class="form-label">Teléfono</label>
@@ -410,9 +454,10 @@
       </form>
       
       <div class="info-text">
-        <i class="bi bi-info-circle"></i>
-        Al continuar, te asignaremos un turno y verás una sala de espera. Cuando el agente esté listo, podrás iniciar una videollamada.
+        <i class="bi bi-info-circle"></i> Al continuar, te asignaremos un turno y verás una sala de espera. Cuando el agente esté listo, podrás iniciar una videollamada.<br>
+        <a href="https://www.baccredomatic.com/es-pa/nuestra-empresa/informativo/condiciones-y-terminos-de-uso" target="_blank">Términos y condiciones</a>
       </div>
+      
       
       <div class="mt-4">
         <button id="btnEnviarTurno" class="btn btn-primary">
@@ -430,6 +475,18 @@
         <div style="color: var(--bac-success); font-weight: 600; font-size: 1.1rem;">
           ¡Tu turno ha sido generado en el sistema!
         </div>
+      </div>
+      
+      <div class="security-message">
+        <p class="main-text">En un momento uno de nuestros asesores le atenderá… Por favor, manténgase en línea</p>
+        <p class="warning-text">🚫 Recuerde que BAC nunca le solicitará:</p>
+        <ul class="warning-list">
+          <li>PIN o numeración completa de su tarjeta</li>
+          <li>Código de seguridad</li>
+          <li>Fotografía de su tarjeta</li>
+          <li>Código BAC o Token</li>
+          <li>Contraseña de Banca en Línea</li>
+        </ul>
       </div>
       
       <div class="row g-3">
@@ -517,6 +574,7 @@
     let lastTurnCode = null;
     window.currentVideoCallUrl = 'about:blank';
     
+    // Verificar que todos los elementos del DOM estén disponibles
     const formEl = document.getElementById('guardiaForm');
     const formAlert = document.getElementById('formAlert');
     const btnEnviarTurno = document.getElementById('btnEnviarTurno');
@@ -526,7 +584,24 @@
     const btnAbrirVideo = document.getElementById('btnAbrirVideo');
     const btnCloseVideo = document.getElementById('btnCloseVideo');
     
-    const $ = (id) => document.getElementById(id);
+    // Verificar que todos los elementos críticos existan
+    if (!formEl || !formAlert || !btnEnviarTurno || !formSection || !waitingRoom) {
+      console.error('Error: Faltan elementos críticos del DOM', {
+        formEl: !!formEl,
+        formAlert: !!formAlert,
+        btnEnviarTurno: !!btnEnviarTurno,
+        formSection: !!formSection,
+        waitingRoom: !!waitingRoom
+      });
+    }
+    
+    const $ = (id) => {
+      const el = document.getElementById(id);
+      if (!el) {
+        console.error(`Elemento con ID "${id}" no encontrado`);
+      }
+      return el;
+    };
     
     function setFormAlert(type, msg) {
       formAlert.className = `alert alert-${type}`;
@@ -539,42 +614,123 @@
       formAlert.textContent = '';
     }
     
-    btnEnviarTurno.addEventListener('click', async () => {
-      clearFormAlert();
-      const data = Object.fromEntries(new FormData(formEl).entries());
+    // Validar formato RUC: 9 a 14 dígitos + dígito de control (DV)
+    function validateRUC(ruc) {
+      if (!ruc) return false;
       
-      if (!data.firstName || !data.lastName || !data.rut || !data.email || !data.phone) {
-        setFormAlert('danger', 'Completa todos los campos.');
-        return;
+      // Remover guiones y espacios
+      const cleanRUC = ruc.replace(/[-\s]/g, '');
+      
+      // Debe tener entre 10 y 15 caracteres (9-14 dígitos + 1 DV)
+      if (cleanRUC.length < 10 || cleanRUC.length > 15) {
+        return false;
       }
       
-      btnEnviarTurno.disabled = true;
-      btnEnviarTurno.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generando...';
+      // Debe contener solo números
+      if (!/^\d+$/.test(cleanRUC)) {
+        return false;
+      }
+      
+      // Separar base y dígito verificador
+      const base = cleanRUC.slice(0, -1);
+      const dv = cleanRUC.slice(-1);
+      
+      // La base debe tener entre 9 y 14 dígitos
+      if (base.length < 9 || base.length > 14) {
+        return false;
+      }
+      
+      // El DV debe ser un dígito
+      if (!/^\d$/.test(dv)) {
+        return false;
+      }
+      
+      return true;
+    }
+    
+    // Formatear RUC mientras el usuario escribe
+    const rutInput = document.getElementById('rutInput');
+    if (rutInput) {
+      rutInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/[^\d-]/g, '');
+        
+        // Limitar a 15 dígitos + 1 guion máximo
+        if (value.replace(/-/g, '').length > 15) {
+          value = value.slice(0, 16);
+        }
+        
+        // Agregar guion antes del último dígito si hay más de 9 dígitos
+        if (value.length > 9 && !value.includes('-')) {
+          const digits = value.replace(/-/g, '');
+          if (digits.length > 9) {
+            value = digits.slice(0, -1) + '-' + digits.slice(-1);
+          }
+        }
+        
+        e.target.value = value;
+      });
+    }
+    
+    btnEnviarTurno.addEventListener('click', async () => {
+      console.log('Botón Generar Turno presionado');
+      clearFormAlert();
       
       try {
+        const data = Object.fromEntries(new FormData(formEl).entries());
+        console.log('Datos del formulario:', data);
+        
+        if (!data.firstName || !data.lastName || !data.rut || !data.email || !data.phone) {
+          setFormAlert('danger', 'Completa todos los campos.');
+          return;
+        }
+        
+        // Validar formato RUC
+        if (!validateRUC(data.rut)) {
+          setFormAlert('danger', 'El número de identificación debe tener entre 9 y 14 dígitos más un dígito de control (DV). Ejemplo: 123456789-0');
+          return;
+        }
+        
+        btnEnviarTurno.disabled = true;
+        btnEnviarTurno.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generando...';
+        
+        // Limpiar RUC (remover guiones) antes de enviar
+        const cleanRUC = data.rut.replace(/[-\s]/g, '');
+        console.log('RUC limpio:', cleanRUC);
+        
         const url = `${FV_BASE}/queue/${FV_QUEUE}/branch/${FV_BRANCH}/enqueue`;
+        console.log('URL de la API:', url);
+        
+        const requestBody = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          dni: cleanRUC,
+          email: data.email,
+          phone: data.phone
+        };
+        console.log('Body de la petición:', requestBody);
+        
         const res = await fetch(url, {
           method: 'POST',
           headers: {
             'x-api-token': FV_TOKEN,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            firstName: data.firstName,
-            lastName: data.lastName,
-            dni: data.rut,
-            email: data.email,
-            phone: data.phone
-          })
+          body: JSON.stringify(requestBody)
         });
         
-        const out = await res.json().catch(() => ({}));
+        console.log('Respuesta del servidor - Status:', res.status);
+        const out = await res.json().catch((e) => {
+          console.error('Error al parsear JSON:', e);
+          return {};
+        });
+        console.log('Respuesta del servidor - Body:', out);
         
         if (!res.ok) {
           throw new Error(out?.message || `Error en servidor (${res.status})`);
         }
         
         const turnCode = out.code || '—';
+        console.log('Código de turno recibido:', turnCode);
         lastTurnCode = turnCode;
         localStorage.setItem('turnCode', turnCode);
         
@@ -583,6 +739,8 @@
         const queueName = out.jsonDetails?.queue?.name || '—';
         const wrName = out.jsonDetails?.waitingRoom?.name || '—';
         const videoCallUrl = out.jsonDetails?.videoCallUrl || 'about:blank';
+        
+        console.log('Detalles del turno:', { turnNumber, avgWait, queueName, wrName, videoCallUrl });
         
         window.currentVideoCallUrl = videoCallUrl;
         
@@ -600,9 +758,15 @@
           waitingRoom: wrName
         });
         
+        console.log('Ocultando formulario y mostrando sala de espera');
         // Ocultar formulario y mostrar sala de espera
         formSection.style.display = 'none';
         waitingRoom.classList.add('active');
+        
+        console.log('Estado de waitingRoom:', {
+          display: window.getComputedStyle(waitingRoom).display,
+          classList: waitingRoom.classList.toString()
+        });
         
         // Scroll suave a la sala de espera
         waitingRoom.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -610,7 +774,11 @@
         startPolling(turnCode);
         
       } catch (err) {
-        setFormAlert('danger', err.message);
+        console.error('Error completo:', err);
+        setFormAlert('danger', err.message || 'Ocurrió un error inesperado. Por favor, intenta nuevamente.');
+        // Asegurar que el formulario sea visible en caso de error
+        formSection.style.display = 'block';
+        waitingRoom.classList.remove('active');
       } finally {
         btnEnviarTurno.disabled = false;
         btnEnviarTurno.innerHTML = '<i class="bi bi-check2-circle me-2"></i>Generar Turno';
