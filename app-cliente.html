@@ -617,12 +617,18 @@
       // Deshabilitar botón y mostrar sección
       btnSolicitarAtencion.disabled = true;
       btnSolicitarAtencion.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Procesando...';
+      
+      // Mostrar la sección explícitamente
+      atencionSection.style.display = 'block';
       atencionSection.classList.add('active');
-      stepsContainer.innerHTML = '';
+      stepsContainer.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-2"></i>Conectando con el asistente...</div>';
+      stepsContainer.style.display = 'block';
       summarySection.style.display = 'none';
       
       // Scroll a la sección
-      atencionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => {
+        atencionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
       
       try {
         // Llamar a la API de Journey Builder
@@ -645,17 +651,22 @@
         
         const data = await response.json();
         
-        console.log('Respuesta de la API:', data);
+        console.log('Respuesta completa de la API:', JSON.stringify(data, null, 2));
+        
+        // Asegurar que la sección esté visible
+        atencionSection.style.display = 'block';
+        atencionSection.classList.add('active');
         
         // Procesar y mostrar los pasos
+        let contents = [];
+        let messageText = null;
+        
+        // Buscar en diferentes estructuras de respuesta
         if (data.outputs && data.outputs.length > 0) {
           const firstOutput = data.outputs[0];
           console.log('First output:', firstOutput);
           
-          // Obtener los content_blocks con los pasos
-          let contents = [];
-          
-          // Intentar obtener contents de diferentes ubicaciones en la respuesta
+          // Buscar content_blocks en results.message
           if (firstOutput.results?.message?.content_blocks) {
             firstOutput.results.message.content_blocks.forEach(block => {
               if (block.contents && Array.isArray(block.contents)) {
@@ -664,7 +675,7 @@
             });
           }
           
-          // Si no hay contents en content_blocks, buscar en otros lugares
+          // Buscar content_blocks en outputs.message
           if (contents.length === 0 && firstOutput.outputs?.message?.content_blocks) {
             firstOutput.outputs.message.content_blocks.forEach(block => {
               if (block.contents && Array.isArray(block.contents)) {
@@ -673,59 +684,134 @@
             });
           }
           
-          console.log('Contents encontrados:', contents.length);
-          
-          // Mostrar los pasos
-          if (contents.length > 0) {
-            contents.forEach((content, index) => {
-              setTimeout(() => {
-                agregarPaso(content, index);
-              }, index * 300); // Animación escalonada
-            });
-            
-            // Mostrar el resumen final después de un delay
-            setTimeout(() => {
-              if (firstOutput.artifacts?.message) {
-                mostrarResumen(firstOutput.artifacts.message);
-              } else if (firstOutput.results?.message?.text) {
-                mostrarResumen(firstOutput.results.message.text);
-              } else if (firstOutput.outputs?.message?.message) {
-                mostrarResumen(firstOutput.outputs.message.message);
-              } else if (data.outputs[0]?.outputs?.message) {
-                mostrarResumen(data.outputs[0].outputs.message);
+          // Buscar en agent_steps si existe
+          if (contents.length === 0 && firstOutput.agent_steps) {
+            firstOutput.agent_steps.forEach((step, index) => {
+              if (step.tool_use) {
+                contents.push({
+                  type: 'tool_use',
+                  name: step.tool_use.name,
+                  tool_name: step.tool_use.name,
+                  tool_input: step.tool_use.input,
+                  input: step.tool_use.input,
+                  output: step.tool_use.output,
+                  index: index
+                });
               }
-            }, contents.length * 300 + 1000);
+              if (step.text) {
+                contents.push({
+                  type: 'text',
+                  text: step.text,
+                  index: index
+                });
+              }
+            });
+          }
+          
+          // Buscar directamente en la estructura de outputs
+          if (contents.length === 0 && firstOutput.outputs) {
+            if (Array.isArray(firstOutput.outputs)) {
+              firstOutput.outputs.forEach((output, index) => {
+                if (output.type) {
+                  contents.push(output);
+                } else if (output.message) {
+                  contents.push({
+                    type: 'text',
+                    text: typeof output.message === 'string' ? output.message : JSON.stringify(output.message)
+                  });
+                }
+              });
+            } else if (firstOutput.outputs.message) {
+              contents.push({
+                type: 'text',
+                text: typeof firstOutput.outputs.message === 'string' 
+                  ? firstOutput.outputs.message 
+                  : JSON.stringify(firstOutput.outputs.message)
+              });
+            }
+          }
+          
+          // Si aún no hay contents, buscar en la estructura completa del output
+          if (contents.length === 0 && firstOutput.results) {
+            if (firstOutput.results.message) {
+              const msg = firstOutput.results.message;
+              if (typeof msg === 'string') {
+                contents.push({ type: 'text', text: msg });
+              } else if (msg.text) {
+                contents.push({ type: 'text', text: msg.text });
+              }
+            }
+          }
+          
+          // Buscar mensaje final en artifacts
+          if (firstOutput.artifacts?.message) {
+            messageText = typeof firstOutput.artifacts.message === 'string' 
+              ? firstOutput.artifacts.message 
+              : firstOutput.artifacts.message.message || JSON.stringify(firstOutput.artifacts.message);
+          } else if (firstOutput.results?.message?.text) {
+            messageText = firstOutput.results.message.text;
+          } else if (firstOutput.outputs?.message?.message) {
+            messageText = firstOutput.outputs.message.message;
+          } else if (firstOutput.results?.message) {
+            messageText = typeof firstOutput.results.message === 'string' 
+              ? firstOutput.results.message 
+              : JSON.stringify(firstOutput.results.message);
+          }
+        }
+        
+        console.log('Contents encontrados:', contents.length);
+        console.log('Message text:', messageText);
+        
+        // Mostrar los pasos encontrados
+        if (contents.length > 0) {
+          // Limpiar contenedor y asegurar visibilidad
+          stepsContainer.innerHTML = '';
+          stepsContainer.style.display = 'block';
+          stepsContainer.style.visibility = 'visible';
+          stepsContainer.style.opacity = '1';
+          
+          console.log(`Agregando ${contents.length} pasos al DOM`);
+          
+          // Agregar los pasos inmediatamente (sin setTimeout para evitar problemas de timing)
+          contents.forEach((content, index) => {
+            agregarPaso(content, index);
+          });
+          
+          // Mostrar resumen después de los pasos
+          if (messageText) {
+            setTimeout(() => {
+              mostrarResumen(messageText);
+            }, contents.length * 300 + 500);
+          }
+        } else {
+          // Si no hay pasos, mostrar la respuesta completa o el mensaje
+          if (messageText) {
+            stepsContainer.innerHTML = `
+              <div class="alert alert-success">
+                <i class="bi bi-check-circle me-2"></i>
+                <strong>Proceso completado</strong>
+              </div>
+            `;
+            stepsContainer.style.display = 'block';
+            mostrarResumen(messageText);
           } else {
-            // Si no hay contents, mostrar mensaje de que no se encontraron pasos
+            // Mostrar la estructura de la respuesta para debugging
             stepsContainer.innerHTML = `
               <div class="alert alert-info">
                 <i class="bi bi-info-circle me-2"></i>
-                Procesando respuesta... Por favor espera.
+                <strong>Respuesta recibida:</strong>
+                <pre style="margin-top: 1rem; background: #f5f5f5; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; max-height: 400px; overflow-y: auto;">${escapeHtml(JSON.stringify(data, null, 2))}</pre>
               </div>
             `;
-            
-            // Intentar mostrar el resumen directamente
-            setTimeout(() => {
-              if (firstOutput.artifacts?.message) {
-                mostrarResumen(firstOutput.artifacts.message);
-              } else if (firstOutput.results?.message?.text) {
-                mostrarResumen(firstOutput.results.message.text);
-              } else if (firstOutput.outputs?.message?.message) {
-                mostrarResumen(firstOutput.outputs.message.message);
-              }
-            }, 2000);
+            stepsContainer.style.display = 'block';
           }
-        } else {
-          stepsContainer.innerHTML = `
-            <div class="alert alert-warning">
-              <i class="bi bi-exclamation-triangle me-2"></i>
-              No se encontraron outputs en la respuesta. Respuesta recibida: ${JSON.stringify(data).substring(0, 200)}...
-            </div>
-          `;
         }
         
       } catch (err) {
         console.error('Error completo:', err);
+        // Asegurar que la sección esté visible incluso en caso de error
+        atencionSection.style.display = 'block';
+        atencionSection.classList.add('active');
         stepsContainer.innerHTML = `
           <div class="alert alert-danger">
             <i class="bi bi-exclamation-triangle me-2"></i>
@@ -740,69 +826,117 @@
       });
       
       function agregarPaso(content, index) {
-      const stepItem = document.createElement('div');
-      stepItem.className = 'step-item processing';
-      
-      let iconClass = 'text';
-      let iconSymbol = 'bi-chat-dots';
-      let title = '';
-      
-      if (content.type === 'text') {
-        iconClass = 'text';
-        iconSymbol = 'bi-chat-dots';
-        title = content.header?.title || 'Input/Output';
-      } else if (content.type === 'tool_use') {
-        iconClass = 'tool';
-        iconSymbol = 'bi-gear';
-        title = content.header?.title || `Ejecutado ${content.name || 'herramienta'}`;
+        try {
+          console.log(`Agregando paso ${index}:`, content);
+          
+          const stepItem = document.createElement('div');
+          stepItem.className = 'step-item processing';
+          stepItem.style.display = 'block';
+          stepItem.style.visibility = 'visible';
+          stepItem.style.opacity = '1';
+          stepItem.style.minHeight = '50px';
+          
+          let iconClass = 'text';
+          let iconSymbol = 'bi-chat-dots';
+          let title = '';
+          
+          // Determinar tipo y título
+          if (content.type === 'text') {
+            iconClass = 'text';
+            iconSymbol = 'bi-chat-dots';
+            title = content.header?.title || 'Mensaje del asistente';
+          } else if (content.type === 'tool_use') {
+            iconClass = 'tool';
+            iconSymbol = 'bi-gear';
+            title = content.header?.title || `Ejecutado ${content.name || content.tool_name || 'herramienta'}`;
+          } else if (content.tool_name || content.name) {
+            // Para estructuras sin type pero con tool_name
+            iconClass = 'tool';
+            iconSymbol = 'bi-gear';
+            title = `Herramienta: ${content.tool_name || content.name}`;
+          } else {
+            iconClass = 'text';
+            iconSymbol = 'bi-info-circle';
+            title = `Paso ${index + 1}`;
+          }
+          
+          let contentHtml = '';
+          
+          if (content.type === 'text' || content.text) {
+            const textContent = content.text || JSON.stringify(content, null, 2);
+            contentHtml = `<div class="step-input">${escapeHtml(textContent)}</div>`;
+          } else if (content.type === 'tool_use' || content.tool_name || content.name) {
+            const toolInput = content.tool_input || content.input || content.tool_use?.input;
+            const toolOutput = content.output || content.tool_use?.output;
+            
+            const inputStr = toolInput ? (typeof toolInput === 'string' ? toolInput : JSON.stringify(toolInput, null, 2)) : '';
+            const outputStr = toolOutput ? (typeof toolOutput === 'string' ? toolOutput : JSON.stringify(toolOutput, null, 2)) : '';
+            
+            contentHtml = `
+              ${inputStr ? `
+              <div class="mb-2">
+                <strong style="color: var(--numia-text-light); font-size: 0.85rem;">Input:</strong>
+                <div class="step-output"><pre style="margin: 0.5rem 0; white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(inputStr)}</pre></div>
+              </div>
+              ` : ''}
+              ${outputStr ? `
+              <div>
+                <strong style="color: var(--numia-text-light); font-size: 0.85rem;">Output:</strong>
+                <div class="step-output"><pre style="margin: 0.5rem 0; white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(outputStr)}</pre></div>
+              </div>
+              ` : ''}
+              ${!inputStr && !outputStr ? `<div class="step-output"><pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(JSON.stringify(content, null, 2))}</pre></div>` : ''}
+            `;
+          } else {
+            // Contenido genérico
+            const genericContent = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
+            contentHtml = `<div class="step-output"><pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(genericContent)}</pre></div>`;
+          }
+          
+          stepItem.innerHTML = `
+            <div class="step-header">
+              <div class="step-icon ${iconClass}">
+                <i class="bi ${iconSymbol}"></i>
+              </div>
+              <div style="flex: 1;">
+                <div class="step-title">${escapeHtml(title)}</div>
+                ${content.duration ? `<div class="step-duration">${content.duration}ms</div>` : `<div class="step-duration">Paso ${index + 1}</div>`}
+              </div>
+            </div>
+            <div class="step-content">
+              ${contentHtml}
+            </div>
+          `;
+          
+          // Asegurar que el contenedor esté visible y agregar el elemento
+          if (stepsContainer) {
+            stepsContainer.style.display = 'block';
+            stepsContainer.style.visibility = 'visible';
+            stepsContainer.style.opacity = '1';
+            stepsContainer.appendChild(stepItem);
+            
+            console.log(`Paso ${index} agregado al DOM`);
+            
+            // Forzar reflow para asegurar renderizado
+            stepItem.offsetHeight;
+            
+            // Marcar como completado después de un breve delay
+            setTimeout(() => {
+              stepItem.classList.remove('processing');
+              stepItem.classList.add('completed');
+              const icon = stepItem.querySelector('.step-icon');
+              if (icon) {
+                icon.className = 'step-icon completed';
+                icon.innerHTML = '<i class="bi bi-check-circle"></i>';
+              }
+            }, 500);
+          } else {
+            console.error('stepsContainer no encontrado');
+          }
+        } catch (err) {
+          console.error('Error al agregar paso:', err, content);
+        }
       }
-      
-      let contentHtml = '';
-      
-      if (content.type === 'text') {
-        contentHtml = `<div class="step-input">${escapeHtml(content.text || '')}</div>`;
-      } else if (content.type === 'tool_use') {
-        const toolInput = content.tool_input ? JSON.stringify(content.tool_input, null, 2) : '';
-        const toolOutput = content.output ? (typeof content.output === 'string' ? content.output : JSON.stringify(content.output, null, 2)) : '';
-        
-        contentHtml = `
-          <div class="mb-2">
-            <strong style="color: var(--numia-text-light); font-size: 0.85rem;">Input:</strong>
-            <div class="step-output"><pre>${escapeHtml(toolInput)}</pre></div>
-          </div>
-          ${toolOutput ? `
-          <div>
-            <strong style="color: var(--numia-text-light); font-size: 0.85rem;">Output:</strong>
-            <div class="step-output"><pre>${escapeHtml(toolOutput)}</pre></div>
-          </div>
-          ` : ''}
-        `;
-      }
-      
-      stepItem.innerHTML = `
-        <div class="step-header">
-          <div class="step-icon ${iconClass}">
-            <i class="bi ${iconSymbol}"></i>
-          </div>
-          <div class="step-title">${title}</div>
-          ${content.duration ? `<div class="step-duration">${content.duration}ms</div>` : ''}
-        </div>
-        <div class="step-content">
-          ${contentHtml}
-        </div>
-      `;
-      
-      stepsContainer.appendChild(stepItem);
-      
-      // Marcar como completado después de un breve delay
-      setTimeout(() => {
-        stepItem.classList.remove('processing');
-        stepItem.classList.add('completed');
-        const icon = stepItem.querySelector('.step-icon');
-        icon.className = 'step-icon completed';
-        icon.innerHTML = '<i class="bi bi-check-circle"></i>';
-      }, 500);
-    }
     
       function mostrarResumen(message) {
         try {
