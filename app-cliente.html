@@ -717,153 +717,132 @@
         let contents = [];
         let messageText = null;
         
+        // Función recursiva para buscar tool_use en cualquier estructura
+        function buscarToolUse(obj, path = '') {
+          if (!obj || typeof obj !== 'object') return;
+          
+          // Si es un array, buscar en cada elemento
+          if (Array.isArray(obj)) {
+            obj.forEach((item, index) => {
+              buscarToolUse(item, `${path}[${index}]`);
+            });
+            return;
+          }
+          
+          // Si tiene name y output, es probablemente un tool_use
+          if (obj.name && (obj.output !== undefined || obj.tool_input !== undefined)) {
+            console.log(`Encontrado tool_use en ${path}:`, obj);
+            contents.push({
+              type: 'tool_use',
+              name: obj.name,
+              tool_name: obj.name,
+              tool_input: obj.tool_input || obj.input,
+              input: obj.tool_input || obj.input,
+              output: obj.output,
+              path: path
+            });
+          }
+          
+          // Si tiene type === 'tool_use', también es válido
+          if (obj.type === 'tool_use' && obj.name) {
+            console.log(`Encontrado tool_use (type) en ${path}:`, obj);
+            contents.push({
+              type: 'tool_use',
+              name: obj.name,
+              tool_name: obj.name,
+              tool_input: obj.tool_input || obj.input,
+              input: obj.tool_input || obj.input,
+              output: obj.output,
+              path: path
+            });
+          }
+          
+          // Si tiene tool_use como propiedad anidada
+          if (obj.tool_use && obj.tool_use.name) {
+            console.log(`Encontrado tool_use anidado en ${path}:`, obj.tool_use);
+            contents.push({
+              type: 'tool_use',
+              name: obj.tool_use.name,
+              tool_name: obj.tool_use.name,
+              tool_input: obj.tool_use.input || obj.tool_use.tool_input,
+              input: obj.tool_use.input || obj.tool_use.tool_input,
+              output: obj.tool_use.output,
+              path: `${path}.tool_use`
+            });
+          }
+          
+          // Buscar recursivamente en todas las propiedades
+          for (const key in obj) {
+            if (obj.hasOwnProperty(key) && key !== 'tool_use') {
+              buscarToolUse(obj[key], path ? `${path}.${key}` : key);
+            }
+          }
+        }
+        
         // Buscar en diferentes estructuras de respuesta
         if (data.outputs && data.outputs.length > 0) {
           const firstOutput = data.outputs[0];
           console.log('First output:', firstOutput);
           
-          // Buscar en agent_steps si existe (prioridad alta)
+          // Buscar en la estructura específica: outputs[0].outputs[0].results.message.content_blocks[0].contents
+          if (firstOutput.outputs && firstOutput.outputs.length > 0) {
+            const innerOutput = firstOutput.outputs[0];
+            
+            // Buscar en results.message.content_blocks
+            if (innerOutput.results?.message?.content_blocks) {
+              innerOutput.results.message.content_blocks.forEach((block, blockIndex) => {
+                if (block.contents && Array.isArray(block.contents)) {
+                  block.contents.forEach((content, contentIndex) => {
+                    // Solo agregar los que son tool_use
+                    if (content.type === 'tool_use' && content.name) {
+                      console.log(`Encontrado tool_use: ${content.name}`, content);
+                      contents.push({
+                        type: 'tool_use',
+                        name: content.name,
+                        tool_name: content.name,
+                        tool_input: content.tool_input || content.input,
+                        input: content.tool_input || content.input,
+                        output: content.output,
+                        duration: content.duration,
+                        header: content.header
+                      });
+                    }
+                  });
+                }
+              });
+            }
+            
+            // Buscar mensaje final en artifacts
+            if (innerOutput.artifacts?.message) {
+              messageText = typeof innerOutput.artifacts.message === 'string' 
+                ? innerOutput.artifacts.message 
+                : innerOutput.artifacts.message.message || JSON.stringify(innerOutput.artifacts.message);
+            } else if (innerOutput.outputs?.message?.message) {
+              messageText = innerOutput.outputs.message.message;
+            } else if (innerOutput.results?.message?.text) {
+              messageText = innerOutput.results.message.text;
+            }
+          }
+          
+          // Buscar en agent_steps si existe (como respaldo)
           if (firstOutput.agent_steps && Array.isArray(firstOutput.agent_steps)) {
             firstOutput.agent_steps.forEach((step, index) => {
               if (step.tool_use && step.tool_use.name) {
-                contents.push({
-                  type: 'tool_use',
-                  name: step.tool_use.name,
-                  tool_name: step.tool_use.name,
-                  tool_input: step.tool_use.input,
-                  input: step.tool_use.input,
-                  output: step.tool_use.output,
-                  index: index
-                });
-              }
-            });
-          }
-          
-          // Buscar directamente en la estructura de outputs (puede ser un array de tool_use)
-          if (firstOutput.outputs) {
-            if (Array.isArray(firstOutput.outputs)) {
-              firstOutput.outputs.forEach((output, index) => {
-                // Si es un objeto con name y output (estructura tool_use)
-                if (output.name && (output.output !== undefined || output.tool_input !== undefined)) {
-                  // Evitar duplicados
-                  const exists = contents.some(c => c.name === output.name && c.index === index);
-                  if (!exists) {
-                    contents.push({
-                      type: 'tool_use',
-                      name: output.name,
-                      tool_name: output.name,
-                      tool_input: output.tool_input || output.input,
-                      input: output.tool_input || output.input,
-                      output: output.output,
-                      index: index
-                    });
-                  }
-                } else if (output.type === 'tool_use') {
-                  const exists = contents.some(c => c.name === output.name && c.index === index);
-                  if (!exists) {
-                    contents.push({
-                      type: 'tool_use',
-                      name: output.name,
-                      tool_name: output.name,
-                      tool_input: output.tool_input || output.input,
-                      input: output.tool_input || output.input,
-                      output: output.output,
-                      index: index
-                    });
-                  }
+                const exists = contents.some(c => c.name === step.tool_use.name);
+                if (!exists) {
+                  contents.push({
+                    type: 'tool_use',
+                    name: step.tool_use.name,
+                    tool_name: step.tool_use.name,
+                    tool_input: step.tool_use.input,
+                    input: step.tool_use.input,
+                    output: step.tool_use.output
+                  });
                 }
-              });
-            }
-          }
-          
-          // Buscar en results.outputs si existe
-          if (firstOutput.results?.outputs) {
-            if (Array.isArray(firstOutput.results.outputs)) {
-              firstOutput.results.outputs.forEach((output, index) => {
-                if (output.name && (output.output !== undefined || output.tool_input !== undefined)) {
-                  const exists = contents.some(c => c.name === output.name && c.index === index);
-                  if (!exists) {
-                    contents.push({
-                      type: 'tool_use',
-                      name: output.name,
-                      tool_name: output.name,
-                      tool_input: output.tool_input || output.input,
-                      input: output.tool_input || output.input,
-                      output: output.output,
-                      index: index
-                    });
-                  }
-                }
-              });
-            }
-          }
-          
-          // Buscar content_blocks en results.message (como respaldo)
-          if (contents.length === 0 && firstOutput.results?.message?.content_blocks) {
-            firstOutput.results.message.content_blocks.forEach(block => {
-              if (block.contents && Array.isArray(block.contents)) {
-                block.contents.forEach(content => {
-                  if (content.type === 'tool_use' || content.tool_use) {
-                    contents.push({
-                      type: 'tool_use',
-                      name: content.name || content.tool_use?.name,
-                      tool_name: content.name || content.tool_use?.name,
-                      tool_input: content.tool_input || content.tool_use?.input,
-                      input: content.tool_input || content.tool_use?.input,
-                      output: content.output || content.tool_use?.output
-                    });
-                  }
-                });
               }
             });
           }
           
-          // Buscar content_blocks en outputs.message (como respaldo)
-          if (contents.length === 0 && firstOutput.outputs?.message?.content_blocks) {
-            firstOutput.outputs.message.content_blocks.forEach(block => {
-              if (block.contents && Array.isArray(block.contents)) {
-                block.contents.forEach(content => {
-                  if (content.type === 'tool_use' || content.tool_use) {
-                    contents.push({
-                      type: 'tool_use',
-                      name: content.name || content.tool_use?.name,
-                      tool_name: content.name || content.tool_use?.name,
-                      tool_input: content.tool_input || content.tool_use?.input,
-                      input: content.tool_input || content.tool_use?.input,
-                      output: content.output || content.tool_use?.output
-                    });
-                  }
-                });
-              }
-            });
-          }
-          
-          // Si aún no hay contents, buscar en la estructura completa del output
-          if (contents.length === 0 && firstOutput.results) {
-            if (firstOutput.results.message) {
-              const msg = firstOutput.results.message;
-              if (typeof msg === 'string') {
-                contents.push({ type: 'text', text: msg });
-              } else if (msg.text) {
-                contents.push({ type: 'text', text: msg.text });
-              }
-            }
-          }
-          
-          // Buscar mensaje final en artifacts
-          if (firstOutput.artifacts?.message) {
-            messageText = typeof firstOutput.artifacts.message === 'string' 
-              ? firstOutput.artifacts.message 
-              : firstOutput.artifacts.message.message || JSON.stringify(firstOutput.artifacts.message);
-          } else if (firstOutput.results?.message?.text) {
-            messageText = firstOutput.results.message.text;
-          } else if (firstOutput.outputs?.message?.message) {
-            messageText = firstOutput.outputs.message.message;
-          } else if (firstOutput.results?.message) {
-            messageText = typeof firstOutput.results.message === 'string' 
-              ? firstOutput.results.message 
-              : JSON.stringify(firstOutput.results.message);
-          }
         }
         
         console.log('Contents encontrados:', contents.length);
