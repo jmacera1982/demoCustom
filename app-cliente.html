@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Numia Bank - Mi Banca</title>
+  <link rel="icon" type="image/png" href="images/N.png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --numia-azul: #863DFF;
+      --numia-azul-claro: #e6ecf9;
+      --numia-azul-muy-claro: #eef2fc;
+      --numia-success: #10b981;
+      --numia-text: #1f2937;
+      --numia-text-light: #6b7280;
+      --numia-border: #e5e7eb;
+      --numia-bg: #f7f7f7;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: var(--numia-bg);
+      color: var(--numia-text);
+      min-height: 100vh;
+    }
+    
+    .navbar {
+      background: var(--numia-azul);
+      padding: 1rem 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand {
+      color: white;
+      font-weight: 700;
+      font-size: 1.5rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .navbar-brand i {
+      font-size: 2rem;
+    }
+    
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    
+    .welcome-section {
+      background: linear-gradient(135deg, var(--numia-azul) 0%, #6d2dd4 100%);
+      border-radius: 16px;
+      padding: 2rem;
+      color: white;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(134, 61, 255, 0.3);
+    }
+    
+    .welcome-section h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .welcome-section p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .balance-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    
+    .balance-label {
+      color: var(--numia-text-light);
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .balance-amount {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--numia-text);
+      margin-bottom: 1rem;
+    }
+    
+    .balance-subtitle {
+      color: var(--numia-text-light);
+      font-size: 0.95rem;
+    }
+    
+    .products-section {
+      margin-bottom: 2rem;
+    }
+    
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--numia-text);
+      margin-bottom: 1.5rem;
+    }
+    
+    .product-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: all 0.3s ease;
+      border-left: 4px solid var(--numia-azul);
+    }
+    
+    .product-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+    
+    .product-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--numia-azul-claro);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--numia-azul);
+      font-size: 1.5rem;
+    }
+    
+    .product-type {
+      font-weight: 600;
+      color: var(--numia-text);
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .product-number {
+      color: var(--numia-text-light);
+      font-size: 0.9rem;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .product-balance {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--numia-text);
+      margin-top: 0.5rem;
+    }
+    
+    .product-balance.positive {
+      color: var(--numia-success);
+    }
+    
+    .product-balance.negative {
+      color: #ef4444;
+    }
+    
+    .product-details {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--numia-border);
+    }
+    
+    .product-detail-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .product-detail-label {
+      color: var(--numia-text-light);
+    }
+    
+    .product-detail-value {
+      font-weight: 600;
+      color: var(--numia-text);
+    }
+    
+    .btn-atencion {
+      background: var(--numia-azul);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 2rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      width: 100%;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(134, 61, 255, 0.3);
+    }
+    
+    .btn-atencion:hover {
+      background: #6d2dd4;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(134, 61, 255, 0.4);
+    }
+    
+    .btn-atencion i {
+      margin-right: 0.5rem;
+    }
+    
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .quick-action-btn {
+      background: white;
+      border: 2px solid var(--numia-border);
+      border-radius: 12px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      text-decoration: none;
+      color: var(--numia-text);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .quick-action-btn:hover {
+      border-color: var(--numia-azul);
+      color: var(--numia-azul);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .quick-action-btn i {
+      font-size: 2rem;
+      color: var(--numia-azul);
+    }
+    
+    .quick-action-btn span {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .atencion-section {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-top: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      display: none;
+    }
+    
+    .atencion-section.active {
+      display: block;
+    }
+    
+    .steps-container {
+      margin-top: 1.5rem;
+    }
+    
+    .step-item {
+      background: var(--numia-bg);
+      border-left: 4px solid var(--numia-azul);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    
+    .step-item.completed {
+      border-left-color: var(--numia-success);
+      background: #f0fdf4;
+    }
+    
+    .step-item.processing {
+      border-left-color: #f59e0b;
+      background: #fffbeb;
+    }
+    
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .step-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    
+    .step-icon.text {
+      background: var(--numia-azul-claro);
+      color: var(--numia-azul);
+    }
+    
+    .step-icon.tool {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    
+    .step-icon.completed {
+      background: var(--numia-success);
+      color: white;
+    }
+    
+    .step-title {
+      font-weight: 600;
+      color: var(--numia-text);
+      font-size: 0.95rem;
+    }
+    
+    .step-duration {
+      color: var(--numia-text-light);
+      font-size: 0.85rem;
+      margin-left: auto;
+    }
+    
+    .step-content {
+      margin-top: 0.75rem;
+      padding-left: 2.75rem;
+    }
+    
+    .step-input {
+      background: white;
+      border: 1px solid var(--numia-border);
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: var(--numia-text);
+    }
+    
+    .step-output {
+      background: white;
+      border: 1px solid var(--numia-border);
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--numia-text);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .step-output pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 0.85rem;
+    }
+    
+    .summary-section {
+      background: linear-gradient(135deg, #f0f7ff 0%, #e6f2ff 100%);
+      border-left: 4px solid var(--numia-azul);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .summary-title {
+      font-weight: 700;
+      color: var(--numia-text);
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .summary-content {
+      color: var(--numia-text);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    
+    .dni-input-section {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    
+    .dni-input-group {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+    
+    .dni-input-group .form-control {
+      flex: 1;
+    }
+    
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 1rem;
+      }
+      
+      .balance-amount {
+        font-size: 2rem;
+      }
+      
+      .welcome-section h1 {
+        font-size: 1.5rem;
+      }
+      
+      .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="bi bi-bank"></i>
+        <span>Numia Bank</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h1>¡Hola, Juan Pérez!</h1>
+      <p>Bienvenido a tu banca en línea</p>
+    </div>
+
+    <!-- Balance Card -->
+    <div class="balance-card">
+      <div class="balance-label">Balance Total</div>
+      <div class="balance-amount">$125,450.00</div>
+      <div class="balance-subtitle">Disponible para usar</div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <a href="#" class="quick-action-btn">
+        <i class="bi bi-arrow-up-circle"></i>
+        <span>Transferir</span>
+      </a>
+      <a href="#" class="quick-action-btn">
+        <i class="bi bi-arrow-down-circle"></i>
+        <span>Recibir</span>
+      </a>
+      <a href="#" class="quick-action-btn">
+        <i class="bi bi-credit-card"></i>
+        <span>Pagar</span>
+      </a>
+      <a href="#" class="quick-action-btn">
+        <i class="bi bi-graph-up"></i>
+        <span>Invertir</span>
+      </a>
+    </div>
+
+    <!-- Products Section -->
+    <div class="products-section">
+      <h2 class="section-title">Mis Productos</h2>
+      
+      <!-- Cuenta Corriente -->
+      <div class="product-card">
+        <div class="product-header">
+          <div>
+            <div class="product-type">Cuenta Corriente</div>
+            <div class="product-number">****1234</div>
+          </div>
+          <div class="product-icon">
+            <i class="bi bi-wallet2"></i>
+          </div>
+        </div>
+        <div class="product-balance positive">$85,450.00</div>
+        <div class="product-details">
+          <div class="product-detail-item">
+            <span class="product-detail-label">Disponible</span>
+            <span class="product-detail-value">$85,450.00</span>
+          </div>
+          <div class="product-detail-item">
+            <span class="product-detail-label">Límite de sobregiro</span>
+            <span class="product-detail-value">$10,000.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta de Crédito -->
+      <div class="product-card">
+        <div class="product-header">
+          <div>
+            <div class="product-type">Tarjeta de Crédito</div>
+            <div class="product-number">****5678</div>
+          </div>
+          <div class="product-icon">
+            <i class="bi bi-credit-card-2-front"></i>
+          </div>
+        </div>
+        <div class="product-balance negative">-$12,350.00</div>
+        <div class="product-details">
+          <div class="product-detail-item">
+            <span class="product-detail-label">Límite de crédito</span>
+            <span class="product-detail-value">$50,000.00</span>
+          </div>
+          <div class="product-detail-item">
+            <span class="product-detail-label">Disponible</span>
+            <span class="product-detail-value">$37,650.00</span>
+          </div>
+          <div class="product-detail-item">
+            <span class="product-detail-label">Fecha de corte</span>
+            <span class="product-detail-value">15 de cada mes</span>
+          </div>
+          <div class="product-detail-item">
+            <span class="product-detail-label">Fecha de pago</span>
+            <span class="product-detail-value">30 de cada mes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input DNI para atención -->
+    <div class="dni-input-section">
+      <label class="form-label fw-semibold mb-3">Ingresa tu DNI para solicitar atención</label>
+      <div class="dni-input-group">
+        <div style="flex: 1;">
+          <input type="text" id="inputDni" class="form-control" placeholder="Ej: 29328703" maxlength="20">
+        </div>
+        <button id="btnSolicitarAtencion" class="btn" style="background-color: var(--numia-azul); color: #ffffff; border-color: var(--numia-azul); padding: 0.75rem 1.5rem;">
+          <i class="bi bi-headset me-1"></i>Solicitar Atención
+        </button>
+      </div>
+    </div>
+
+    <!-- Sección de Resultados de Atención -->
+    <div id="atencionSection" class="atencion-section">
+      <h3 class="section-title">
+        <i class="bi bi-gear me-2"></i>Proceso de Atención
+      </h3>
+      
+      <div id="stepsContainer" class="steps-container">
+        <!-- Los pasos se agregarán aquí dinámicamente -->
+      </div>
+      
+      <div id="summarySection" class="summary-section" style="display: none;">
+        <div class="summary-title">
+          <i class="bi bi-check-circle-fill"></i>
+          Resumen de la Atención
+        </div>
+        <div id="summaryContent" class="summary-content"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Configuración de la API Journey Builder
+    const JOURNEY_API_URL = 'https://api.journeybuilder.numia.co/api/v1/run/38223ec2-6123-4e6e-862a-4945161ed221?stream=false';
+    const JOURNEY_API_KEY = 'sk-WfTsCY302RrciqoVRYAZWruD9mpyPKatAo8GU8tyzIM';
+
+    // Elementos del DOM
+    const btnSolicitarAtencion = document.getElementById('btnSolicitarAtencion');
+    const inputDni = document.getElementById('inputDni');
+    const atencionSection = document.getElementById('atencionSection');
+    const stepsContainer = document.getElementById('stepsContainer');
+    const summarySection = document.getElementById('summarySection');
+    const summaryContent = document.getElementById('summaryContent');
+
+    // Event listener para el botón de solicitar atención
+    btnSolicitarAtencion.addEventListener('click', async () => {
+      const dni = inputDni.value.trim();
+      
+      if (!dni) {
+        alert('Por favor, ingresa tu DNI');
+        return;
+      }
+      
+      // Deshabilitar botón y mostrar sección
+      btnSolicitarAtencion.disabled = true;
+      btnSolicitarAtencion.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Procesando...';
+      atencionSection.classList.add('active');
+      stepsContainer.innerHTML = '';
+      summarySection.style.display = 'none';
+      
+      // Scroll a la sección
+      atencionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+      try {
+        // Llamar a la API de Journey Builder
+        const response = await fetch(JOURNEY_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': JOURNEY_API_KEY,
+            'Origin': 'journeybuilder.numia.co'
+          },
+          body: JSON.stringify({
+            input_value: dni,
+            input_type: 'chat'
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Error en servidor (${response.status})`);
+        }
+        
+        const data = await response.json();
+        
+        // Procesar y mostrar los pasos
+        if (data.outputs && data.outputs.length > 0) {
+          const firstOutput = data.outputs[0];
+          
+          // Obtener los content_blocks con los pasos
+          if (firstOutput.results?.message?.content_blocks) {
+            const contentBlocks = firstOutput.results.message.content_blocks;
+            
+            contentBlocks.forEach(block => {
+              if (block.contents && Array.isArray(block.contents)) {
+                block.contents.forEach((content, index) => {
+                  setTimeout(() => {
+                    agregarPaso(content, index);
+                  }, index * 300); // Animación escalonada
+                });
+              }
+            });
+          }
+          
+          // Mostrar el resumen final después de un delay
+          setTimeout(() => {
+            if (firstOutput.artifacts?.message) {
+              mostrarResumen(firstOutput.artifacts.message);
+            } else if (firstOutput.results?.message?.text) {
+              mostrarResumen(firstOutput.results.message.text);
+            }
+          }, 2000);
+        }
+        
+      } catch (err) {
+        stepsContainer.innerHTML = `
+          <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Error al procesar la solicitud: ${err.message}
+          </div>
+        `;
+      } finally {
+        btnSolicitarAtencion.disabled = false;
+        btnSolicitarAtencion.innerHTML = '<i class="bi bi-headset me-1"></i>Solicitar Atención';
+      }
+    });
+    
+    function agregarPaso(content, index) {
+      const stepItem = document.createElement('div');
+      stepItem.className = 'step-item processing';
+      
+      let iconClass = 'text';
+      let iconSymbol = 'bi-chat-dots';
+      let title = '';
+      
+      if (content.type === 'text') {
+        iconClass = 'text';
+        iconSymbol = 'bi-chat-dots';
+        title = content.header?.title || 'Input/Output';
+      } else if (content.type === 'tool_use') {
+        iconClass = 'tool';
+        iconSymbol = 'bi-gear';
+        title = content.header?.title || `Ejecutado ${content.name || 'herramienta'}`;
+      }
+      
+      let contentHtml = '';
+      
+      if (content.type === 'text') {
+        contentHtml = `<div class="step-input">${escapeHtml(content.text || '')}</div>`;
+      } else if (content.type === 'tool_use') {
+        const toolInput = content.tool_input ? JSON.stringify(content.tool_input, null, 2) : '';
+        const toolOutput = content.output ? (typeof content.output === 'string' ? content.output : JSON.stringify(content.output, null, 2)) : '';
+        
+        contentHtml = `
+          <div class="mb-2">
+            <strong style="color: var(--numia-text-light); font-size: 0.85rem;">Input:</strong>
+            <div class="step-output"><pre>${escapeHtml(toolInput)}</pre></div>
+          </div>
+          ${toolOutput ? `
+          <div>
+            <strong style="color: var(--numia-text-light); font-size: 0.85rem;">Output:</strong>
+            <div class="step-output"><pre>${escapeHtml(toolOutput)}</pre></div>
+          </div>
+          ` : ''}
+        `;
+      }
+      
+      stepItem.innerHTML = `
+        <div class="step-header">
+          <div class="step-icon ${iconClass}">
+            <i class="bi ${iconSymbol}"></i>
+          </div>
+          <div class="step-title">${title}</div>
+          ${content.duration ? `<div class="step-duration">${content.duration}ms</div>` : ''}
+        </div>
+        <div class="step-content">
+          ${contentHtml}
+        </div>
+      `;
+      
+      stepsContainer.appendChild(stepItem);
+      
+      // Marcar como completado después de un breve delay
+      setTimeout(() => {
+        stepItem.classList.remove('processing');
+        stepItem.classList.add('completed');
+        const icon = stepItem.querySelector('.step-icon');
+        icon.className = 'step-icon completed';
+        icon.innerHTML = '<i class="bi bi-check-circle"></i>';
+      }, 500);
+    }
+    
+    function mostrarResumen(message) {
+      const messageText = typeof message === 'string' ? message : (message.message || JSON.stringify(message, null, 2));
+      summaryContent.textContent = messageText;
+      summarySection.style.display = 'block';
+      summarySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
