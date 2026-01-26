@@ -954,7 +954,63 @@
       function formatearOutputConversacional(output) {
         if (!output) return '';
         
-        let texto = typeof output === 'string' ? output : JSON.stringify(output, null, 2);
+        let texto = '';
+        
+        // Si es un string, usarlo directamente
+        if (typeof output === 'string') {
+          texto = output;
+        } 
+        // Si es un objeto, intentar extraer el texto relevante
+        else if (typeof output === 'object') {
+          // Buscar campos comunes que contengan texto conversacional
+          texto = output.text || 
+                  output.message || 
+                  output.response?.raw ||
+                  output.response ||
+                  output.output ||
+                  '';
+          
+          // Si aún no hay texto, intentar extraer de otros campos
+          if (!texto && output.response) {
+            texto = typeof output.response === 'string' ? output.response : JSON.stringify(output.response);
+          }
+          
+          // Si aún no hay texto, mostrar solo campos relevantes (no todo el JSON)
+          if (!texto) {
+            // Extraer solo campos útiles
+            const camposUtiles = {};
+            if (output.name) camposUtiles.nombre = output.name;
+            if (output.status) camposUtiles.estado = output.status;
+            if (output.result) camposUtiles.resultado = output.result;
+            if (output.message) camposUtiles.mensaje = output.message;
+            
+            // Si hay campos útiles, formatearlos
+            if (Object.keys(camposUtiles).length > 0) {
+              texto = Object.entries(camposUtiles)
+                .map(([key, value]) => `${key}: ${typeof value === 'string' ? value : JSON.stringify(value)}`)
+                .join('\n');
+            } else {
+              // Último recurso: mostrar como string pero formateado
+              texto = JSON.stringify(output, null, 2);
+            }
+          }
+        } else {
+          texto = String(output);
+        }
+        
+        // Si el texto parece ser JSON, intentar parsearlo y extraer texto
+        if (texto.trim().startsWith('{') || texto.trim().startsWith('[')) {
+          try {
+            const parsed = JSON.parse(texto);
+            // Si tiene campos text o message, usarlos
+            if (parsed.text) texto = parsed.text;
+            else if (parsed.message) texto = parsed.message;
+            else if (parsed.response?.raw) texto = parsed.response.raw;
+            else if (parsed.response) texto = typeof parsed.response === 'string' ? parsed.response : JSON.stringify(parsed.response);
+          } catch (e) {
+            // Si no se puede parsear, usar el texto tal cual
+          }
+        }
         
         // Formatear como conversación - dividir por líneas y formatear
         const lineas = texto.split('\n');
@@ -962,18 +1018,30 @@
         
         lineas.forEach(linea => {
           linea = linea.trim();
-          if (!linea) return;
+          if (!linea) {
+            html += '<div style="height: 0.5rem;"></div>'; // Espacio entre párrafos
+            return;
+          }
           
           // Detectar diferentes tipos de información
           if (linea.startsWith('✅') || linea.startsWith('✓')) {
             html += `<div class="conversation-line success"><i class="bi bi-check-circle-fill me-2"></i>${escapeHtml(linea.replace(/^[✅✓]\s*/, ''))}</div>`;
           } else if (linea.startsWith('❌') || linea.startsWith('✗')) {
             html += `<div class="conversation-line error"><i class="bi bi-x-circle-fill me-2"></i>${escapeHtml(linea.replace(/^[❌✗]\s*/, ''))}</div>`;
-          } else if (linea.includes(':')) {
+          } else if (linea.match(/^\*\*.*\*\*:/)) {
+            // Títulos con markdown **texto:**
+            const titulo = linea.replace(/\*\*/g, '').replace(':', '');
+            html += `<div class="conversation-line title"><strong>${escapeHtml(titulo)}</strong></div>`;
+          } else if (linea.includes(':') && !linea.startsWith('{') && !linea.startsWith('[')) {
             const [key, ...valueParts] = linea.split(':');
             const value = valueParts.join(':').trim();
-            html += `<div class="conversation-line info"><strong>${escapeHtml(key.trim())}:</strong> <span>${escapeHtml(value)}</span></div>`;
-          } else if (linea.match(/^[A-Z][^:]*$/)) {
+            // Solo formatear como info si no parece ser JSON
+            if (!value.startsWith('{') && !value.startsWith('[')) {
+              html += `<div class="conversation-line info"><strong>${escapeHtml(key.trim())}:</strong> <span>${escapeHtml(value)}</span></div>`;
+            } else {
+              html += `<div class="conversation-line">${escapeHtml(linea)}</div>`;
+            }
+          } else if (linea.match(/^[A-Z][^:]*$/) && linea.length < 100) {
             html += `<div class="conversation-line title">${escapeHtml(linea)}</div>`;
           } else {
             html += `<div class="conversation-line">${escapeHtml(linea)}</div>`;
@@ -1009,10 +1077,37 @@
             .trim()
             .replace(/\b\w/g, l => l.toUpperCase());
           
-          // Obtener el output
-          const toolOutput = content.output || 
-                            content.tool_use?.output || 
-                            '';
+          // Obtener el output - buscar en diferentes ubicaciones
+          let toolOutput = content.output || 
+                          content.tool_use?.output || 
+                          content.result?.output ||
+                          content.result ||
+                          '';
+          
+          // Si el output es un objeto, intentar extraer el texto conversacional
+          if (toolOutput && typeof toolOutput === 'object') {
+            // Priorizar campos que contengan texto conversacional
+            toolOutput = toolOutput.text || 
+                        toolOutput.message || 
+                        toolOutput.response?.raw ||
+                        toolOutput.response ||
+                        (typeof toolOutput.output === 'string' ? toolOutput.output : '') ||
+                        '';
+            
+            // Si aún es un objeto, convertirlo a string solo si es necesario
+            if (toolOutput && typeof toolOutput === 'object') {
+              // Intentar extraer solo campos útiles, no todo el JSON
+              const camposUtiles = [];
+              if (toolOutput.name) camposUtiles.push(`Nombre: ${toolOutput.name}`);
+              if (toolOutput.status) camposUtiles.push(`Estado: ${toolOutput.status}`);
+              if (toolOutput.result) camposUtiles.push(`Resultado: ${typeof toolOutput.result === 'string' ? toolOutput.result : JSON.stringify(toolOutput.result)}`);
+              
+              toolOutput = camposUtiles.length > 0 ? camposUtiles.join('\n') : '';
+            }
+          }
+          
+          console.log(`Output para paso ${index} (${friendlyName}):`, toolOutput);
+          console.log(`Tipo de output:`, typeof toolOutput);
           
           // Formatear el output de manera conversacional
           let outputHtml = '';
