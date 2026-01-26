@@ -1043,7 +1043,7 @@
           stepItem.style.transition = 'opacity 0.5s ease-in';
           stepItem.style.minHeight = '50px';
           
-          // Obtener el nombre de la herramienta
+          // Obtener solo el nombre de la herramienta
           const toolName = content.name || 
                           content.tool_name || 
                           content.tool_use?.name || 
@@ -1059,8 +1059,6 @@
           // Obtener el output - buscar en diferentes ubicaciones
           let toolOutput = content.output || 
                           content.tool_use?.output || 
-                          content.result?.output ||
-                          content.result ||
                           '';
           
           // Si el output es un objeto, intentar extraer el texto conversacional
@@ -1070,34 +1068,38 @@
                         toolOutput.message || 
                         toolOutput.response?.raw ||
                         toolOutput.response ||
-                        (typeof toolOutput.output === 'string' ? toolOutput.output : '') ||
                         '';
             
-            // Si aún es un objeto, convertirlo a string solo si es necesario
+            // Si aún es un objeto y no tiene campos de texto, intentar extraer información útil
             if (toolOutput && typeof toolOutput === 'object') {
-              // Intentar extraer solo campos útiles, no todo el JSON
-              const camposUtiles = [];
-              if (toolOutput.name) camposUtiles.push(`Nombre: ${toolOutput.name}`);
-              if (toolOutput.status) camposUtiles.push(`Estado: ${toolOutput.status}`);
-              if (toolOutput.result) camposUtiles.push(`Resultado: ${typeof toolOutput.result === 'string' ? toolOutput.result : JSON.stringify(toolOutput.result)}`);
-              
-              toolOutput = camposUtiles.length > 0 ? camposUtiles.join('\n') : '';
+              // Para algunos outputs, puede ser un string dentro de un objeto
+              if (toolOutput.value) {
+                toolOutput = typeof toolOutput.value === 'string' ? toolOutput.value : JSON.stringify(toolOutput.value);
+              } else {
+                // Intentar extraer solo campos útiles
+                const camposUtiles = [];
+                if (toolOutput.ok !== undefined) camposUtiles.push(`Estado: ${toolOutput.ok ? 'OK' : 'Error'}`);
+                if (toolOutput.score) camposUtiles.push(`Score: ${toolOutput.score}`);
+                if (toolOutput.dni) camposUtiles.push(`DNI: ${toolOutput.dni}`);
+                
+                toolOutput = camposUtiles.length > 0 ? camposUtiles.join('\n') : '';
+              }
             }
           }
           
-          console.log(`Output para paso ${index} (${friendlyName}):`, toolOutput);
-          console.log(`Tipo de output:`, typeof toolOutput);
+          console.log(`Paso ${index}: ${friendlyName}`, `Output:`, toolOutput);
           
           // Formatear el output de manera conversacional
           let outputHtml = '';
-          if (toolOutput) {
+          if (toolOutput && typeof toolOutput === 'string' && toolOutput.trim()) {
             outputHtml = `
               <div class="step-output-content">
                 ${formatearOutputConversacional(toolOutput)}
               </div>
             `;
           } else {
-            outputHtml = '<div class="step-output-content"><em style="color: var(--numia-text-light);">Procesando...</em></div>';
+            // Si no hay output o es muy complejo, mostrar solo el nombre de la herramienta ejecutada
+            outputHtml = '<div class="step-output-content"><em style="color: var(--numia-text-light);">Herramienta ejecutada correctamente</em></div>';
           }
           
           stepItem.innerHTML = `
