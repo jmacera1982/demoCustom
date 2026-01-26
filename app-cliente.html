@@ -379,6 +379,17 @@
       font-size: 0.85rem;
     }
     
+    .step-output-content {
+      background: #f8f9fa;
+      border: 1px solid var(--numia-border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--numia-text);
+    }
+    
     .summary-section {
       background: linear-gradient(135deg, #f0f7ff 0%, #e6f2ff 100%);
       border-left: 4px solid var(--numia-azul);
@@ -666,28 +677,10 @@
           const firstOutput = data.outputs[0];
           console.log('First output:', firstOutput);
           
-          // Buscar content_blocks en results.message
-          if (firstOutput.results?.message?.content_blocks) {
-            firstOutput.results.message.content_blocks.forEach(block => {
-              if (block.contents && Array.isArray(block.contents)) {
-                contents = contents.concat(block.contents);
-              }
-            });
-          }
-          
-          // Buscar content_blocks en outputs.message
-          if (contents.length === 0 && firstOutput.outputs?.message?.content_blocks) {
-            firstOutput.outputs.message.content_blocks.forEach(block => {
-              if (block.contents && Array.isArray(block.contents)) {
-                contents = contents.concat(block.contents);
-              }
-            });
-          }
-          
-          // Buscar en agent_steps si existe
-          if (contents.length === 0 && firstOutput.agent_steps) {
+          // Buscar en agent_steps si existe (prioridad alta)
+          if (firstOutput.agent_steps && Array.isArray(firstOutput.agent_steps)) {
             firstOutput.agent_steps.forEach((step, index) => {
-              if (step.tool_use) {
+              if (step.tool_use && step.tool_use.name) {
                 contents.push({
                   type: 'tool_use',
                   name: step.tool_use.name,
@@ -698,37 +691,106 @@
                   index: index
                 });
               }
-              if (step.text) {
-                contents.push({
-                  type: 'text',
-                  text: step.text,
-                  index: index
+            });
+          }
+          
+          // Buscar directamente en la estructura de outputs (puede ser un array de tool_use)
+          if (firstOutput.outputs) {
+            if (Array.isArray(firstOutput.outputs)) {
+              firstOutput.outputs.forEach((output, index) => {
+                // Si es un objeto con name y output (estructura tool_use)
+                if (output.name && (output.output !== undefined || output.tool_input !== undefined)) {
+                  // Evitar duplicados
+                  const exists = contents.some(c => c.name === output.name && c.index === index);
+                  if (!exists) {
+                    contents.push({
+                      type: 'tool_use',
+                      name: output.name,
+                      tool_name: output.name,
+                      tool_input: output.tool_input || output.input,
+                      input: output.tool_input || output.input,
+                      output: output.output,
+                      index: index
+                    });
+                  }
+                } else if (output.type === 'tool_use') {
+                  const exists = contents.some(c => c.name === output.name && c.index === index);
+                  if (!exists) {
+                    contents.push({
+                      type: 'tool_use',
+                      name: output.name,
+                      tool_name: output.name,
+                      tool_input: output.tool_input || output.input,
+                      input: output.tool_input || output.input,
+                      output: output.output,
+                      index: index
+                    });
+                  }
+                }
+              });
+            }
+          }
+          
+          // Buscar en results.outputs si existe
+          if (firstOutput.results?.outputs) {
+            if (Array.isArray(firstOutput.results.outputs)) {
+              firstOutput.results.outputs.forEach((output, index) => {
+                if (output.name && (output.output !== undefined || output.tool_input !== undefined)) {
+                  const exists = contents.some(c => c.name === output.name && c.index === index);
+                  if (!exists) {
+                    contents.push({
+                      type: 'tool_use',
+                      name: output.name,
+                      tool_name: output.name,
+                      tool_input: output.tool_input || output.input,
+                      input: output.tool_input || output.input,
+                      output: output.output,
+                      index: index
+                    });
+                  }
+                }
+              });
+            }
+          }
+          
+          // Buscar content_blocks en results.message (como respaldo)
+          if (contents.length === 0 && firstOutput.results?.message?.content_blocks) {
+            firstOutput.results.message.content_blocks.forEach(block => {
+              if (block.contents && Array.isArray(block.contents)) {
+                block.contents.forEach(content => {
+                  if (content.type === 'tool_use' || content.tool_use) {
+                    contents.push({
+                      type: 'tool_use',
+                      name: content.name || content.tool_use?.name,
+                      tool_name: content.name || content.tool_use?.name,
+                      tool_input: content.tool_input || content.tool_use?.input,
+                      input: content.tool_input || content.tool_use?.input,
+                      output: content.output || content.tool_use?.output
+                    });
+                  }
                 });
               }
             });
           }
           
-          // Buscar directamente en la estructura de outputs
-          if (contents.length === 0 && firstOutput.outputs) {
-            if (Array.isArray(firstOutput.outputs)) {
-              firstOutput.outputs.forEach((output, index) => {
-                if (output.type) {
-                  contents.push(output);
-                } else if (output.message) {
-                  contents.push({
-                    type: 'text',
-                    text: typeof output.message === 'string' ? output.message : JSON.stringify(output.message)
-                  });
-                }
-              });
-            } else if (firstOutput.outputs.message) {
-              contents.push({
-                type: 'text',
-                text: typeof firstOutput.outputs.message === 'string' 
-                  ? firstOutput.outputs.message 
-                  : JSON.stringify(firstOutput.outputs.message)
-              });
-            }
+          // Buscar content_blocks en outputs.message (como respaldo)
+          if (contents.length === 0 && firstOutput.outputs?.message?.content_blocks) {
+            firstOutput.outputs.message.content_blocks.forEach(block => {
+              if (block.contents && Array.isArray(block.contents)) {
+                block.contents.forEach(content => {
+                  if (content.type === 'tool_use' || content.tool_use) {
+                    contents.push({
+                      type: 'tool_use',
+                      name: content.name || content.tool_use?.name,
+                      tool_name: content.name || content.tool_use?.name,
+                      tool_input: content.tool_input || content.tool_use?.input,
+                      input: content.tool_input || content.tool_use?.input,
+                      output: content.output || content.tool_use?.output
+                    });
+                  }
+                });
+              }
+            });
           }
           
           // Si aún no hay contents, buscar en la estructura completa del output
@@ -762,26 +824,38 @@
         console.log('Contents encontrados:', contents.length);
         console.log('Message text:', messageText);
         
+        // Filtrar solo los pasos de tipo tool_use
+        const toolUseSteps = contents.filter(content => 
+          content.type === 'tool_use' || 
+          content.tool_name || 
+          content.name ||
+          (content.tool_use && content.tool_use.name)
+        );
+        
+        console.log('Pasos tool_use encontrados:', toolUseSteps.length);
+        
         // Mostrar los pasos encontrados
-        if (contents.length > 0) {
+        if (toolUseSteps.length > 0) {
           // Limpiar contenedor y asegurar visibilidad
           stepsContainer.innerHTML = '';
           stepsContainer.style.display = 'block';
           stepsContainer.style.visibility = 'visible';
           stepsContainer.style.opacity = '1';
           
-          console.log(`Agregando ${contents.length} pasos al DOM`);
+          console.log(`Agregando ${toolUseSteps.length} pasos tool_use al DOM`);
           
-          // Agregar los pasos inmediatamente (sin setTimeout para evitar problemas de timing)
-          contents.forEach((content, index) => {
-            agregarPaso(content, index);
+          // Agregar los pasos uno por uno con delay
+          toolUseSteps.forEach((content, index) => {
+            setTimeout(() => {
+              agregarPaso(content, index);
+            }, index * 800); // 800ms entre cada paso
           });
           
-          // Mostrar resumen después de los pasos
+          // Mostrar resumen después de todos los pasos
           if (messageText) {
             setTimeout(() => {
               mostrarResumen(messageText);
-            }, contents.length * 300 + 500);
+            }, toolUseSteps.length * 800 + 500);
           }
         } else {
           // Si no hay pasos, mostrar la respuesta completa o el mensaje
@@ -833,78 +907,61 @@
           stepItem.className = 'step-item processing';
           stepItem.style.display = 'block';
           stepItem.style.visibility = 'visible';
-          stepItem.style.opacity = '1';
+          stepItem.style.opacity = '0';
+          stepItem.style.transition = 'opacity 0.5s ease-in';
           stepItem.style.minHeight = '50px';
           
-          let iconClass = 'text';
-          let iconSymbol = 'bi-chat-dots';
-          let title = '';
+          // Obtener el nombre de la herramienta
+          const toolName = content.name || 
+                          content.tool_name || 
+                          content.tool_use?.name || 
+                          'Herramienta desconocida';
           
-          // Determinar tipo y título
-          if (content.type === 'text') {
-            iconClass = 'text';
-            iconSymbol = 'bi-chat-dots';
-            title = content.header?.title || 'Mensaje del asistente';
-          } else if (content.type === 'tool_use') {
-            iconClass = 'tool';
-            iconSymbol = 'bi-gear';
-            title = content.header?.title || `Ejecutado ${content.name || content.tool_name || 'herramienta'}`;
-          } else if (content.tool_name || content.name) {
-            // Para estructuras sin type pero con tool_name
-            iconClass = 'tool';
-            iconSymbol = 'bi-gear';
-            title = `Herramienta: ${content.tool_name || content.name}`;
-          } else {
-            iconClass = 'text';
-            iconSymbol = 'bi-info-circle';
-            title = `Paso ${index + 1}`;
-          }
+          // Formatear el nombre de manera amigable (ej: "consultaclientenumia" -> "Consultar Cliente Numia")
+          const friendlyName = toolName
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, str => str.toUpperCase())
+            .trim()
+            .replace(/\b\w/g, l => l.toUpperCase());
           
-          let contentHtml = '';
+          // Obtener el output
+          const toolOutput = content.output || 
+                            content.tool_use?.output || 
+                            '';
           
-          if (content.type === 'text' || content.text) {
-            const textContent = content.text || JSON.stringify(content, null, 2);
-            contentHtml = `<div class="step-input">${escapeHtml(textContent)}</div>`;
-          } else if (content.type === 'tool_use' || content.tool_name || content.name) {
-            const toolInput = content.tool_input || content.input || content.tool_use?.input;
-            const toolOutput = content.output || content.tool_use?.output;
+          // Formatear el output de manera amigable
+          let outputHtml = '';
+          if (toolOutput) {
+            // Si el output es un string, mostrarlo formateado
+            const outputText = typeof toolOutput === 'string' ? toolOutput : JSON.stringify(toolOutput, null, 2);
             
-            const inputStr = toolInput ? (typeof toolInput === 'string' ? toolInput : JSON.stringify(toolInput, null, 2)) : '';
-            const outputStr = toolOutput ? (typeof toolOutput === 'string' ? toolOutput : JSON.stringify(toolOutput, null, 2)) : '';
+            // Reemplazar emojis y símbolos para mejor visualización
+            const formattedOutput = outputText
+              .replace(/✅/g, '✓')
+              .replace(/❌/g, '✗')
+              .replace(/\n/g, '<br>');
             
-            contentHtml = `
-              ${inputStr ? `
-              <div class="mb-2">
-                <strong style="color: var(--numia-text-light); font-size: 0.85rem;">Input:</strong>
-                <div class="step-output"><pre style="margin: 0.5rem 0; white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(inputStr)}</pre></div>
+            outputHtml = `
+              <div class="step-output-content">
+                <div style="white-space: pre-wrap; word-wrap: break-word; line-height: 1.6; color: var(--numia-text);">
+                  ${escapeHtml(outputText).replace(/\n/g, '<br>')}
+                </div>
               </div>
-              ` : ''}
-              ${outputStr ? `
-              <div>
-                <strong style="color: var(--numia-text-light); font-size: 0.85rem;">Output:</strong>
-                <div class="step-output"><pre style="margin: 0.5rem 0; white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(outputStr)}</pre></div>
-              </div>
-              ` : ''}
-              ${!inputStr && !outputStr ? `<div class="step-output"><pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(JSON.stringify(content, null, 2))}</pre></div>` : ''}
             `;
-          } else {
-            // Contenido genérico
-            const genericContent = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
-            contentHtml = `<div class="step-output"><pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(genericContent)}</pre></div>`;
           }
           
           stepItem.innerHTML = `
             <div class="step-header">
-              <div class="step-icon ${iconClass}">
-                <i class="bi ${iconSymbol}"></i>
+              <div class="step-icon tool">
+                <i class="bi bi-gear"></i>
               </div>
               <div style="flex: 1;">
-                <div class="step-title">${escapeHtml(title)}</div>
-                ${content.duration ? `<div class="step-duration">${content.duration}ms</div>` : `<div class="step-duration">Paso ${index + 1}</div>`}
+                <div class="step-title">${escapeHtml(friendlyName)}</div>
+                <div class="step-duration">Paso ${index + 1}</div>
               </div>
             </div>
             <div class="step-content">
-              ${contentHtml}
+              ${outputHtml || '<div class="step-output-content"><em style="color: var(--numia-text-light);">Procesando...</em></div>'}
             </div>
           `;
           
@@ -915,10 +972,17 @@
             stepsContainer.style.opacity = '1';
             stepsContainer.appendChild(stepItem);
             
-            console.log(`Paso ${index} agregado al DOM`);
+            // Scroll suave al nuevo elemento
+            setTimeout(() => {
+              stepItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
             
-            // Forzar reflow para asegurar renderizado
-            stepItem.offsetHeight;
+            // Animar la aparición
+            setTimeout(() => {
+              stepItem.style.opacity = '1';
+            }, 50);
+            
+            console.log(`Paso ${index} agregado al DOM: ${friendlyName}`);
             
             // Marcar como completado después de un breve delay
             setTimeout(() => {
@@ -929,7 +993,7 @@
                 icon.className = 'step-icon completed';
                 icon.innerHTML = '<i class="bi bi-check-circle"></i>';
               }
-            }, 500);
+            }, 600);
           } else {
             console.error('stepsContainer no encontrado');
           }
