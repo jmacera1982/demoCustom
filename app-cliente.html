@@ -869,6 +869,15 @@
       </button>
     </div>
 
+    <!-- Sección de opciones de atención (se mostrará después del análisis) -->
+    <div id="opcionesAtencionSection" class="dni-input-section" style="display: none;">
+      <h3 style="font-size: 1.2rem; font-weight: 600; color: var(--numia-text); margin-bottom: 1rem; text-align: center;">Seleccione su preferencia</h3>
+      <div id="opcionesAtencionContainer" style="display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Los botones se agregarán aquí dinámicamente -->
+      </div>
+      <div id="resultadoAtencionApp" style="margin-top: 1rem; display: none;"></div>
+    </div>
+
       </div>
     </div>
   </div>
@@ -912,9 +921,12 @@
       const stepsContainer = document.getElementById('stepsContainer');
       const summarySection = document.getElementById('summarySection');
       const summaryContent = document.getElementById('summaryContent');
+      const opcionesAtencionSection = document.getElementById('opcionesAtencionSection');
+      const opcionesAtencionContainer = document.getElementById('opcionesAtencionContainer');
+      const resultadoAtencionApp = document.getElementById('resultadoAtencionApp');
 
       // Verificar que todos los elementos existan
-      if (!btnSolicitarAtencion || !atencionSection || !stepsContainer || !summarySection || !summaryContent) {
+      if (!btnSolicitarAtencion || !atencionSection || !stepsContainer || !summarySection || !summaryContent || !opcionesAtencionSection || !opcionesAtencionContainer || !resultadoAtencionApp) {
         console.error('Error: No se encontraron todos los elementos del DOM');
         return;
       }
@@ -1492,64 +1504,16 @@
           const tieneVideollamada = messageText.includes('**Tipo de atención sugerida**:') && 
                                    (messageText.toLowerCase().includes('videollamada') || messageText.toLowerCase().includes('video llamada'));
           
-          // Mostrar el resumen
+          // Mostrar el resumen en el log
           summaryContent.innerHTML = '';
-          
-          // Crear elemento para el texto del resumen
           const resumenTexto = document.createElement('div');
           resumenTexto.textContent = messageText;
           resumenTexto.style.marginBottom = '1rem';
           summaryContent.appendChild(resumenTexto);
-          
-          // Si detecta Videollamada, mostrar botones
-          if (tieneVideollamada) {
-            const botonesContainer = document.createElement('div');
-            botonesContainer.style.marginTop = '1.5rem';
-            botonesContainer.style.display = 'flex';
-            botonesContainer.style.gap = '1rem';
-            botonesContainer.style.flexWrap = 'wrap';
-            
-            // Botón Videollamada
-            const btnVideollamada = document.createElement('button');
-            btnVideollamada.className = 'btn';
-            btnVideollamada.style.cssText = 'background-color: #00ff00; color: #000; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; flex: 1; min-width: 150px; cursor: pointer; font-family: "Courier New", monospace;';
-            btnVideollamada.innerHTML = '<i class="bi bi-camera-video me-2"></i>Videollamada <small style="display: block; font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem;">Menos espera</small>';
-            
-            // Botón Presencial
-            const btnPresencial = document.createElement('button');
-            btnPresencial.className = 'btn';
-            btnPresencial.style.cssText = 'background-color: #555; color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; flex: 1; min-width: 150px; cursor: pointer; font-family: "Courier New", monospace;';
-            btnPresencial.innerHTML = '<i class="bi bi-geo-alt me-2"></i>Presencial';
-            
-            // Hover effects
-            btnVideollamada.onmouseenter = () => { btnVideollamada.style.opacity = '0.9'; };
-            btnVideollamada.onmouseleave = () => { btnVideollamada.style.opacity = '1'; };
-            btnPresencial.onmouseenter = () => { btnPresencial.style.opacity = '0.9'; };
-            btnPresencial.onmouseleave = () => { btnPresencial.style.opacity = '1'; };
-            
-            // Contenedor para mostrar resultados
-            const resultadoContainer = document.createElement('div');
-            resultadoContainer.id = 'resultadoAtencion';
-            resultadoContainer.style.marginTop = '1rem';
-            resultadoContainer.style.display = 'none';
-            
-            // Event listener para Videollamada
-            btnVideollamada.addEventListener('click', async () => {
-              await solicitarAtencion('videollamada', btnVideollamada, btnPresencial, resultadoContainer);
-            });
-            
-            // Event listener para Presencial
-            btnPresencial.addEventListener('click', async () => {
-              await solicitarAtencion('presencial', btnVideollamada, btnPresencial, resultadoContainer);
-            });
-            
-            botonesContainer.appendChild(btnVideollamada);
-            botonesContainer.appendChild(btnPresencial);
-            summaryContent.appendChild(botonesContainer);
-            summaryContent.appendChild(resultadoContainer);
-          }
-          
           summarySection.style.display = 'block';
+          
+          // Mostrar botones en la APP MÓVIL (no en el log)
+          mostrarOpcionesEnApp(tieneVideollamada);
           
           // Scroll automático al final del log
           setTimeout(() => {
@@ -1560,6 +1524,115 @@
           }, 100);
         } catch (err) {
           console.error('Error al mostrar resumen:', err);
+        }
+      }
+      
+      function mostrarOpcionesEnApp(tieneVideollamada) {
+        // Limpiar contenedor
+        opcionesAtencionContainer.innerHTML = '';
+        resultadoAtencionApp.style.display = 'none';
+        resultadoAtencionApp.innerHTML = '';
+        
+        // Botón Videollamada (solo si está recomendada)
+        if (tieneVideollamada) {
+          const btnVideollamada = document.createElement('button');
+          btnVideollamada.className = 'btn w-100';
+          btnVideollamada.style.cssText = 'background-color: var(--numia-success); color: white; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;';
+          btnVideollamada.innerHTML = '<i class="bi bi-camera-video"></i>Videollamada <span style="font-size: 0.85rem; opacity: 0.9;">(Menos espera)</span>';
+          btnVideollamada.addEventListener('click', async () => {
+            await solicitarAtencionApp('videollamada', btnVideollamada);
+          });
+          opcionesAtencionContainer.appendChild(btnVideollamada);
+        }
+        
+        // Botón Presencial (siempre disponible)
+        const btnPresencial = document.createElement('button');
+        btnPresencial.className = 'btn w-100';
+        btnPresencial.style.cssText = 'background-color: var(--numia-azul); color: white; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem;';
+        btnPresencial.innerHTML = '<i class="bi bi-geo-alt"></i>Presencial';
+        btnPresencial.addEventListener('click', async () => {
+          await solicitarAtencionApp('presencial', btnPresencial);
+        });
+        opcionesAtencionContainer.appendChild(btnPresencial);
+        
+        // Mostrar la sección
+        opcionesAtencionSection.style.display = 'block';
+        
+        // Scroll a la sección
+        setTimeout(() => {
+          opcionesAtencionSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      }
+      
+      async function solicitarAtencionApp(tipo, btn) {
+        try {
+          btn.disabled = true;
+          btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
+          
+          resultadoAtencionApp.style.display = 'block';
+          resultadoAtencionApp.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-2"></i>Procesando solicitud...</div>';
+          
+          const queueId = tipo === 'videollamada' ? '16223' : '16221';
+          const apiUrl = `https://filavirtual2.debmedia.com/api/v1/queue/${queueId}/branch/10750/enqueue`;
+          const apiToken = 'XlOIHNe0yDnF6htBZWhdv3uFHxQKanqdVNQZC17w';
+          
+          const datos = {
+            firstName: 'Jorge',
+            lastName: 'Macera',
+            dni: '29328703',
+            email: 'mail@mail.com',
+            phone: '12345678'
+          };
+          
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-token': apiToken
+            },
+            body: JSON.stringify(datos)
+          });
+          
+          if (!response.ok) {
+            throw new Error(`Error en servidor (${response.status})`);
+          }
+          
+          const data = await response.json();
+          console.log('Respuesta de la API:', data);
+          
+          // Mostrar resultados
+          let resultadoHtml = '<div class="alert alert-success mt-3">';
+          
+          if (data.averageWaitingTime !== undefined) {
+            const minutos = Math.floor(data.averageWaitingTime / 60);
+            const segundos = data.averageWaitingTime % 60;
+            resultadoHtml += `<p class="mb-2"><strong>Tiempo de espera estimado:</strong> ${minutos} min ${segundos} seg</p>`;
+          }
+          
+          if (tipo === 'videollamada' && data.videoCallUrl) {
+            const videoUrl = data.videoCallUrl + (data.videoCallUrl.includes('?') ? '&' : '?') + 'videocallUser=mobile';
+            resultadoHtml += `
+              <a href="${videoUrl}" target="_blank" class="btn btn-success w-100 mt-2">
+                <i class="bi bi-camera-video me-2"></i>Iniciar Videollamada
+              </a>
+            `;
+          } else if (tipo === 'presencial') {
+            resultadoHtml += '<p class="mb-0"><i class="bi bi-check-circle me-2"></i>Turno presencial solicitado correctamente</p>';
+          }
+          
+          resultadoHtml += '</div>';
+          resultadoAtencionApp.innerHTML = resultadoHtml;
+          
+        } catch (err) {
+          console.error('Error al solicitar atención:', err);
+          resultadoAtencionApp.innerHTML = `<div class="alert alert-danger mt-3"><i class="bi bi-exclamation-triangle me-2"></i>Error: ${err.message}</div>`;
+        } finally {
+          btn.disabled = false;
+          if (tipo === 'videollamada') {
+            btn.innerHTML = '<i class="bi bi-camera-video"></i>Videollamada <span style="font-size: 0.85rem; opacity: 0.9;">(Menos espera)</span>';
+          } else {
+            btn.innerHTML = '<i class="bi bi-geo-alt"></i>Presencial';
+          }
         }
       }
       
