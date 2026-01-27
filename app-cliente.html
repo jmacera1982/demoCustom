@@ -64,6 +64,17 @@
       flex-shrink: 0;
     }
     
+    .mobile-app-header button:hover {
+      background-color: rgba(255, 255, 255, 0.3) !important;
+      border-color: rgba(255, 255, 255, 0.5) !important;
+      transform: translateY(-1px);
+    }
+    
+    .mobile-app-header button:active {
+      transform: translateY(0);
+      background-color: rgba(255, 255, 255, 0.25) !important;
+    }
+    
     .mobile-app-content {
       background: #f5f5f5;
       padding: 1rem;
@@ -110,11 +121,11 @@
     .log-header {
       background: #2d2d2d;
       padding: 1rem 1.5rem;
-      color: #00ff00;
+      color: #ffffff;
       font-family: 'Courier New', monospace;
       font-size: 0.9rem;
       font-weight: 600;
-      border-bottom: 2px solid #00ff00;
+      border-bottom: 2px solid #ffffff;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -123,7 +134,7 @@
     
     .log-header::before {
       content: '▶';
-      color: #00ff00;
+      color: #ffffff;
       animation: blink 1s infinite;
     }
     
@@ -184,7 +195,7 @@
     }
     
     .atencion-section .section-title {
-      color: #00ff00;
+      color: #ffffff;
       font-family: 'Courier New', monospace;
       font-size: 1rem;
       margin-bottom: 1rem;
@@ -198,7 +209,7 @@
     
     .step-item {
       background: #2d2d2d;
-      border-left: 3px solid #00ff00;
+      border-left: 3px solid #ffffff;
       border-radius: 4px;
       padding: 0.75rem;
       margin-bottom: 0.75rem;
@@ -207,8 +218,8 @@
     }
     
     .step-item.completed {
-      border-left-color: #00ff00;
-      background: #1e3a1e;
+      border-left-color: #ffffff;
+      background: #2d2d2d;
     }
     
     .step-item.processing {
@@ -217,7 +228,7 @@
     }
     
     .step-title {
-      color: #00ff00;
+      color: #ffffff;
       font-weight: 600;
       margin-bottom: 0.25rem;
     }
@@ -243,9 +254,9 @@
     }
     
     .conversation-line.success {
-      background: #1e3a1e;
-      border-left-color: #00ff00;
-      color: #90ee90;
+      background: #2d2d2d;
+      border-left-color: #ffffff;
+      color: #ffffff;
     }
     
     .conversation-line.error {
@@ -261,7 +272,7 @@
     
     .summary-section {
       background: #2d2d2d;
-      border-left: 3px solid #00ff00;
+      border-left: 3px solid #ffffff;
       border-radius: 4px;
       padding: 1rem;
       margin-top: 1rem;
@@ -269,7 +280,7 @@
     }
     
     .summary-title {
-      color: #00ff00;
+      color: #ffffff;
       font-family: 'Courier New', monospace;
     }
     
@@ -772,6 +783,9 @@
     <div class="welcome-section">
       <h1>¡Hola, Juan Pérez!</h1>
       <p>Bienvenido a tu banca en línea</p>
+      <button id="btnSolicitarAtencion" class="btn" style="background-color: rgba(255, 255, 255, 0.2); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); padding: 0.75rem 1.5rem; border-radius: 10px; font-size: 0.95rem; font-weight: 600; margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s; width: auto;">
+        <i class="bi bi-geo-alt"></i><span>Estoy en la sucursal</span>
+      </button>
     </div>
 
     <!-- Balance Card -->
@@ -862,12 +876,12 @@
       </div>
     </div>
 
-    <!-- Botón para solicitar atención -->
-    <div class="dni-input-section">
+    <!-- Botón para solicitar atención (movido al header) -->
+    <!-- <div class="dni-input-section">
       <button id="btnSolicitarAtencion" class="btn w-100" style="background-color: var(--numia-azul); color: #ffffff; border-color: var(--numia-azul); padding: 0.75rem 1.5rem;">
         <i class="bi bi-geo-alt me-1"></i>Estoy en la sucursal
       </button>
-    </div>
+    </div> -->
 
     <!-- Sección de opciones de atención (se mostrará después del análisis) -->
     <div id="opcionesAtencionSection" class="dni-input-section" style="display: none;">
@@ -955,11 +969,7 @@
         e.preventDefault();
         e.stopPropagation();
         
-        // Ocultar el botón y mostrar el menú de opciones
-        const dniInputSection = btnSolicitarAtencion.closest('.dni-input-section');
-        if (dniInputSection) {
-          dniInputSection.style.display = 'none';
-        }
+        // Mostrar el menú de opciones (el botón ya está en el header)
         menuOpcionesPresencial.style.display = 'block';
         
         // Scroll al menú
@@ -1590,11 +1600,7 @@
       }
       
       function mostrarOpcionesEnApp(tieneVideollamada) {
-        // Ocultar el botón "Solicitar Atención"
-        const dniInputSection = btnSolicitarAtencion.closest('.dni-input-section');
-        if (dniInputSection) {
-          dniInputSection.style.display = 'none';
-        }
+        // El botón ya está en el header, no necesitamos ocultarlo
         
         // Limpiar contenedor
         opcionesAtencionContainer.innerHTML = '';
@@ -1605,8 +1611,8 @@
         const btnVideollamada = document.createElement('button');
         btnVideollamada.className = 'btn w-100';
         if (tieneVideollamada) {
-          btnVideollamada.style.cssText = 'background-color: var(--numia-success); color: white; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;';
-          btnVideollamada.innerHTML = '<i class="bi bi-camera-video"></i>Videollamada <span style="font-size: 0.85rem; opacity: 0.9;">(Menos espera)</span>';
+          btnVideollamada.style.cssText = 'background-color: var(--numia-success); color: white; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; margin-bottom: 0.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.25rem;';
+          btnVideollamada.innerHTML = '<div style="display: flex; align-items: center; gap: 0.5rem;"><i class="bi bi-camera-video"></i><span>Videollamada</span></div><span style="font-size: 0.75rem; opacity: 0.95; font-weight: 500;">✓ Opción recomendada - Menos espera</span>';
         } else {
           btnVideollamada.style.cssText = 'background-color: var(--numia-success); color: white; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; opacity: 0.8;';
           btnVideollamada.innerHTML = '<i class="bi bi-camera-video"></i>Videollamada';
@@ -1616,11 +1622,11 @@
         });
         opcionesAtencionContainer.appendChild(btnVideollamada);
         
-        // Botón Presencial (siempre disponible)
+        // Botón Presencial (siempre disponible, más chico y con aclaración de demora)
         const btnPresencial = document.createElement('button');
-        btnPresencial.className = 'btn w-100';
-        btnPresencial.style.cssText = 'background-color: var(--numia-azul); color: white; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem;';
-        btnPresencial.innerHTML = '<i class="bi bi-geo-alt"></i>Estoy en la sucursal';
+        btnPresencial.className = 'btn';
+        btnPresencial.style.cssText = 'background-color: var(--numia-azul); color: white; border: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.25rem; width: auto; margin: 0 auto; font-size: 0.9rem;';
+        btnPresencial.innerHTML = '<div style="display: flex; align-items: center; gap: 0.5rem;"><i class="bi bi-geo-alt"></i><span>Continuar presencial</span></div><span style="font-size: 0.7rem; opacity: 0.9; font-weight: 500;">Opción con más demora</span>';
         btnPresencial.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -1880,7 +1886,13 @@
         } finally {
           btn.disabled = false;
           if (tipo === 'videollamada') {
-            btn.innerHTML = '<i class="bi bi-camera-video"></i>Videollamada <span style="font-size: 0.85rem; opacity: 0.9;">(Menos espera)</span>';
+            // Verificar si tiene la clase o estilo que indica que es recomendada
+            const esRecomendada = btn.innerHTML.includes('recomendada') || btn.style.flexDirection === 'column';
+            if (esRecomendada) {
+              btn.innerHTML = '<div style="display: flex; align-items: center; gap: 0.5rem;"><i class="bi bi-camera-video"></i><span>Videollamada</span></div><span style="font-size: 0.75rem; opacity: 0.95; font-weight: 500;">✓ Opción recomendada - Menos espera</span>';
+            } else {
+              btn.innerHTML = '<i class="bi bi-camera-video"></i>Videollamada';
+            }
           } else {
             btn.innerHTML = '<i class="bi bi-geo-alt"></i>Presencial';
           }
@@ -1897,7 +1909,7 @@
           
           // Mostrar loading
           resultadoContainer.style.display = 'block';
-          resultadoContainer.innerHTML = '<div style="color: #00ff00;"><i class="bi bi-hourglass-split me-2"></i>Procesando solicitud...</div>';
+          resultadoContainer.innerHTML = '<div style="color: #ffffff;"><i class="bi bi-hourglass-split me-2"></i>Procesando solicitud...</div>';
           
           // Determinar la URL según el tipo
           const queueId = tipo === 'videollamada' ? '16223' : '16221';
@@ -1931,13 +1943,13 @@
           console.log('Respuesta de la API:', data);
           
           // Mostrar resultados
-          let resultadoHtml = '<div style="margin-top: 1rem; padding: 1rem; background: #1e3a1e; border-radius: 4px; border-left: 3px solid #00ff00;">';
+          let resultadoHtml = '<div style="margin-top: 1rem; padding: 1rem; background: #2d2d2d; border-radius: 4px; border-left: 3px solid #ffffff;">';
           
           // Mostrar tiempo de espera
           if (data.averageWaitingTime !== undefined) {
             const minutos = Math.floor(data.averageWaitingTime / 60);
             const segundos = data.averageWaitingTime % 60;
-            resultadoHtml += `<div style="color: #90ee90; margin-bottom: 0.5rem;"><strong>Tiempo de espera estimado:</strong> ${minutos} min ${segundos} seg</div>`;
+            resultadoHtml += `<div style="color: #ffffff; margin-bottom: 0.5rem;"><strong>Tiempo de espera estimado:</strong> ${minutos} min ${segundos} seg</div>`;
           }
           
           // Si es videollamada, mostrar el enlace
@@ -1951,7 +1963,7 @@
               </div>
             `;
           } else if (tipo === 'presencial') {
-            resultadoHtml += `<div style="color: #90ee90; margin-top: 0.5rem;"><i class="bi bi-check-circle me-2"></i>Turno presencial solicitado correctamente</div>`;
+            resultadoHtml += `<div style="color: #ffffff; margin-top: 0.5rem;"><i class="bi bi-check-circle me-2"></i>Turno presencial solicitado correctamente</div>`;
           }
           
           resultadoHtml += '</div>';
