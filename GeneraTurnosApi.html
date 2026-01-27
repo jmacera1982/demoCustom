@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Test API - Generación de Turnos</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0033A0;
+      --success: #28A745;
+      --danger: #DC3545;
+      --warning: #FFC107;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+    
+    .container {
+      max-width: 1200px;
+    }
+    
+    .card {
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-header {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      padding: 1rem 1.5rem;
+      border-radius: 12px 12px 0 0;
+    }
+    
+    .result-item {
+      padding: 1rem;
+      border-bottom: 1px solid #e0e0e0;
+      transition: background 0.2s;
+    }
+    
+    .result-item:hover {
+      background: #f8f9fa;
+    }
+    
+    .result-item:last-child {
+      border-bottom: none;
+    }
+    
+    .status-success {
+      color: var(--success);
+      font-weight: 600;
+    }
+    
+    .status-error {
+      color: var(--danger);
+      font-weight: 600;
+    }
+    
+    .badge {
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      border: none;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+    }
+    
+    .btn-primary:hover {
+      background: #00267A;
+    }
+    
+    .btn-primary:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .spinner-border-sm {
+      width: 1rem;
+      height: 1rem;
+      border-width: 0.15em;
+    }
+    
+    .summary {
+      background: #E3F2FD;
+      border-left: 4px solid var(--primary);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-gear me-2"></i>Generador de Turnos - Test API
+      </div>
+      <div class="card-body p-4">
+        <div class="summary">
+          <strong>Instrucciones:</strong> Ingresa el número de turnos que deseas generar. Selecciona la(s) branch(es) donde generar los turnos. El sistema usará los datos predefinidos de forma cíclica.
+        </div>
+        
+        <div class="row mb-3">
+          <div class="col-12">
+            <label class="form-label fw-bold">Seleccionar Branch(es):</label>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="branch10750" value="10750" checked>
+              <label class="form-check-label" for="branch10750">
+                Branch 10750
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="branch10790" value="10790">
+              <label class="form-check-label" for="branch10790">
+                Branch 10790
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Número de turnos a generar:</label>
+            <input type="number" class="form-control" id="numTurnos" min="1" max="100" value="1" required>
+            <small class="text-muted">Máximo 100 turnos por ejecución</small>
+          </div>
+          <div class="col-md-6 d-flex align-items-end">
+            <button id="btnGenerar" class="btn btn-primary w-100">
+              <i class="bi bi-play-circle me-2"></i>Generar Turnos
+            </button>
+          </div>
+        </div>
+        
+        <div id="summaryResults" class="alert alert-info d-none">
+          <strong>Resumen:</strong>
+          <div id="summaryContent"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-list-ul me-2"></i>Resultados</span>
+        <button id="btnLimpiar" class="btn btn-sm btn-outline-light">
+          <i class="bi bi-trash me-1"></i>Limpiar
+        </button>
+      </div>
+      <div class="card-body p-0">
+        <div id="resultsContainer">
+          <div class="result-item text-center text-muted p-4">
+            No hay resultados aún. Presiona "Generar Turnos" para comenzar.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const FV_TOKEN = 'XlOIHNe0yDnF6htBZWhdv3uFHxQKanqdVNQZC17w';
+    const FV_QUEUES = [16222, 16221]; // Alternar entre estos dos queueId
+    const FV_BASE = 'https://filavirtual2.debmedia.com/api/v1';
+    
+    // Datos predefinidos
+    const datosPersonas = [
+      { dni: '29328703', firstName: 'Jorge', lastName: 'Macera', email: 'jorge.macera@mail.com', phone: '12345678' },
+      { dni: '29205608', firstName: 'Jacqueline', lastName: 'Gomez', email: 'jacqueline.gomez@mail.com', phone: '23456789' },
+      { dni: '29328704', firstName: 'Ignacio', lastName: 'Martinez', email: 'ignacio.martinez@mail.com', phone: '34567890' },
+      { dni: '29205609', firstName: 'juan', lastName: 'gomez', email: 'juan.gomez@mail.com', phone: '45678901' },
+      { dni: '29205611', firstName: 'Mateo', lastName: 'Suarez', email: 'msuarez@mail.com', phone: '45678901' },
+      { dni: '12345678', firstName: 'Juan', lastName: 'Perez', email: 'jperez@mail.com', phone: '23456789' },
+        { dni: '29205610', firstName: 'Perez', lastName: 'Ivan', email: 'iperez@mail.com', phone: '45678901' }
+    ];
+    
+    const btnGenerar = document.getElementById('btnGenerar');
+    const btnLimpiar = document.getElementById('btnLimpiar');
+    const numTurnosInput = document.getElementById('numTurnos');
+    const branch10750Check = document.getElementById('branch10750');
+    const branch10790Check = document.getElementById('branch10790');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const summaryResults = document.getElementById('summaryResults');
+    const summaryContent = document.getElementById('summaryContent');
+    
+    let resultados = [];
+    
+    btnGenerar.addEventListener('click', async () => {
+      const numTurnos = parseInt(numTurnosInput.value);
+      
+      if (!numTurnos || numTurnos < 1 || numTurnos > 100) {
+        alert('Por favor, ingresa un número válido entre 1 y 100');
+        return;
+      }
+      
+      // Obtener branches seleccionadas
+      const selectedBranches = [];
+      if (branch10750Check.checked) selectedBranches.push(10750);
+      if (branch10790Check.checked) selectedBranches.push(10790);
+      
+      if (selectedBranches.length === 0) {
+        alert('Por favor, selecciona al menos una branch');
+        return;
+      }
+      
+      btnGenerar.disabled = true;
+      btnGenerar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generando...';
+      
+      resultados = [];
+      resultsContainer.innerHTML = '';
+      summaryResults.classList.add('d-none');
+      
+      // Generar turnos
+      let turnoCounter = 0;
+      for (let i = 0; i < numTurnos; i++) {
+        const personaIndex = i % datosPersonas.length;
+        const persona = datosPersonas[personaIndex];
+        const queueIndex = i % FV_QUEUES.length; // Alternar entre los queueId
+        const queueId = FV_QUEUES[queueIndex];
+        
+        // Si hay múltiples branches, alternar entre ellas
+        const branchIndex = selectedBranches.length > 1 ? (i % selectedBranches.length) : 0;
+        const branchId = selectedBranches[branchIndex];
+        
+        try {
+          const url = `${FV_BASE}/queue/${queueId}/branch/${branchId}/enqueue`;
+          
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'x-api-token': FV_TOKEN,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              firstName: persona.firstName,
+              lastName: persona.lastName,
+              dni: persona.dni,
+              email: persona.email,
+              phone: persona.phone
+            })
+          });
+          
+          const data = await response.json().catch(() => ({}));
+          
+          const resultado = {
+            numero: turnoCounter + 1,
+            persona: persona,
+            queueId: queueId,
+            branchId: branchId,
+            success: response.ok,
+            status: response.status,
+            data: data,
+            turnCode: data.code || 'N/A',
+            error: response.ok ? null : (data.message || `Error ${response.status}`)
+          };
+          
+          turnoCounter++;
+          
+          resultados.push(resultado);
+          agregarResultado(resultado);
+          
+          // Pequeña pausa para no sobrecargar el servidor
+          if (i < numTurnos - 1) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+          }
+        } catch (error) {
+          const queueIndex = i % FV_QUEUES.length;
+          const queueId = FV_QUEUES[queueIndex];
+          const branchIndex = selectedBranches.length > 1 ? (i % selectedBranches.length) : 0;
+          const branchId = selectedBranches[branchIndex];
+          const resultado = {
+            numero: turnoCounter + 1,
+            persona: persona,
+            queueId: queueId,
+            branchId: branchId,
+            success: false,
+            status: 0,
+            data: null,
+            turnCode: 'N/A',
+            error: error.message
+          };
+          
+          turnoCounter++;
+          
+          resultados.push(resultado);
+          agregarResultado(resultado);
+        }
+      }
+      
+      mostrarResumen();
+      
+      btnGenerar.disabled = false;
+      btnGenerar.innerHTML = '<i class="bi bi-play-circle me-2"></i>Generar Turnos';
+    });
+    
+    function agregarResultado(resultado) {
+      const resultItem = document.createElement('div');
+      resultItem.className = 'result-item';
+      
+      const statusClass = resultado.success ? 'status-success' : 'status-error';
+      const statusIcon = resultado.success ? 'bi-check-circle' : 'bi-x-circle';
+      const statusText = resultado.success ? 'Éxito' : 'Error';
+      
+      resultItem.innerHTML = `
+        <div class="d-flex justify-content-between align-items-start">
+          <div class="flex-grow-1">
+            <div class="d-flex align-items-center mb-2">
+              <span class="badge bg-secondary me-2">#${resultado.numero}</span>
+              <span class="badge bg-info me-2">Queue: ${resultado.queueId}</span>
+              <span class="badge bg-warning text-dark me-2">Branch: ${resultado.branchId}</span>
+              <span class="${statusClass}">
+                <i class="bi ${statusIcon} me-1"></i>${statusText}
+              </span>
+              ${resultado.success ? `<span class="badge bg-success ms-2">Código: ${resultado.turnCode}</span>` : ''}
+            </div>
+            <div class="small text-muted mb-1">
+              <strong>Persona:</strong> ${resultado.persona.firstName} ${resultado.persona.lastName} (DNI: ${resultado.persona.dni})
+            </div>
+            ${resultado.success ? 
+              `<div class="small text-success">Turno generado correctamente</div>` :
+              `<div class="small text-danger"><strong>Error:</strong> ${resultado.error}</div>`
+            }
+          </div>
+          <div class="text-end">
+            <span class="badge ${resultado.success ? 'bg-success' : 'bg-danger'}">HTTP ${resultado.status}</span>
+          </div>
+        </div>
+      `;
+      
+      resultsContainer.appendChild(resultItem);
+      resultItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    
+    function mostrarResumen() {
+      const exitosos = resultados.filter(r => r.success).length;
+      const fallidos = resultados.filter(r => !r.success).length;
+      const total = resultados.length;
+      
+      summaryContent.innerHTML = `
+        <div class="mt-2">
+          <span class="badge bg-success me-2">Exitosos: ${exitosos}</span>
+          <span class="badge bg-danger me-2">Fallidos: ${fallidos}</span>
+          <span class="badge bg-secondary">Total: ${total}</span>
+        </div>
+      `;
+      
+      summaryResults.classList.remove('d-none');
+    }
+    
+    btnLimpiar.addEventListener('click', () => {
+      resultados = [];
+      resultsContainer.innerHTML = '<div class="result-item text-center text-muted p-4">No hay resultados aún. Presiona "Generar Turnos" para comenzar.</div>';
+      summaryResults.classList.add('d-none');
+    });
+  </script>
+</body>
+</html>
+
