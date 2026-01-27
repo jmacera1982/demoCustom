@@ -1487,8 +1487,70 @@
       function mostrarResumen(message) {
         try {
           const messageText = typeof message === 'string' ? message : (message.message || JSON.stringify(message, null, 2));
-          summaryContent.textContent = messageText;
+          
+          // Detectar si hay "Tipo de atención sugerida: Videollamada"
+          const tieneVideollamada = messageText.includes('**Tipo de atención sugerida**:') && 
+                                   (messageText.toLowerCase().includes('videollamada') || messageText.toLowerCase().includes('video llamada'));
+          
+          // Mostrar el resumen
+          summaryContent.innerHTML = '';
+          
+          // Crear elemento para el texto del resumen
+          const resumenTexto = document.createElement('div');
+          resumenTexto.textContent = messageText;
+          resumenTexto.style.marginBottom = '1rem';
+          summaryContent.appendChild(resumenTexto);
+          
+          // Si detecta Videollamada, mostrar botones
+          if (tieneVideollamada) {
+            const botonesContainer = document.createElement('div');
+            botonesContainer.style.marginTop = '1.5rem';
+            botonesContainer.style.display = 'flex';
+            botonesContainer.style.gap = '1rem';
+            botonesContainer.style.flexWrap = 'wrap';
+            
+            // Botón Videollamada
+            const btnVideollamada = document.createElement('button');
+            btnVideollamada.className = 'btn';
+            btnVideollamada.style.cssText = 'background-color: #00ff00; color: #000; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; flex: 1; min-width: 150px; cursor: pointer; font-family: "Courier New", monospace;';
+            btnVideollamada.innerHTML = '<i class="bi bi-camera-video me-2"></i>Videollamada <small style="display: block; font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem;">Menos espera</small>';
+            
+            // Botón Presencial
+            const btnPresencial = document.createElement('button');
+            btnPresencial.className = 'btn';
+            btnPresencial.style.cssText = 'background-color: #555; color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; flex: 1; min-width: 150px; cursor: pointer; font-family: "Courier New", monospace;';
+            btnPresencial.innerHTML = '<i class="bi bi-geo-alt me-2"></i>Presencial';
+            
+            // Hover effects
+            btnVideollamada.onmouseenter = () => { btnVideollamada.style.opacity = '0.9'; };
+            btnVideollamada.onmouseleave = () => { btnVideollamada.style.opacity = '1'; };
+            btnPresencial.onmouseenter = () => { btnPresencial.style.opacity = '0.9'; };
+            btnPresencial.onmouseleave = () => { btnPresencial.style.opacity = '1'; };
+            
+            // Contenedor para mostrar resultados
+            const resultadoContainer = document.createElement('div');
+            resultadoContainer.id = 'resultadoAtencion';
+            resultadoContainer.style.marginTop = '1rem';
+            resultadoContainer.style.display = 'none';
+            
+            // Event listener para Videollamada
+            btnVideollamada.addEventListener('click', async () => {
+              await solicitarAtencion('videollamada', btnVideollamada, btnPresencial, resultadoContainer);
+            });
+            
+            // Event listener para Presencial
+            btnPresencial.addEventListener('click', async () => {
+              await solicitarAtencion('presencial', btnVideollamada, btnPresencial, resultadoContainer);
+            });
+            
+            botonesContainer.appendChild(btnVideollamada);
+            botonesContainer.appendChild(btnPresencial);
+            summaryContent.appendChild(botonesContainer);
+            summaryContent.appendChild(resultadoContainer);
+          }
+          
           summarySection.style.display = 'block';
+          
           // Scroll automático al final del log
           setTimeout(() => {
             const logContent = document.querySelector('.log-content');
@@ -1498,6 +1560,88 @@
           }, 100);
         } catch (err) {
           console.error('Error al mostrar resumen:', err);
+        }
+      }
+      
+      async function solicitarAtencion(tipo, btn1, btn2, resultadoContainer) {
+        try {
+          // Deshabilitar ambos botones
+          btn1.disabled = true;
+          btn2.disabled = true;
+          btn1.style.opacity = '0.6';
+          btn2.style.opacity = '0.6';
+          
+          // Mostrar loading
+          resultadoContainer.style.display = 'block';
+          resultadoContainer.innerHTML = '<div style="color: #00ff00;"><i class="bi bi-hourglass-split me-2"></i>Procesando solicitud...</div>';
+          
+          // Determinar la URL según el tipo
+          const queueId = tipo === 'videollamada' ? '16223' : '16221';
+          const apiUrl = `https://filavirtual2.debmedia.com/api/v1/queue/${queueId}/branch/10750/enqueue`;
+          const apiToken = 'XlOIHNe0yDnF6htBZWhdv3uFHxQKanqdVNQZC17w';
+          
+          // Datos a enviar
+          const datos = {
+            firstName: 'Jorge',
+            lastName: 'Macera',
+            dni: '29328703',
+            email: 'mail@mail.com',
+            phone: '12345678'
+          };
+          
+          // Llamar a la API
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-token': apiToken
+            },
+            body: JSON.stringify(datos)
+          });
+          
+          if (!response.ok) {
+            throw new Error(`Error en servidor (${response.status})`);
+          }
+          
+          const data = await response.json();
+          console.log('Respuesta de la API:', data);
+          
+          // Mostrar resultados
+          let resultadoHtml = '<div style="margin-top: 1rem; padding: 1rem; background: #1e3a1e; border-radius: 4px; border-left: 3px solid #00ff00;">';
+          
+          // Mostrar tiempo de espera
+          if (data.averageWaitingTime !== undefined) {
+            const minutos = Math.floor(data.averageWaitingTime / 60);
+            const segundos = data.averageWaitingTime % 60;
+            resultadoHtml += `<div style="color: #90ee90; margin-bottom: 0.5rem;"><strong>Tiempo de espera estimado:</strong> ${minutos} min ${segundos} seg</div>`;
+          }
+          
+          // Si es videollamada, mostrar el enlace
+          if (tipo === 'videollamada' && data.videoCallUrl) {
+            const videoUrl = data.videoCallUrl + (data.videoCallUrl.includes('?') ? '&' : '?') + 'videocallUser=mobile';
+            resultadoHtml += `
+              <div style="margin-top: 1rem;">
+                <a href="${videoUrl}" target="_blank" style="display: inline-block; background-color: #00ff00; color: #000; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                  <i class="bi bi-camera-video me-2"></i>Iniciar Videollamada
+                </a>
+              </div>
+            `;
+          } else if (tipo === 'presencial') {
+            resultadoHtml += `<div style="color: #90ee90; margin-top: 0.5rem;"><i class="bi bi-check-circle me-2"></i>Turno presencial solicitado correctamente</div>`;
+          }
+          
+          resultadoHtml += '</div>';
+          resultadoContainer.innerHTML = resultadoHtml;
+          
+        } catch (err) {
+          console.error('Error al solicitar atención:', err);
+          resultadoContainer.innerHTML = `<div style="color: #ff8888; margin-top: 1rem;"><i class="bi bi-exclamation-triangle me-2"></i>Error: ${err.message}</div>`;
+        } finally {
+          // Rehabilitar botones
+          btn1.disabled = false;
+          btn2.disabled = false;
+          btn1.style.opacity = '1';
+          btn2.style.opacity = '1';
         }
       }
       
