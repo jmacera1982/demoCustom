@@ -1617,24 +1617,26 @@
         });
         opcionesAtencionContainer.appendChild(btnVideollamada);
         
-        // Texto indicando que es la opción recomendada (solo si está recomendada)
+        // Texto indicando que es la opción con menos demora (siempre visible)
+        const textoMenosDemora = document.createElement('div');
+        textoMenosDemora.style.cssText = 'text-align: center; font-size: 0.7rem; color: var(--numia-text-light); margin-bottom: 0.75rem; font-weight: 500;';
         if (tieneVideollamada) {
-          const textoRecomendada = document.createElement('div');
-          textoRecomendada.style.cssText = 'text-align: center; font-size: 0.7rem; color: var(--numia-text-light); margin-bottom: 0.75rem; font-weight: 500;';
-          textoRecomendada.innerHTML = '✓ Opción recomendada - Menos espera';
-          opcionesAtencionContainer.appendChild(textoRecomendada);
+          textoMenosDemora.innerHTML = '✓ Opción recomendada - Menos demora';
+        } else {
+          textoMenosDemora.innerHTML = 'Menos demora';
         }
+        opcionesAtencionContainer.appendChild(textoMenosDemora);
         
         // Botón Presencial (siempre disponible, más chico y con aclaración de demora)
         const btnPresencial = document.createElement('button');
         btnPresencial.className = 'btn';
         btnPresencial.style.cssText = 'background-color: var(--numia-azul); color: white; border: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.25rem; width: auto; margin: 0 auto; font-size: 0.9rem;';
         btnPresencial.innerHTML = '<div style="display: flex; align-items: center; gap: 0.5rem;"><i class="bi bi-geo-alt"></i><span>Continuar presencial</span></div><span style="font-size: 0.7rem; opacity: 0.9; font-weight: 500;">Opción con más demora</span>';
-        btnPresencial.addEventListener('click', (e) => {
+        btnPresencial.addEventListener('click', async (e) => {
           e.preventDefault();
           e.stopPropagation();
           console.log('Botón Presencial clickeado');
-          mostrarOpcionesPresencial();
+          await solicitarAtencionPresencial();
         });
         opcionesAtencionContainer.appendChild(btnPresencial);
         
@@ -1824,6 +1826,55 @@
         }
       }
       
+      async function solicitarAtencionPresencial() {
+        try {
+          // Ocultar opciones y mostrar loading
+          opcionesAtencionSection.style.display = 'none';
+          resultadoAtencionApp.style.display = 'block';
+          resultadoAtencionApp.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-2"></i>Procesando solicitud...</div>';
+          
+          const apiUrl = 'https://filavirtual2.debmedia.com/api/v1/queue/16221/branch/10750/enqueue';
+          const apiToken = 'XlOIHNe0yDnF6htBZWhdv3uFHxQKanqdVNQZC17w';
+          
+          const datos = {
+            firstName: 'Jorge',
+            lastName: 'Macera',
+            dni: '29328703',
+            email: 'mail@mail.com',
+            phone: '12345678'
+          };
+          
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-token': apiToken
+            },
+            body: JSON.stringify(datos)
+          });
+          
+          if (!response.ok) {
+            throw new Error(`Error en servidor (${response.status})`);
+          }
+          
+          const data = await response.json();
+          console.log('Respuesta de la API presencial:', data);
+          
+          // Mostrar mensaje de confirmación
+          resultadoAtencionApp.innerHTML = `
+            <div class="alert alert-success mt-3">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              <strong>Atención presencial solicitada correctamente</strong>
+              <p class="mb-0 mt-2">Lo llamaremos con su DNI: <strong>29328703</strong></p>
+            </div>
+          `;
+          
+        } catch (err) {
+          console.error('Error al solicitar atención presencial:', err);
+          resultadoAtencionApp.innerHTML = `<div class="alert alert-danger mt-3"><i class="bi bi-exclamation-triangle me-2"></i>Error: ${err.message}</div>`;
+        }
+      }
+      
       async function solicitarAtencionApp(tipo, btn) {
         try {
           btn.disabled = true;
@@ -1877,7 +1928,7 @@
               </a>
             `;
           } else if (tipo === 'presencial') {
-            resultadoHtml += '<p class="mb-0"><i class="bi bi-check-circle me-2"></i>Turno presencial solicitado correctamente</p>';
+            resultadoHtml += '<p class="mb-0"><i class="bi bi-check-circle me-2"></i>Atención presencial solicitada correctamente</p>';
           }
           
           resultadoHtml += '</div>';
@@ -1960,7 +2011,7 @@
               </div>
             `;
           } else if (tipo === 'presencial') {
-            resultadoHtml += `<div style="color: #ffffff; margin-top: 0.5rem;"><i class="bi bi-check-circle me-2"></i>Turno presencial solicitado correctamente</div>`;
+            resultadoHtml += `<div style="color: #ffffff; margin-top: 0.5rem;"><i class="bi bi-check-circle me-2"></i>Atención presencial solicitada correctamente</div>`;
           }
           
           resultadoHtml += '</div>';
