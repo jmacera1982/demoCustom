@@ -1528,22 +1528,31 @@
       }
       
       function mostrarOpcionesEnApp(tieneVideollamada) {
+        // Ocultar el botón "Solicitar Atención"
+        const dniInputSection = btnSolicitarAtencion.closest('.dni-input-section');
+        if (dniInputSection) {
+          dniInputSection.style.display = 'none';
+        }
+        
         // Limpiar contenedor
         opcionesAtencionContainer.innerHTML = '';
         resultadoAtencionApp.style.display = 'none';
         resultadoAtencionApp.innerHTML = '';
         
-        // Botón Videollamada (solo si está recomendada)
+        // Botón Videollamada (siempre disponible, pero destacado si está recomendada)
+        const btnVideollamada = document.createElement('button');
+        btnVideollamada.className = 'btn w-100';
         if (tieneVideollamada) {
-          const btnVideollamada = document.createElement('button');
-          btnVideollamada.className = 'btn w-100';
           btnVideollamada.style.cssText = 'background-color: var(--numia-success); color: white; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;';
           btnVideollamada.innerHTML = '<i class="bi bi-camera-video"></i>Videollamada <span style="font-size: 0.85rem; opacity: 0.9;">(Menos espera)</span>';
-          btnVideollamada.addEventListener('click', async () => {
-            await solicitarAtencionApp('videollamada', btnVideollamada);
-          });
-          opcionesAtencionContainer.appendChild(btnVideollamada);
+        } else {
+          btnVideollamada.style.cssText = 'background-color: var(--numia-success); color: white; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; opacity: 0.8;';
+          btnVideollamada.innerHTML = '<i class="bi bi-camera-video"></i>Videollamada';
         }
+        btnVideollamada.addEventListener('click', async () => {
+          await solicitarAtencionApp('videollamada', btnVideollamada);
+        });
+        opcionesAtencionContainer.appendChild(btnVideollamada);
         
         // Botón Presencial (siempre disponible)
         const btnPresencial = document.createElement('button');

@@ -918,10 +918,10 @@
         
         opcionesGrid.innerHTML = '';
         
-        // Opción Videollamada (solo si está recomendada)
+        // Opción Videollamada (siempre disponible, destacada si está recomendada)
+        const cardVideo = document.createElement('div');
+        cardVideo.className = 'opcion-card videollamada';
         if (recomendacionVideollamada) {
-          const cardVideo = document.createElement('div');
-          cardVideo.className = 'opcion-card videollamada';
           cardVideo.innerHTML = `
             <div class="opcion-icon">
               <i class="bi bi-camera-video"></i>
@@ -930,9 +930,17 @@
             <div class="opcion-badge">Menos espera</div>
             <div class="opcion-desc">Atención inmediata desde donde estés</div>
           `;
-          cardVideo.addEventListener('click', () => solicitarAtencion('videollamada'));
-          opcionesGrid.appendChild(cardVideo);
+        } else {
+          cardVideo.innerHTML = `
+            <div class="opcion-icon">
+              <i class="bi bi-camera-video"></i>
+            </div>
+            <div class="opcion-title">Videollamada</div>
+            <div class="opcion-desc">Atención inmediata desde donde estés</div>
+          `;
         }
+        cardVideo.addEventListener('click', () => solicitarAtencion('videollamada'));
+        opcionesGrid.appendChild(cardVideo);
         
         // Opción Presencial (siempre disponible)
         const cardPresencial = document.createElement('div');
