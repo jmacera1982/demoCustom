@@ -1610,17 +1610,20 @@
         // Botón Videollamada (siempre disponible, pero destacado si está recomendada)
         const btnVideollamada = document.createElement('button');
         btnVideollamada.className = 'btn w-100';
-        if (tieneVideollamada) {
-          btnVideollamada.style.cssText = 'background-color: var(--numia-success); color: white; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; margin-bottom: 0.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.25rem;';
-          btnVideollamada.innerHTML = '<div style="display: flex; align-items: center; gap: 0.5rem;"><i class="bi bi-camera-video"></i><span>Videollamada</span></div><span style="font-size: 0.75rem; opacity: 0.95; font-weight: 500;">✓ Opción recomendada - Menos espera</span>';
-        } else {
-          btnVideollamada.style.cssText = 'background-color: var(--numia-success); color: white; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; opacity: 0.8;';
-          btnVideollamada.innerHTML = '<i class="bi bi-camera-video"></i>Videollamada';
-        }
+        btnVideollamada.style.cssText = 'background-color: var(--numia-success); color: white; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; margin-bottom: 0.25rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;';
+        btnVideollamada.innerHTML = '<i class="bi bi-camera-video"></i>Videollamada';
         btnVideollamada.addEventListener('click', async () => {
           await solicitarAtencionApp('videollamada', btnVideollamada);
         });
         opcionesAtencionContainer.appendChild(btnVideollamada);
+        
+        // Texto indicando que es la opción recomendada (solo si está recomendada)
+        if (tieneVideollamada) {
+          const textoRecomendada = document.createElement('div');
+          textoRecomendada.style.cssText = 'text-align: center; font-size: 0.7rem; color: var(--numia-text-light); margin-bottom: 0.75rem; font-weight: 500;';
+          textoRecomendada.innerHTML = '✓ Opción recomendada - Menos espera';
+          opcionesAtencionContainer.appendChild(textoRecomendada);
+        }
         
         // Botón Presencial (siempre disponible, más chico y con aclaración de demora)
         const btnPresencial = document.createElement('button');
@@ -1886,13 +1889,7 @@
         } finally {
           btn.disabled = false;
           if (tipo === 'videollamada') {
-            // Verificar si tiene la clase o estilo que indica que es recomendada
-            const esRecomendada = btn.innerHTML.includes('recomendada') || btn.style.flexDirection === 'column';
-            if (esRecomendada) {
-              btn.innerHTML = '<div style="display: flex; align-items: center; gap: 0.5rem;"><i class="bi bi-camera-video"></i><span>Videollamada</span></div><span style="font-size: 0.75rem; opacity: 0.95; font-weight: 500;">✓ Opción recomendada - Menos espera</span>';
-            } else {
-              btn.innerHTML = '<i class="bi bi-camera-video"></i>Videollamada';
-            }
+            btn.innerHTML = '<i class="bi bi-camera-video"></i>Videollamada';
           } else {
             btn.innerHTML = '<i class="bi bi-geo-alt"></i>Presencial';
           }

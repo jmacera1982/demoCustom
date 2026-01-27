@@ -519,7 +519,7 @@
       flex: 1;
       overflow-y: auto;
       padding: 1rem;
-      color: #e0e0e0;
+      color: #ffffff;
       font-family: 'Courier New', monospace;
       font-size: 0.85rem;
       line-height: 1.6;
@@ -565,7 +565,7 @@
       border-radius: 4px;
       padding: 0.75rem;
       margin-bottom: 0.75rem;
-      color: #e0e0e0;
+      color: #ffffff;
       font-family: 'Courier New', monospace;
     }
     
@@ -591,7 +591,7 @@
       border-radius: 4px;
       padding: 0.75rem;
       margin-top: 0.5rem;
-      color: #e0e0e0;
+      color: #ffffff;
     }
     
     .summary-section {
@@ -600,7 +600,7 @@
       border-radius: 4px;
       padding: 1rem;
       margin-top: 1rem;
-      color: #e0e0e0;
+      color: #ffffff;
     }
     
     .summary-title {
@@ -609,7 +609,7 @@
     }
     
     .summary-content {
-      color: #e0e0e0;
+      color: #ffffff;
       font-family: 'Courier New', monospace;
     }
     
@@ -622,7 +622,7 @@
     .conversation-line {
       background: #1a1a1a;
       border-left: 2px solid #444;
-      color: #e0e0e0;
+      color: #ffffff;
     }
     
     .conversation-line.success {
@@ -887,181 +887,75 @@
         console.log('Display actualizado. DNI:', dniIngresado, 'Texto en display:', dniDisplay.textContent);
       }
       
-      // Botón continuar - llamar al agente
-      btnContinuar.addEventListener('click', async () => {
+      // Botón continuar - mostrar menú de opciones directamente
+      btnContinuar.addEventListener('click', () => {
         if (dniIngresado.length === 0) return;
         
-        btnContinuar.disabled = true;
-        btnContinuar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
-        
-        // Mostrar log
-        if (logContainer) {
-          logContainer.classList.add('visible');
-        }
-        
-        atencionSection.style.display = 'block';
-        atencionSection.classList.add('active');
-        stepsContainer.innerHTML = '<div style="color: #ffffff;"><i class="bi bi-hourglass-split me-2"></i>Conectando con el asistente...</div>';
-        
-        try {
-          // Llamar a la API de Journey Builder
-          const response = await fetch(JOURNEY_API_URL, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-api-key': JOURNEY_API_KEY,
-              'Origin': 'journeybuilder.numia.co'
-            },
-            body: JSON.stringify({
-              input_value: dniIngresado,
-              input_type: 'chat'
-            })
-          });
-          
-          if (!response.ok) {
-            throw new Error(`Error en servidor (${response.status})`);
-          }
-          
-          const data = await response.json();
-          console.log('Respuesta completa de la API:', JSON.stringify(data, null, 2));
-          
-          // Procesar respuesta
-          let contents = [];
-          
-          if (data.outputs && data.outputs.length > 0) {
-            const firstOutput = data.outputs[0];
-            
-            if (firstOutput.outputs && firstOutput.outputs.length > 0) {
-              const innerOutput = firstOutput.outputs[0];
-              
-              // Buscar tool_use en content_blocks
-              if (innerOutput.results?.message?.content_blocks) {
-                innerOutput.results.message.content_blocks.forEach((block) => {
-                  if (block.contents && Array.isArray(block.contents)) {
-                    block.contents.forEach((content) => {
-                      if (content.type === 'tool_use' && content.name) {
-                        contents.push({
-                          type: 'tool_use',
-                          name: content.name,
-                          tool_name: content.name,
-                          tool_input: content.tool_input || content.input,
-                          output: content.output,
-                          duration: content.duration
-                        });
-                      }
-                    });
-                  }
-                });
-              }
-              
-              // Buscar mensaje final
-              if (innerOutput.artifacts?.message) {
-                messageText = typeof innerOutput.artifacts.message === 'string' 
-                  ? innerOutput.artifacts.message 
-                  : innerOutput.artifacts.message.message || JSON.stringify(innerOutput.artifacts.message);
-              } else if (innerOutput.outputs?.message?.message) {
-                messageText = innerOutput.outputs.message.message;
-              } else if (innerOutput.results?.message?.text) {
-                messageText = innerOutput.results.message.text;
-              }
-            }
-          }
-          
-          // Mostrar pasos
-          if (contents.length > 0) {
-            stepsContainer.innerHTML = '';
-            contents.forEach((content, index) => {
-              setTimeout(() => {
-                agregarPaso(content, index);
-              }, index * 800);
-            });
-            
-            // Mostrar resumen después de los pasos
-            if (messageText) {
-              setTimeout(() => {
-                mostrarResumen(messageText);
-                // Detectar si recomienda videollamada
-                const tieneVideollamada = messageText.includes('**Tipo de atención sugerida**:') && 
-                                         (messageText.toLowerCase().includes('videollamada') || messageText.toLowerCase().includes('video llamada'));
-                recomendacionVideollamada = tieneVideollamada;
-                analisisCompletado = true;
-                
-                // Mostrar pantalla de opciones
-                mostrarPantallaOpciones();
-              }, contents.length * 800 + 500);
-            }
-          } else {
-            // Si no hay pasos, mostrar resumen directamente
-            if (messageText) {
-              mostrarResumen(messageText);
-              const tieneVideollamada = messageText.includes('**Tipo de atención sugerida**:') && 
-                                       (messageText.toLowerCase().includes('videollamada') || messageText.toLowerCase().includes('video llamada'));
-              recomendacionVideollamada = tieneVideollamada;
-              analisisCompletado = true;
-              mostrarPantallaOpciones();
-            }
-          }
-          
-        } catch (err) {
-          console.error('Error:', err);
-          stepsContainer.innerHTML = `<div style="color: #ff8888;"><i class="bi bi-exclamation-triangle me-2"></i>Error: ${err.message}</div>`;
-        } finally {
-          btnContinuar.disabled = false;
-          btnContinuar.innerHTML = 'Continuar';
-        }
+        // Mostrar directamente el menú de Préstamos/Tarjetas/Inversiones
+        mostrarPantallaOpciones();
       });
       
-      // Mostrar pantalla de opciones
+      // Mostrar pantalla de opciones (ahora muestra directamente préstamos, tarjetas, inversiones)
       function mostrarPantallaOpciones() {
         screenDni.style.display = 'none';
         screenOpciones.classList.add('active');
         
         opcionesGrid.innerHTML = '';
         
-        // Opción Videollamada (siempre disponible, destacada si está recomendada)
-        const cardVideo = document.createElement('div');
-        cardVideo.className = 'opcion-card videollamada';
-        if (recomendacionVideollamada) {
-          cardVideo.innerHTML = `
-            <div class="opcion-icon">
-              <i class="bi bi-camera-video"></i>
-            </div>
-            <div class="opcion-title">Videollamada</div>
-            <div class="opcion-badge">Menos espera</div>
-            <div class="opcion-desc">Atención inmediata desde donde estés</div>
-          `;
-        } else {
-          cardVideo.innerHTML = `
-            <div class="opcion-icon">
-              <i class="bi bi-camera-video"></i>
-            </div>
-            <div class="opcion-title">Videollamada</div>
-            <div class="opcion-desc">Atención inmediata desde donde estés</div>
-          `;
+        // Cambiar el título y subtítulo
+        const screenOpcionesTitle = screenOpciones.querySelector('h2');
+        const screenOpcionesSubtitle = screenOpciones.querySelector('.subtitle');
+        if (screenOpcionesTitle) {
+          screenOpcionesTitle.textContent = '¿Cómo podemos ayudarlo?';
         }
-        cardVideo.addEventListener('click', () => solicitarAtencion('videollamada'));
-        opcionesGrid.appendChild(cardVideo);
+        if (screenOpcionesSubtitle) {
+          screenOpcionesSubtitle.textContent = 'Seleccione el servicio que necesita';
+        }
         
-        // Opción Presencial (siempre disponible, menos recomendada)
-        const cardPresencial = document.createElement('div');
-        cardPresencial.className = 'opcion-card presencial';
-        cardPresencial.innerHTML = `
-          <div class="opcion-icon">
-            <i class="bi bi-geo-alt"></i>
+        // Opción Préstamos
+        const cardPrestamos = document.createElement('div');
+        cardPrestamos.className = 'opcion-card';
+        cardPrestamos.style.cssText = 'cursor: pointer; border-color: var(--numia-azul); background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);';
+        cardPrestamos.innerHTML = `
+          <div class="opcion-icon" style="color: var(--numia-azul);">
+            <i class="bi bi-cash-coin"></i>
           </div>
-          <div class="opcion-title">Continuar presencial</div>
-          <div class="opcion-badge less-recommended">Opción menos recomendada</div>
-          <div class="opcion-desc">Atención en sucursal</div>
+          <div class="opcion-title">Préstamos</div>
         `;
-        cardPresencial.addEventListener('click', () => mostrarOpcionesPresencialTotem());
-        opcionesGrid.appendChild(cardPresencial);
+        cardPrestamos.addEventListener('click', async () => {
+          await llamarAgenteConOpcionTotem('prestamos');
+        });
+        opcionesGrid.appendChild(cardPrestamos);
         
-        // Contenedor para opciones presenciales (inicialmente oculto)
-        const opcionesPresencialContainer = document.createElement('div');
-        opcionesPresencialContainer.id = 'opcionesPresencialContainerTotem';
-        opcionesPresencialContainer.style.display = 'none';
-        opcionesPresencialContainer.style.marginTop = '1.5rem';
-        opcionesGrid.parentNode.insertBefore(opcionesPresencialContainer, opcionesGrid.nextSibling);
+        // Opción Tarjetas
+        const cardTarjetas = document.createElement('div');
+        cardTarjetas.className = 'opcion-card';
+        cardTarjetas.style.cssText = 'cursor: pointer; border-color: var(--numia-azul); background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);';
+        cardTarjetas.innerHTML = `
+          <div class="opcion-icon" style="color: var(--numia-azul);">
+            <i class="bi bi-credit-card"></i>
+          </div>
+          <div class="opcion-title">Tarjetas</div>
+        `;
+        cardTarjetas.addEventListener('click', async () => {
+          await llamarAgenteConOpcionTotem('tarjetas');
+        });
+        opcionesGrid.appendChild(cardTarjetas);
+        
+        // Opción Inversiones
+        const cardInversiones = document.createElement('div');
+        cardInversiones.className = 'opcion-card';
+        cardInversiones.style.cssText = 'cursor: pointer; border-color: var(--numia-azul); background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);';
+        cardInversiones.innerHTML = `
+          <div class="opcion-icon" style="color: var(--numia-azul);">
+            <i class="bi bi-graph-up-arrow"></i>
+          </div>
+          <div class="opcion-title">Inversiones</div>
+        `;
+        cardInversiones.addEventListener('click', async () => {
+          await llamarAgenteConOpcionTotem('inversiones');
+        });
+        opcionesGrid.appendChild(cardInversiones);
       }
       
       // Mostrar opciones presenciales en el tótem
@@ -1203,11 +1097,27 @@
             if (messageText) {
               setTimeout(() => {
                 mostrarResumen(messageText);
+                // Detectar si recomienda videollamada
+                const tieneVideollamada = messageText.includes('**Tipo de atención sugerida**:') && 
+                                         (messageText.toLowerCase().includes('videollamada') || messageText.toLowerCase().includes('video llamada'));
+                recomendacionVideollamada = tieneVideollamada;
+                // Mostrar opciones de videollamada/presencial después del análisis
+                setTimeout(() => {
+                  mostrarOpcionesAtencion();
+                }, 1000);
               }, contents.length * 800 + 500);
             }
           } else {
             if (messageText) {
               mostrarResumen(messageText);
+              // Detectar si recomienda videollamada
+              const tieneVideollamada = messageText.includes('**Tipo de atención sugerida**:') && 
+                                       (messageText.toLowerCase().includes('videollamada') || messageText.toLowerCase().includes('video llamada'));
+              recomendacionVideollamada = tieneVideollamada;
+              // Mostrar opciones de videollamada/presencial después del análisis
+              setTimeout(() => {
+                mostrarOpcionesAtencion();
+              }, 1000);
             }
           }
           
@@ -1215,6 +1125,61 @@
           console.error('Error al llamar al agente:', err);
           stepsContainer.innerHTML = `<div style="color: #ff8888;"><i class="bi bi-exclamation-triangle me-2"></i>Error: ${err.message}</div>`;
         }
+      }
+      
+      // Mostrar opciones de atención (videollamada/presencial) después del análisis
+      function mostrarOpcionesAtencion() {
+        screenOpciones.classList.add('active');
+        
+        // Cambiar el título y subtítulo
+        const screenOpcionesTitle = screenOpciones.querySelector('h2');
+        const screenOpcionesSubtitle = screenOpciones.querySelector('.subtitle');
+        if (screenOpcionesTitle) {
+          screenOpcionesTitle.textContent = 'Seleccione su preferencia';
+        }
+        if (screenOpcionesSubtitle) {
+          screenOpcionesSubtitle.textContent = 'Elija cómo desea ser atendido';
+        }
+        
+        opcionesGrid.innerHTML = '';
+        
+        // Opción Videollamada (siempre disponible, destacada si está recomendada)
+        const cardVideo = document.createElement('div');
+        cardVideo.className = 'opcion-card videollamada';
+        if (recomendacionVideollamada) {
+          cardVideo.innerHTML = `
+            <div class="opcion-icon">
+              <i class="bi bi-camera-video"></i>
+            </div>
+            <div class="opcion-title">Videollamada</div>
+            <div class="opcion-badge">Menos espera</div>
+            <div class="opcion-desc">Atención inmediata desde donde estés</div>
+          `;
+        } else {
+          cardVideo.innerHTML = `
+            <div class="opcion-icon">
+              <i class="bi bi-camera-video"></i>
+            </div>
+            <div class="opcion-title">Videollamada</div>
+            <div class="opcion-desc">Atención inmediata desde donde estés</div>
+          `;
+        }
+        cardVideo.addEventListener('click', () => solicitarAtencion('videollamada'));
+        opcionesGrid.appendChild(cardVideo);
+        
+        // Opción Presencial (siempre disponible, menos recomendada)
+        const cardPresencial = document.createElement('div');
+        cardPresencial.className = 'opcion-card presencial';
+        cardPresencial.innerHTML = `
+          <div class="opcion-icon">
+            <i class="bi bi-geo-alt"></i>
+          </div>
+          <div class="opcion-title">Continuar presencial</div>
+          <div class="opcion-badge less-recommended">Opción menos recomendada</div>
+          <div class="opcion-desc">Atención en sucursal</div>
+        `;
+        cardPresencial.addEventListener('click', () => solicitarAtencion('presencial'));
+        opcionesGrid.appendChild(cardPresencial);
       }
       
       // Solicitar atención
@@ -1262,8 +1227,12 @@
         screenOpciones.classList.remove('active');
         screenConfirmacion.classList.add('active');
         
-        // Mostrar tiempo de espera
-        if (data.averageWaitingTime !== undefined) {
+        // Ocultar elementos que no aplican si no hay data
+        document.getElementById('tiempoEspera').style.display = 'none';
+        document.getElementById('videoLinkContainer').style.display = 'none';
+        
+        // Mostrar tiempo de espera solo si hay data
+        if (data && data.averageWaitingTime !== undefined) {
           const minutos = Math.floor(data.averageWaitingTime / 60);
           const segundos = data.averageWaitingTime % 60;
           document.getElementById('tiempoEspera').style.display = 'block';
@@ -1271,7 +1240,7 @@
         }
         
         // Mostrar enlace de videollamada si aplica
-        if (tipo === 'videollamada' && data.videoCallUrl) {
+        if (tipo === 'videollamada' && data && data.videoCallUrl) {
           const videoUrl = data.videoCallUrl + (data.videoCallUrl.includes('?') ? '&' : '?') + 'videocallUser=mobile';
           document.getElementById('videoLinkContainer').style.display = 'block';
           document.getElementById('btnVideoLink').href = videoUrl;
@@ -1294,7 +1263,7 @@
           stepItem.innerHTML = `
             <div class="step-title">${escapeHtml(friendlyName)}</div>
             <div class="step-output-content">
-              <em style="color: #888;">Herramienta ejecutada correctamente</em>
+              <em style="color: #ffffff;">Herramienta ejecutada correctamente</em>
             </div>
           `;
           
