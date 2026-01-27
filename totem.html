@@ -128,6 +128,10 @@
       color: rgba(0, 0, 0, 0.3);
     }
     
+    .dni-display.empty:before {
+      content: 'Ingrese su DNI';
+    }
+    
     .keypad {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -266,9 +270,16 @@
     
     .opciones-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: 2fr 1fr;
       gap: 1.5rem;
       margin-bottom: 2rem;
+      align-items: stretch;
+    }
+    
+    @media (max-width: 768px) {
+      .opciones-grid {
+        grid-template-columns: 1fr;
+      }
     }
     
     .opcion-card {
@@ -279,6 +290,33 @@
       cursor: pointer;
       transition: all 0.3s;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .opcion-card.videollamada {
+      padding: 3rem 2rem;
+    }
+    
+    .opcion-card.videollamada .opcion-icon {
+      font-size: 4rem;
+    }
+    
+    .opcion-card.videollamada .opcion-title {
+      font-size: 1.6rem;
+    }
+    
+    .opcion-card.presencial {
+      padding: 1.5rem;
+    }
+    
+    .opcion-card.presencial .opcion-icon {
+      font-size: 2.5rem;
+    }
+    
+    .opcion-card.presencial .opcion-title {
+      font-size: 1.2rem;
     }
     
     .opcion-card:hover {
@@ -754,37 +792,100 @@
       const summaryContent = document.getElementById('summaryContent');
       const logContainer = document.querySelector('.log-container');
       
-      // Teclado numérico
+      // Inicializar display
+      actualizarDisplay();
+      
+      // Función para agregar un número al DNI
+      function agregarNumero(numero) {
+        if (dniIngresado.length < 15) {
+          dniIngresado += numero;
+          console.log('DNI ingresado:', dniIngresado);
+          actualizarDisplay();
+        }
+      }
+      
+      // Función para eliminar último dígito
+      function eliminarUltimo() {
+        dniIngresado = dniIngresado.slice(0, -1);
+        console.log('DNI después de borrar:', dniIngresado);
+        actualizarDisplay();
+      }
+      
+      // Capturar teclas del teclado físico
+      document.addEventListener('keydown', (e) => {
+        // Verificar si estamos en la pantalla de DNI (no oculta y otras pantallas no activas)
+        const screenDniVisible = screenDni && (screenDni.style.display === '' || screenDni.style.display === 'block' || !screenDni.style.display);
+        const screenOpcionesActive = screenOpciones.classList.contains('active');
+        const screenConfirmacionActive = screenConfirmacion.classList.contains('active');
+        
+        // Solo procesar si estamos en la pantalla de DNI
+        if (screenDniVisible && !screenOpcionesActive && !screenConfirmacionActive) {
+          console.log('Tecla presionada en pantalla DNI:', e.key);
+          
+          // Si es un número (0-9)
+          if (e.key >= '0' && e.key <= '9') {
+            e.preventDefault();
+            e.stopPropagation();
+            agregarNumero(e.key);
+          }
+          // Si es Backspace o Delete
+          else if (e.key === 'Backspace' || e.key === 'Delete') {
+            e.preventDefault();
+            e.stopPropagation();
+            eliminarUltimo();
+          }
+          // Si es Enter y hay DNI ingresado
+          else if (e.key === 'Enter' && dniIngresado.length > 0 && btnContinuar && !btnContinuar.disabled) {
+            e.preventDefault();
+            e.stopPropagation();
+            btnContinuar.click();
+          }
+        }
+      });
+      
+      // Teclado numérico virtual
       const keypadButtons = document.querySelectorAll('.keypad-btn[data-number]');
       keypadButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
           const number = btn.getAttribute('data-number');
-          if (dniIngresado.length < 15) {
-            dniIngresado += number;
-            actualizarDisplay();
-          }
+          console.log('Tecla virtual presionada:', number);
+          agregarNumero(number);
         });
       });
       
-      // Botón eliminar
-      btnDelete.addEventListener('click', () => {
-        dniIngresado = dniIngresado.slice(0, -1);
-        actualizarDisplay();
-      });
+      // Botón eliminar virtual
+      if (btnDelete) {
+        btnDelete.addEventListener('click', (e) => {
+          e.preventDefault();
+          eliminarUltimo();
+        });
+      }
       
       // Actualizar display del DNI
       function actualizarDisplay() {
+        if (!dniDisplay) {
+          console.error('dniDisplay no encontrado');
+          return;
+        }
+        
         if (dniIngresado.length === 0) {
-          dniDisplay.textContent = 'Ingrese su DNI';
+          dniDisplay.textContent = '';
           dniDisplay.classList.add('empty');
-          btnContinuar.disabled = true;
-          btnContinuar.classList.remove('active');
+          if (btnContinuar) {
+            btnContinuar.disabled = true;
+            btnContinuar.classList.remove('active');
+          }
         } else {
+          // Mostrar el DNI con formato
           dniDisplay.textContent = dniIngresado;
           dniDisplay.classList.remove('empty');
-          btnContinuar.disabled = false;
-          btnContinuar.classList.add('active');
+          if (btnContinuar) {
+            btnContinuar.disabled = false;
+            btnContinuar.classList.add('active');
+          }
         }
+        console.log('Display actualizado. DNI:', dniIngresado, 'Texto en display:', dniDisplay.textContent);
       }
       
       // Botón continuar - llamar al agente
@@ -949,11 +1050,171 @@
           <div class="opcion-icon">
             <i class="bi bi-geo-alt"></i>
           </div>
-          <div class="opcion-title">Presencial</div>
+          <div class="opcion-title">Estoy en la sucursal</div>
           <div class="opcion-desc">Atención en sucursal</div>
         `;
-        cardPresencial.addEventListener('click', () => solicitarAtencion('presencial'));
+        cardPresencial.addEventListener('click', () => mostrarOpcionesPresencialTotem());
         opcionesGrid.appendChild(cardPresencial);
+        
+        // Contenedor para opciones presenciales (inicialmente oculto)
+        const opcionesPresencialContainer = document.createElement('div');
+        opcionesPresencialContainer.id = 'opcionesPresencialContainerTotem';
+        opcionesPresencialContainer.style.display = 'none';
+        opcionesPresencialContainer.style.marginTop = '1.5rem';
+        opcionesGrid.parentNode.insertBefore(opcionesPresencialContainer, opcionesGrid.nextSibling);
+      }
+      
+      // Mostrar opciones presenciales en el tótem
+      function mostrarOpcionesPresencialTotem() {
+        const opcionesPresencialContainer = document.getElementById('opcionesPresencialContainerTotem');
+        if (!opcionesPresencialContainer) return;
+        
+        // Si ya está visible, ocultarlo
+        if (opcionesPresencialContainer.style.display === 'block') {
+          opcionesPresencialContainer.style.display = 'none';
+          return;
+        }
+        
+        // Mostrar opciones
+        opcionesPresencialContainer.innerHTML = `
+          <div style="width: 100%; max-width: 500px; margin: 0 auto;">
+            <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--numia-text); margin-bottom: 1.5rem; text-align: center;">¿Cómo podemos ayudarlo?</h3>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+              <div class="opcion-card" style="cursor: pointer;" data-opcion="prestamos">
+                <div class="opcion-icon" style="color: var(--numia-azul);">
+                  <i class="bi bi-cash-coin"></i>
+                </div>
+                <div class="opcion-title">Préstamos</div>
+              </div>
+              <div class="opcion-card" style="cursor: pointer;" data-opcion="tarjetas">
+                <div class="opcion-icon" style="color: var(--numia-azul);">
+                  <i class="bi bi-credit-card"></i>
+                </div>
+                <div class="opcion-title">Tarjetas</div>
+              </div>
+              <div class="opcion-card" style="cursor: pointer;" data-opcion="inversiones">
+                <div class="opcion-icon" style="color: var(--numia-azul);">
+                  <i class="bi bi-graph-up-arrow"></i>
+                </div>
+                <div class="opcion-title">Inversiones</div>
+              </div>
+            </div>
+          </div>
+        `;
+        opcionesPresencialContainer.style.display = 'block';
+        
+        // Agregar event listeners a las tarjetas
+        const cardsOpcion = opcionesPresencialContainer.querySelectorAll('[data-opcion]');
+        cardsOpcion.forEach(card => {
+          card.addEventListener('click', async () => {
+            const opcion = card.getAttribute('data-opcion');
+            await llamarAgenteConOpcionTotem(opcion);
+          });
+        });
+      }
+      
+      async function llamarAgenteConOpcionTotem(opcion) {
+        try {
+          // Ocultar pantalla de opciones y mostrar loading
+          screenOpciones.classList.remove('active');
+          
+          // Mostrar log
+          if (logContainer) {
+            logContainer.classList.add('visible');
+          }
+          
+          atencionSection.style.display = 'block';
+          atencionSection.classList.add('active');
+          stepsContainer.innerHTML = '<div style="color: #00ff00;"><i class="bi bi-hourglass-split me-2"></i>Conectando con el asistente...</div>';
+          
+          // Llamar al agente con el DNI ingresado y la opción seleccionada
+          const mensaje = `Necesito atención sobre ${opcion}. DNI: ${dniIngresado}`;
+          
+          const response = await fetch(JOURNEY_API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': JOURNEY_API_KEY,
+              'Origin': 'journeybuilder.numia.co'
+            },
+            body: JSON.stringify({
+              input_value: mensaje,
+              input_type: 'chat'
+            })
+          });
+          
+          if (!response.ok) {
+            throw new Error(`Error en servidor (${response.status})`);
+          }
+          
+          const data = await response.json();
+          console.log('Respuesta completa de la API:', JSON.stringify(data, null, 2));
+          
+          // Procesar respuesta (similar al código existente)
+          let contents = [];
+          let messageText = null;
+          
+          if (data.outputs && data.outputs.length > 0) {
+            const firstOutput = data.outputs[0];
+            
+            if (firstOutput.outputs && firstOutput.outputs.length > 0) {
+              const innerOutput = firstOutput.outputs[0];
+              
+              if (innerOutput.results?.message?.content_blocks) {
+                innerOutput.results.message.content_blocks.forEach((block) => {
+                  if (block.contents && Array.isArray(block.contents)) {
+                    block.contents.forEach((content) => {
+                      if (content.type === 'tool_use' && content.name) {
+                        contents.push({
+                          type: 'tool_use',
+                          name: content.name,
+                          tool_name: content.name,
+                          tool_input: content.tool_input || content.input,
+                          output: content.output,
+                          duration: content.duration
+                        });
+                      }
+                    });
+                  }
+                });
+              }
+              
+              if (innerOutput.artifacts?.message) {
+                messageText = typeof innerOutput.artifacts.message === 'string' 
+                  ? innerOutput.artifacts.message 
+                  : innerOutput.artifacts.message.message || JSON.stringify(innerOutput.artifacts.message);
+              } else if (innerOutput.outputs?.message?.message) {
+                messageText = innerOutput.outputs.message.message;
+              } else if (innerOutput.results?.message?.text) {
+                messageText = innerOutput.results.message.text;
+              }
+            }
+          }
+          
+          // Mostrar pasos
+          if (contents.length > 0) {
+            stepsContainer.innerHTML = '';
+            contents.forEach((content, index) => {
+              setTimeout(() => {
+                agregarPaso(content, index);
+              }, index * 800);
+            });
+            
+            if (messageText) {
+              setTimeout(() => {
+                mostrarResumen(messageText);
+              }, contents.length * 800 + 500);
+            }
+          } else {
+            if (messageText) {
+              mostrarResumen(messageText);
+            }
+          }
+          
+        } catch (err) {
+          console.error('Error al llamar al agente:', err);
+          stepsContainer.innerHTML = `<div style="color: #ff8888;"><i class="bi bi-exclamation-triangle me-2"></i>Error: ${err.message}</div>`;
+        }
       }
       
       // Solicitar atención
