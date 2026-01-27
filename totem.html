@@ -1092,26 +1092,38 @@
             if (messageText) {
               setTimeout(() => {
                 mostrarResumen(messageText);
-                // Detectar si recomienda videollamada
-                const tieneVideollamada = messageText.includes('**Tipo de atención sugerida**:') && 
-                                         (messageText.toLowerCase().includes('videollamada') || messageText.toLowerCase().includes('video llamada'));
+                // Detectar si recomienda videollamada - buscar el patrón específico "- Sugerir videollamada: Si"
+                const tieneVideollamada = messageText.includes('- Sugerir videollamada: Si') || 
+                                         messageText.includes('- Sugerir videollamada:Si') ||
+                                         messageText.toLowerCase().includes('- sugerir videollamada: si');
                 recomendacionVideollamada = tieneVideollamada;
-                // Mostrar opciones de videollamada/presencial después del análisis
+                // Mostrar opciones de videollamada/presencial después del análisis o confirmación directa
                 setTimeout(() => {
-                  mostrarOpcionesAtencion();
+                  if (tieneVideollamada) {
+                    mostrarOpcionesAtencion();
+                  } else {
+                    // Si no hay recomendación de videollamada, solicitar atención presencial directamente
+                    solicitarAtencionPresencialDirecta();
+                  }
                 }, 1000);
               }, contents.length * 800 + 500);
             }
           } else {
             if (messageText) {
               mostrarResumen(messageText);
-              // Detectar si recomienda videollamada
-              const tieneVideollamada = messageText.includes('**Tipo de atención sugerida**:') && 
-                                       (messageText.toLowerCase().includes('videollamada') || messageText.toLowerCase().includes('video llamada'));
+              // Detectar si recomienda videollamada - buscar el patrón específico "- Sugerir videollamada: Si"
+              const tieneVideollamada = messageText.includes('- Sugerir videollamada: Si') || 
+                                       messageText.includes('- Sugerir videollamada:Si') ||
+                                       messageText.toLowerCase().includes('- sugerir videollamada: si');
               recomendacionVideollamada = tieneVideollamada;
-              // Mostrar opciones de videollamada/presencial después del análisis
+              // Mostrar opciones de videollamada/presencial después del análisis o confirmación directa
               setTimeout(() => {
-                mostrarOpcionesAtencion();
+                if (tieneVideollamada) {
+                  mostrarOpcionesAtencion();
+                } else {
+                  // Si no hay recomendación de videollamada, solicitar atención presencial directamente
+                  solicitarAtencionPresencialDirecta();
+                }
               }, 1000);
             }
           }
@@ -1138,10 +1150,10 @@
         
         opcionesGrid.innerHTML = '';
         
-        // Opción Videollamada (siempre disponible, destacada si está recomendada)
-        const cardVideo = document.createElement('div');
-        cardVideo.className = 'opcion-card videollamada';
+        // Opción Videollamada (solo se muestra si está recomendada - esta función solo se llama cuando lo está)
         if (recomendacionVideollamada) {
+          const cardVideo = document.createElement('div');
+          cardVideo.className = 'opcion-card videollamada';
           cardVideo.innerHTML = `
             <div class="opcion-icon">
               <i class="bi bi-camera-video"></i>
@@ -1150,31 +1162,72 @@
             <div class="opcion-badge">Menos espera</div>
             <div class="opcion-desc">Atención inmediata desde donde estés</div>
           `;
-        } else {
-          cardVideo.innerHTML = `
-            <div class="opcion-icon">
-              <i class="bi bi-camera-video"></i>
-            </div>
-            <div class="opcion-title">Videollamada</div>
-            <div class="opcion-desc">Atención inmediata desde donde estés</div>
-          `;
+          cardVideo.addEventListener('click', () => solicitarAtencion('videollamada'));
+          opcionesGrid.appendChild(cardVideo);
         }
-        cardVideo.addEventListener('click', () => solicitarAtencion('videollamada'));
-        opcionesGrid.appendChild(cardVideo);
         
-        // Opción Presencial (siempre disponible, menos recomendada)
+        // Opción Presencial (siempre disponible, menos recomendada si hay videollamada)
         const cardPresencial = document.createElement('div');
         cardPresencial.className = 'opcion-card presencial';
-        cardPresencial.innerHTML = `
-          <div class="opcion-icon">
-            <i class="bi bi-geo-alt"></i>
-          </div>
-          <div class="opcion-title">Continuar presencial</div>
-          <div class="opcion-badge less-recommended">Opción menos recomendada</div>
-          <div class="opcion-desc">Atención en sucursal</div>
-        `;
+        if (recomendacionVideollamada) {
+          cardPresencial.innerHTML = `
+            <div class="opcion-icon">
+              <i class="bi bi-geo-alt"></i>
+            </div>
+            <div class="opcion-title">Continuar presencial</div>
+            <div class="opcion-badge less-recommended">Opción menos recomendada</div>
+            <div class="opcion-desc">Atención en sucursal</div>
+          `;
+        } else {
+          cardPresencial.innerHTML = `
+            <div class="opcion-icon">
+              <i class="bi bi-geo-alt"></i>
+            </div>
+            <div class="opcion-title">Continuar presencial</div>
+            <div class="opcion-desc">Atención en sucursal</div>
+          `;
+        }
         cardPresencial.addEventListener('click', () => solicitarAtencion('presencial'));
         opcionesGrid.appendChild(cardPresencial);
+      }
+      
+      // Solicitar atención presencial directamente (cuando no hay recomendación de videollamada)
+      async function solicitarAtencionPresencialDirecta() {
+        try {
+          const apiUrl = 'https://filavirtual2.debmedia.com/api/v1/queue/16221/branch/10750/enqueue';
+          const apiToken = 'XlOIHNe0yDnF6htBZWhdv3uFHxQKanqdVNQZC17w';
+          
+          const datos = {
+            firstName: 'Jorge',
+            lastName: 'Macera',
+            dni: dniIngresado,
+            email: 'mail@mail.com',
+            phone: '12345678'
+          };
+          
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-token': apiToken
+            },
+            body: JSON.stringify(datos)
+          });
+          
+          if (!response.ok) {
+            throw new Error(`Error en servidor (${response.status})`);
+          }
+          
+          const data = await response.json();
+          console.log('Respuesta de la API presencial:', data);
+          
+          // Mostrar pantalla de confirmación con mensaje de DNI
+          mostrarPantallaConfirmacionPresencial();
+          
+        } catch (err) {
+          console.error('Error al solicitar atención presencial:', err);
+          alert(`Error: ${err.message}`);
+        }
       }
       
       // Solicitar atención
@@ -1239,6 +1292,30 @@
           const videoUrl = data.videoCallUrl + (data.videoCallUrl.includes('?') ? '&' : '?') + 'videocallUser=mobile';
           document.getElementById('videoLinkContainer').style.display = 'block';
           document.getElementById('btnVideoLink').href = videoUrl;
+        }
+      }
+      
+      // Mostrar pantalla de confirmación presencial (cuando no hay videollamada recomendada)
+      function mostrarPantallaConfirmacionPresencial() {
+        screenOpciones.classList.remove('active');
+        screenConfirmacion.classList.add('active');
+        
+        // Ocultar elementos que no aplican
+        document.getElementById('tiempoEspera').style.display = 'none';
+        document.getElementById('videoLinkContainer').style.display = 'none';
+        
+        // Actualizar el mensaje de confirmación
+        const confirmacionTitle = screenConfirmacion.querySelector('h2');
+        const confirmacionMessage = screenConfirmacion.querySelector('.message');
+        
+        if (confirmacionTitle) {
+          confirmacionTitle.textContent = 'Tu turno fue asignado';
+        }
+        
+        if (confirmacionMessage) {
+          confirmacionMessage.innerHTML = `
+            Lo llamaremos por su DNI: <strong>${dniIngresado}</strong>
+          `;
         }
       }
       
