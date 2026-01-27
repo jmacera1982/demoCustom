@@ -865,7 +865,7 @@
     <!-- Botón para solicitar atención -->
     <div class="dni-input-section">
       <button id="btnSolicitarAtencion" class="btn w-100" style="background-color: var(--numia-azul); color: #ffffff; border-color: var(--numia-azul); padding: 0.75rem 1.5rem;">
-        <i class="bi bi-headset me-1"></i>Solicitar Atención
+        <i class="bi bi-geo-alt me-1"></i>Estoy en la sucursal
       </button>
     </div>
 
@@ -876,6 +876,22 @@
         <!-- Los botones se agregarán aquí dinámicamente -->
       </div>
       <div id="resultadoAtencionApp" style="margin-top: 1rem; display: none;"></div>
+    </div>
+
+    <!-- Menú de opciones presenciales (se mostrará al presionar "Estoy en la sucursal") -->
+    <div id="menuOpcionesPresencial" class="dni-input-section" style="display: none;">
+      <h3 style="font-size: 1.2rem; font-weight: 600; color: var(--numia-text); margin-bottom: 1rem; text-align: center;">¿Cómo podemos ayudarlo?</h3>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <button id="btnOpcionPrestamos" class="btn w-100" style="background-color: white; color: var(--numia-azul); border: 2px solid var(--numia-azul); padding: 0.875rem 1.25rem; border-radius: 10px; font-weight: 600; text-align: left;">
+          <i class="bi bi-cash-coin me-2"></i>Préstamos
+        </button>
+        <button id="btnOpcionTarjetas" class="btn w-100" style="background-color: white; color: var(--numia-azul); border: 2px solid var(--numia-azul); padding: 0.875rem 1.25rem; border-radius: 10px; font-weight: 600; text-align: left;">
+          <i class="bi bi-credit-card me-2"></i>Tarjetas de crédito
+        </button>
+        <button id="btnOpcionInversiones" class="btn w-100" style="background-color: white; color: var(--numia-azul); border: 2px solid var(--numia-azul); padding: 0.875rem 1.25rem; border-radius: 10px; font-weight: 600; text-align: left;">
+          <i class="bi bi-graph-up-arrow me-2"></i>Inversiones
+        </button>
+      </div>
     </div>
 
       </div>
@@ -934,49 +950,90 @@
       // DNI fijo a usar
       const DNI_FIJO = '29328703';
 
-      // Event listener para el botón de solicitar atención
-      btnSolicitarAtencion.addEventListener('click', async () => {
-      const dni = DNI_FIJO;
-      
-      // Deshabilitar botón y mostrar sección
-      btnSolicitarAtencion.disabled = true;
-      btnSolicitarAtencion.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Procesando...';
-      
-      // Mostrar el contenedor de logs
-      const logContainer = document.querySelector('.log-container');
-      if (logContainer) {
-        logContainer.classList.add('visible');
-      }
-      
-      // Mostrar la sección explícitamente
-      atencionSection.style.display = 'block';
-      atencionSection.classList.add('active');
-      stepsContainer.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-2"></i>Conectando con el asistente...</div>';
-      stepsContainer.style.display = 'block';
-      summarySection.style.display = 'none';
-      
-      // Scroll automático al log
-      setTimeout(() => {
-        const logContent = document.querySelector('.log-content');
-        if (logContent) {
-          logContent.scrollTop = logContent.scrollHeight;
+      // Event listener para el botón "Estoy en la sucursal"
+      btnSolicitarAtencion.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Ocultar el botón y mostrar el menú de opciones
+        const dniInputSection = btnSolicitarAtencion.closest('.dni-input-section');
+        if (dniInputSection) {
+          dniInputSection.style.display = 'none';
         }
-      }, 100);
+        menuOpcionesPresencial.style.display = 'block';
+        
+        // Scroll al menú
+        setTimeout(() => {
+          menuOpcionesPresencial.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      });
       
-      try {
-        // Llamar a la API de Journey Builder
-        const response = await fetch(JOURNEY_API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': JOURNEY_API_KEY,
-            'Origin': 'journeybuilder.numia.co'
-          },
-          body: JSON.stringify({
-            input_value: dni,
-            input_type: 'chat'
-          })
-        });
+      // Event listeners para las opciones del menú
+      btnOpcionPrestamos.addEventListener('click', async () => {
+        await llamarAgenteConOpcionDesdeMenu('prestamos', btnOpcionPrestamos);
+      });
+      
+      btnOpcionTarjetas.addEventListener('click', async () => {
+        await llamarAgenteConOpcionDesdeMenu('tarjetas', btnOpcionTarjetas);
+      });
+      
+      btnOpcionInversiones.addEventListener('click', async () => {
+        await llamarAgenteConOpcionDesdeMenu('inversiones', btnOpcionInversiones);
+      });
+      
+      // Función para llamar al agente desde el menú inicial
+      async function llamarAgenteConOpcionDesdeMenu(opcion, btn) {
+        try {
+          btn.disabled = true;
+          btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Conectando...';
+          
+          // Ocultar el menú
+          menuOpcionesPresencial.style.display = 'none';
+          
+          const dni = DNI_FIJO;
+          
+          // Construir mensaje con la opción seleccionada
+          const opcionesTexto = {
+            prestamos: 'Préstamos',
+            tarjetas: 'Tarjetas de crédito',
+            inversiones: 'Inversiones'
+          };
+          const mensaje = `Necesito atención sobre ${opcionesTexto[opcion]}. DNI: ${dni}`;
+          
+          // Mostrar el contenedor de logs
+          const logContainer = document.querySelector('.log-container');
+          if (logContainer) {
+            logContainer.classList.add('visible');
+          }
+          
+          // Mostrar la sección explícitamente
+          atencionSection.style.display = 'block';
+          atencionSection.classList.add('active');
+          stepsContainer.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-2"></i>Conectando con el asistente...</div>';
+          stepsContainer.style.display = 'block';
+          summarySection.style.display = 'none';
+          
+          // Scroll automático al log
+          setTimeout(() => {
+            const logContent = document.querySelector('.log-content');
+            if (logContent) {
+              logContent.scrollTop = logContent.scrollHeight;
+            }
+          }, 100);
+          
+          // Llamar a la API de Journey Builder
+          const response = await fetch(JOURNEY_API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': JOURNEY_API_KEY,
+              'Origin': 'journeybuilder.numia.co'
+            },
+            body: JSON.stringify({
+              input_value: mensaje,
+              input_type: 'chat'
+            })
+          });
         
         if (!response.ok) {
           throw new Error(`Error en servidor (${response.status})`);
@@ -986,8 +1043,7 @@
         
         console.log('Respuesta completa de la API:', JSON.stringify(data, null, 2));
         
-        // Asegurar que el contenedor de logs esté visible
-        const logContainer = document.querySelector('.log-container');
+        // Asegurar que el contenedor de logs esté visible (ya está declarado arriba)
         if (logContainer) {
           logContainer.classList.add('visible');
         }
@@ -1212,11 +1268,17 @@
             <br><small>Revisa la consola para más detalles.</small>
           </div>
         `;
-      } finally {
-        btnSolicitarAtencion.disabled = false;
-        btnSolicitarAtencion.innerHTML = '<i class="bi bi-headset me-1"></i>Solicitar Atención';
+        } finally {
+          btn.disabled = false;
+          // Restaurar texto del botón según la opción
+          const textosBotones = {
+            prestamos: '<i class="bi bi-cash-coin me-2"></i>Préstamos',
+            tarjetas: '<i class="bi bi-credit-card me-2"></i>Tarjetas de crédito',
+            inversiones: '<i class="bi bi-graph-up-arrow me-2"></i>Inversiones'
+          };
+          btn.innerHTML = textosBotones[opcion];
+        }
       }
-      });
       
       function extraerInfoDeObjeto(obj, nivel = 0) {
         if (nivel > 2) return ''; // Limitar profundidad
@@ -1558,11 +1620,21 @@
         const btnPresencial = document.createElement('button');
         btnPresencial.className = 'btn w-100';
         btnPresencial.style.cssText = 'background-color: var(--numia-azul); color: white; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem;';
-        btnPresencial.innerHTML = '<i class="bi bi-geo-alt"></i>Presencial';
-        btnPresencial.addEventListener('click', async () => {
-          await solicitarAtencionApp('presencial', btnPresencial);
+        btnPresencial.innerHTML = '<i class="bi bi-geo-alt"></i>Estoy en la sucursal';
+        btnPresencial.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('Botón Presencial clickeado');
+          mostrarOpcionesPresencial();
         });
         opcionesAtencionContainer.appendChild(btnPresencial);
+        
+        // Contenedor para opciones presenciales (inicialmente oculto)
+        const opcionesPresencialContainer = document.createElement('div');
+        opcionesPresencialContainer.id = 'opcionesPresencialContainer';
+        opcionesPresencialContainer.style.display = 'none';
+        opcionesPresencialContainer.style.marginTop = '1rem';
+        opcionesAtencionContainer.appendChild(opcionesPresencialContainer);
         
         // Mostrar la sección
         opcionesAtencionSection.style.display = 'block';
@@ -1571,6 +1643,176 @@
         setTimeout(() => {
           opcionesAtencionSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }, 100);
+      }
+      
+      function mostrarOpcionesPresencial() {
+        console.log('mostrarOpcionesPresencial llamada');
+        const opcionesPresencialContainer = document.getElementById('opcionesPresencialContainer');
+        console.log('Contenedor encontrado:', opcionesPresencialContainer);
+        if (!opcionesPresencialContainer) {
+          console.error('No se encontró el contenedor opcionesPresencialContainer');
+          return;
+        }
+        
+        // Si ya está visible, ocultarlo
+        if (opcionesPresencialContainer.style.display === 'block') {
+          opcionesPresencialContainer.style.display = 'none';
+          return;
+        }
+        
+        // Mostrar opciones
+        opcionesPresencialContainer.innerHTML = `
+          <h4 style="font-size: 1.1rem; font-weight: 600; color: var(--numia-text); margin-bottom: 1rem; text-align: center;">¿Cómo podemos ayudarlo?</h4>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <button class="btn-opcion-presencial btn w-100" data-opcion="prestamos" style="background-color: white; color: var(--numia-azul); border: 2px solid var(--numia-azul); padding: 0.875rem 1.25rem; border-radius: 10px; font-weight: 600; text-align: left;">
+              <i class="bi bi-cash-coin me-2"></i>Préstamos
+            </button>
+            <button class="btn-opcion-presencial btn w-100" data-opcion="tarjetas" style="background-color: white; color: var(--numia-azul); border: 2px solid var(--numia-azul); padding: 0.875rem 1.25rem; border-radius: 10px; font-weight: 600; text-align: left;">
+              <i class="bi bi-credit-card me-2"></i>Tarjetas
+            </button>
+            <button class="btn-opcion-presencial btn w-100" data-opcion="inversiones" style="background-color: white; color: var(--numia-azul); border: 2px solid var(--numia-azul); padding: 0.875rem 1.25rem; border-radius: 10px; font-weight: 600; text-align: left;">
+              <i class="bi bi-graph-up-arrow me-2"></i>Inversiones
+            </button>
+          </div>
+        `;
+        opcionesPresencialContainer.style.display = 'block';
+        console.log('Opciones mostradas, display:', opcionesPresencialContainer.style.display);
+        
+        // Agregar event listeners a los botones después de un pequeño delay para asegurar que el DOM esté actualizado
+        setTimeout(() => {
+          const botonesOpcion = opcionesPresencialContainer.querySelectorAll('.btn-opcion-presencial');
+          console.log('Botones encontrados:', botonesOpcion.length);
+          botonesOpcion.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const opcion = btn.getAttribute('data-opcion');
+              console.log('Opción seleccionada:', opcion);
+              await llamarAgenteConOpcion(opcion, btn);
+            });
+          });
+        }, 100);
+      }
+      
+      async function llamarAgenteConOpcion(opcion, btn) {
+        try {
+          btn.disabled = true;
+          btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Conectando...';
+          
+          // Ocultar opciones y mostrar loading
+          const opcionesPresencialContainer = document.getElementById('opcionesPresencialContainer');
+          if (opcionesPresencialContainer) {
+            opcionesPresencialContainer.style.display = 'none';
+          }
+          
+          // Mostrar log
+          const logContainer = document.querySelector('.log-container');
+          if (logContainer) {
+            logContainer.classList.add('visible');
+          }
+          
+          atencionSection.style.display = 'block';
+          atencionSection.classList.add('active');
+          stepsContainer.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-2"></i>Conectando con el asistente...</div>';
+          
+          // Llamar al agente con el DNI fijo y la opción seleccionada
+          const dni = DNI_FIJO;
+          const mensaje = `Necesito atención sobre ${opcion}. DNI: ${dni}`;
+          
+          const response = await fetch(JOURNEY_API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': JOURNEY_API_KEY,
+              'Origin': 'journeybuilder.numia.co'
+            },
+            body: JSON.stringify({
+              input_value: mensaje,
+              input_type: 'chat'
+            })
+          });
+          
+          if (!response.ok) {
+            throw new Error(`Error en servidor (${response.status})`);
+          }
+          
+          const data = await response.json();
+          console.log('Respuesta completa de la API:', JSON.stringify(data, null, 2));
+          
+          // Procesar respuesta (similar al código existente)
+          let contents = [];
+          let messageText = null;
+          
+          if (data.outputs && data.outputs.length > 0) {
+            const firstOutput = data.outputs[0];
+            
+            if (firstOutput.outputs && firstOutput.outputs.length > 0) {
+              const innerOutput = firstOutput.outputs[0];
+              
+              if (innerOutput.results?.message?.content_blocks) {
+                innerOutput.results.message.content_blocks.forEach((block) => {
+                  if (block.contents && Array.isArray(block.contents)) {
+                    block.contents.forEach((content) => {
+                      if (content.type === 'tool_use' && content.name) {
+                        contents.push({
+                          type: 'tool_use',
+                          name: content.name,
+                          tool_name: content.name,
+                          tool_input: content.tool_input || content.input,
+                          output: content.output,
+                          duration: content.duration
+                        });
+                      }
+                    });
+                  }
+                });
+              }
+              
+              if (innerOutput.artifacts?.message) {
+                messageText = typeof innerOutput.artifacts.message === 'string' 
+                  ? innerOutput.artifacts.message 
+                  : innerOutput.artifacts.message.message || JSON.stringify(innerOutput.artifacts.message);
+              } else if (innerOutput.outputs?.message?.message) {
+                messageText = innerOutput.outputs.message.message;
+              } else if (innerOutput.results?.message?.text) {
+                messageText = innerOutput.results.message.text;
+              }
+            }
+          }
+          
+          // Mostrar pasos
+          if (contents.length > 0) {
+            stepsContainer.innerHTML = '';
+            contents.forEach((content, index) => {
+              setTimeout(() => {
+                agregarPaso(content, index);
+              }, index * 800);
+            });
+            
+            if (messageText) {
+              setTimeout(() => {
+                mostrarResumen(messageText);
+              }, contents.length * 800 + 500);
+            }
+          } else {
+            if (messageText) {
+              mostrarResumen(messageText);
+            }
+          }
+          
+        } catch (err) {
+          console.error('Error al llamar al agente:', err);
+          stepsContainer.innerHTML = `<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>Error: ${err.message}</div>`;
+        } finally {
+          btn.disabled = false;
+          const opcionTexto = opcion.charAt(0).toUpperCase() + opcion.slice(1);
+          const iconos = {
+            prestamos: 'bi-cash-coin',
+            tarjetas: 'bi-credit-card',
+            inversiones: 'bi-graph-up-arrow'
+          };
+          btn.innerHTML = `<i class="bi ${iconos[opcion]} me-2"></i>${opcionTexto}`;
+        }
       }
       
       async function solicitarAtencionApp(tipo, btn) {
