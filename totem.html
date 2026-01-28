@@ -1094,13 +1094,27 @@
                 mostrarResumen(messageText);
                 // Extraer Scoring y detectar si recomienda videollamada
                 const scoring = extraerScoring(messageText);
-                const tieneVideollamadaTexto = messageText.includes('- Sugerir videollamada: Si') || 
-                                               messageText.includes('- Sugerir videollamada:Si') ||
-                                               messageText.toLowerCase().includes('- sugerir videollamada: si');
+                const textoLower = messageText.toLowerCase();
+                // Detectar múltiples variaciones del texto de sugerencia de videollamada
+                const tieneVideollamadaTexto = 
+                  // Variaciones con guión
+                  textoLower.includes('- sugerir videollamada: si') ||
+                  textoLower.includes('- sugerir videollamada: sí') ||
+                  textoLower.includes('sugerir videollamada: si') ||
+                  textoLower.includes('sugerir videollamada: sí') ||
+                  // Variaciones con asteriscos (markdown)
+                  textoLower.includes('**sugerir videollamada:** si') ||
+                  textoLower.includes('**sugerir videollamada:** sí') ||
+                  textoLower.includes('**sugerir videollamada:**si') ||
+                  textoLower.includes('**sugerir videollamada:**sí') ||
+                  // Detectar "Tipo de atención sugerida: Videollamada"
+                  (textoLower.includes('tipo de atención sugerida') && textoLower.includes('videollamada')) ||
+                  (textoLower.includes('tipo de atención sugerida:') && textoLower.includes('videollamada'));
                 // Mostrar videollamada si el texto lo sugiere O si el Scoring > 640
                 const tieneVideollamada = tieneVideollamadaTexto || (scoring !== null && scoring > 640);
                 recomendacionVideollamada = tieneVideollamada;
-                console.log('Scoring extraído:', scoring, 'Videollamada recomendada:', tieneVideollamada);
+                console.log('Scoring extraído:', scoring, 'Videollamada por texto:', tieneVideollamadaTexto, 'Videollamada recomendada:', tieneVideollamada);
+                console.log('Texto completo para debugging:', messageText.substring(0, 500));
                 // Mostrar opciones de videollamada/presencial después del análisis o confirmación directa
                 setTimeout(() => {
                   if (tieneVideollamada) {
@@ -1117,9 +1131,22 @@
               mostrarResumen(messageText);
               // Extraer Scoring y detectar si recomienda videollamada
               const scoring = extraerScoring(messageText);
-              const tieneVideollamadaTexto = messageText.includes('- Sugerir videollamada: Si') || 
-                                             messageText.includes('- Sugerir videollamada:Si') ||
-                                             messageText.toLowerCase().includes('- sugerir videollamada: si');
+              const textoLower = messageText.toLowerCase();
+              // Detectar múltiples variaciones del texto de sugerencia de videollamada
+              const tieneVideollamadaTexto = 
+                // Variaciones con guión
+                textoLower.includes('- sugerir videollamada: si') ||
+                textoLower.includes('- sugerir videollamada: sí') ||
+                textoLower.includes('sugerir videollamada: si') ||
+                textoLower.includes('sugerir videollamada: sí') ||
+                // Variaciones con asteriscos (markdown)
+                textoLower.includes('**sugerir videollamada:** si') ||
+                textoLower.includes('**sugerir videollamada:** sí') ||
+                textoLower.includes('**sugerir videollamada:**si') ||
+                textoLower.includes('**sugerir videollamada:**sí') ||
+                // Detectar "Tipo de atención sugerida: Videollamada"
+                (textoLower.includes('tipo de atención sugerida') && textoLower.includes('videollamada')) ||
+                (textoLower.includes('tipo de atención sugerida:') && textoLower.includes('videollamada'));
               // Mostrar videollamada si el texto lo sugiere O si el Scoring > 640
               const tieneVideollamada = tieneVideollamadaTexto || (scoring !== null && scoring > 640);
               recomendacionVideollamada = tieneVideollamada;
