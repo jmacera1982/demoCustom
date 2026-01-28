@@ -1568,13 +1568,44 @@
         }
       }
     
+      // Función para extraer el Scoring del mensaje
+      function extraerScoring(texto) {
+        if (!texto) return null;
+        
+        // Buscar patrones como "Scoring: 640", "Scoring:640", "scoring: 640", etc.
+        const patrones = [
+          /Scoring:\s*(\d+)/i,
+          /Scoring\s*:\s*(\d+)/i,
+          /score\s*:\s*(\d+)/i
+        ];
+        
+        for (const patron of patrones) {
+          const match = texto.match(patron);
+          if (match && match[1]) {
+            const scoring = parseInt(match[1], 10);
+            if (!isNaN(scoring)) {
+              return scoring;
+            }
+          }
+        }
+        
+        return null;
+      }
+    
       function mostrarResumen(message) {
         try {
           const messageText = typeof message === 'string' ? message : (message.message || JSON.stringify(message, null, 2));
           
-          // Detectar si hay "Tipo de atención sugerida: Videollamada"
-          const tieneVideollamada = messageText.includes('**Tipo de atención sugerida**:') && 
-                                   (messageText.toLowerCase().includes('videollamada') || messageText.toLowerCase().includes('video llamada'));
+          // Extraer Scoring y detectar si recomienda videollamada
+          const scoring = extraerScoring(messageText);
+          const tieneVideollamadaTexto = (messageText.includes('**Tipo de atención sugerida**:') && 
+                                         (messageText.toLowerCase().includes('videollamada') || messageText.toLowerCase().includes('video llamada'))) ||
+                                         messageText.includes('- Sugerir videollamada: Si') || 
+                                         messageText.includes('- Sugerir videollamada:Si') ||
+                                         messageText.toLowerCase().includes('- sugerir videollamada: si');
+          // Mostrar videollamada si el texto lo sugiere O si el Scoring > 640
+          const tieneVideollamada = tieneVideollamadaTexto || (scoring !== null && scoring > 640);
+          console.log('Scoring extraído:', scoring, 'Videollamada recomendada:', tieneVideollamada);
           
           // Mostrar el resumen en el log
           summaryContent.innerHTML = '';
