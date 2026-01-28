@@ -1095,25 +1095,40 @@
                 // Extraer Scoring y detectar si recomienda videollamada
                 const scoring = extraerScoring(messageText);
                 const textoLower = messageText.toLowerCase();
-                // Detectar múltiples variaciones del texto de sugerencia de videollamada
-                const tieneVideollamadaTexto = 
-                  // Variaciones con guión
-                  textoLower.includes('- sugerir videollamada: si') ||
-                  textoLower.includes('- sugerir videollamada: sí') ||
-                  textoLower.includes('sugerir videollamada: si') ||
-                  textoLower.includes('sugerir videollamada: sí') ||
-                  // Variaciones con asteriscos (markdown)
-                  textoLower.includes('**sugerir videollamada:** si') ||
-                  textoLower.includes('**sugerir videollamada:** sí') ||
-                  textoLower.includes('**sugerir videollamada:**si') ||
-                  textoLower.includes('**sugerir videollamada:**sí') ||
-                  // Detectar "Tipo de atención sugerida: Videollamada"
-                  (textoLower.includes('tipo de atención sugerida') && textoLower.includes('videollamada')) ||
-                  (textoLower.includes('tipo de atención sugerida:') && textoLower.includes('videollamada'));
-                // Mostrar videollamada si el texto lo sugiere O si el Scoring > 640
+                
+                // Primero verificar si explícitamente dice NO o Presencial
+                const diceNoOPresencial = 
+                  textoLower.includes('sugerir videollamada: no') ||
+                  textoLower.includes('sugerir videollamada:no') ||
+                  textoLower.includes('**sugerir videollamada:** no') ||
+                  textoLower.includes('**sugerir videollamada:**no') ||
+                  (textoLower.includes('tipo de atención sugerida:') && textoLower.includes('presencial')) ||
+                  (textoLower.includes('tipo de atención sugerida') && textoLower.includes('presencial'));
+                
+                // Solo detectar videollamada si NO dice explícitamente NO o Presencial
+                let tieneVideollamadaTexto = false;
+                if (!diceNoOPresencial) {
+                  // Detectar múltiples variaciones del texto de sugerencia de videollamada
+                  tieneVideollamadaTexto = 
+                    // Variaciones con guión y SÍ
+                    textoLower.includes('- sugerir videollamada: si') ||
+                    textoLower.includes('- sugerir videollamada: sí') ||
+                    textoLower.includes('sugerir videollamada: si') ||
+                    textoLower.includes('sugerir videollamada: sí') ||
+                    // Variaciones con asteriscos (markdown) y SÍ
+                    textoLower.includes('**sugerir videollamada:** si') ||
+                    textoLower.includes('**sugerir videollamada:** sí') ||
+                    textoLower.includes('**sugerir videollamada:**si') ||
+                    textoLower.includes('**sugerir videollamada:**sí') ||
+                    // Detectar "Tipo de atención sugerida: Videollamada" (debe estar juntos)
+                    textoLower.includes('tipo de atención sugerida: videollamada') ||
+                    textoLower.includes('tipo de atención sugerida:videollamada');
+                }
+                
+                // Mostrar videollamada si el texto lo sugiere O si el Scoring > 640 (estricto, no >=)
                 const tieneVideollamada = tieneVideollamadaTexto || (scoring !== null && scoring > 640);
                 recomendacionVideollamada = tieneVideollamada;
-                console.log('Scoring extraído:', scoring, 'Videollamada por texto:', tieneVideollamadaTexto, 'Videollamada recomendada:', tieneVideollamada);
+                console.log('Scoring extraído:', scoring, 'Dice NO/Presencial:', diceNoOPresencial, 'Videollamada por texto:', tieneVideollamadaTexto, 'Videollamada recomendada:', tieneVideollamada);
                 console.log('Texto completo para debugging:', messageText.substring(0, 500));
                 // Mostrar opciones de videollamada/presencial después del análisis o confirmación directa
                 setTimeout(() => {
