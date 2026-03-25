@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Andreani | Líderes en soluciones logísticas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --andreani-red: #e30613;
+      --andreani-red-dark: #b8050f;
+      --andreani-red-light: #f5e6e7;
+      --andreani-gray: #1a1a1a;
+      --andreani-muted: #6b7280;
+      --andreani-bg: #f8f9fa;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--andreani-gray);
+      background: #fff;
+    }
+
+    /* Top bar */
+    .top-bar {
+      background: var(--andreani-gray);
+      color: rgba(255,255,255,.85);
+      font-size: 0.875rem;
+      padding: 0.35rem 0;
+    }
+    .top-bar a { color: rgba(255,255,255,.85); text-decoration: none; }
+    .top-bar a:hover { color: #fff; }
+
+    /* Navbar */
+    .navbar-main {
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,.08);
+      padding: 0.75rem 0;
+    }
+    .navbar-brand-logo {
+      padding: 0;
+      line-height: 1;
+    }
+    .navbar-brand-logo img {
+      height: 42px;
+      width: auto;
+      display: block;
+    }
+    .nav-link-main {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--andreani-gray) !important;
+      padding: 0.5rem 1rem !important;
+      border-radius: 6px;
+      transition: background .2s, color .2s;
+    }
+    .nav-link-main:hover, .nav-link-main.active {
+      color: var(--andreani-red) !important;
+      background: var(--andreani-red-light);
+    }
+    .btn-andreani {
+      background: var(--andreani-red);
+      color: #fff !important;
+      font-weight: 600;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+    }
+    .btn-andreani:hover { background: var(--andreani-red-dark); color: #fff; }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+      color: #fff;
+      padding: 3rem 0 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 40%;
+      background: linear-gradient(to top, rgba(227,6,19,.15), transparent);
+      pointer-events: none;
+    }
+    .hero h1 {
+      font-weight: 800;
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .hero .lead { opacity: .9; font-size: 1.05rem; max-width: 540px; }
+
+    .tracking-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,.2);
+      margin-top: 2rem;
+    }
+    .tracking-box label {
+      color: var(--andreani-gray);
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    .tracking-box .form-control {
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+    }
+    .tracking-box .form-control:focus {
+      border-color: var(--andreani-red);
+      box-shadow: 0 0 0 3px rgba(227,6,19,.15);
+    }
+    .btn-track {
+      background: var(--andreani-red);
+      color: #fff;
+      font-weight: 700;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      width: 100%;
+    }
+    @media (min-width: 576px) {
+      .btn-track { width: auto; }
+    }
+
+    /* Section titles */
+    .section-title {
+      font-weight: 800;
+      font-size: 1.75rem;
+      color: var(--andreani-gray);
+      margin-bottom: 0.5rem;
+    }
+    .section-sub {
+      color: var(--andreani-muted);
+      margin-bottom: 2rem;
+      max-width: 640px;
+    }
+
+    /* Cards */
+    .feature-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.25rem;
+      height: 100%;
+      transition: box-shadow .2s, border-color .2s;
+      background: #fff;
+    }
+    .feature-card:hover {
+      border-color: rgba(227,6,19,.3);
+      box-shadow: 0 8px 24px rgba(0,0,0,.08);
+    }
+    .feature-card .icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: var(--andreani-red-light);
+      color: var(--andreani-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      margin-bottom: 1rem;
+    }
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .feature-card p { font-size: 0.9rem; color: var(--andreani-muted); margin: 0; }
+
+    .bg-light-section { background: var(--andreani-bg); }
+
+    /* Forms envío */
+    .step-indicator {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .step-indicator .step {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 8px;
+      background: #e5e7eb;
+      color: var(--andreani-muted);
+    }
+    .step-indicator .step.active {
+      background: var(--andreani-red);
+      color: #fff;
+    }
+
+    /* Tracking result */
+    .timeline-track {
+      border-left: 3px solid var(--andreani-red);
+      padding-left: 1.25rem;
+      margin-left: 0.5rem;
+    }
+    .timeline-track .item {
+      position: relative;
+      padding-bottom: 1.25rem;
+    }
+    .timeline-track .item::before {
+      content: '';
+      position: absolute;
+      left: -1.5rem;
+      top: 0.25rem;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--andreani-red);
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 2px var(--andreani-red);
+    }
+    .timeline-track .item:last-child { padding-bottom: 0; }
+
+    /* Footer */
+    footer {
+      background: var(--andreani-gray);
+      color: rgba(255,255,255,.75);
+      padding: 3rem 0 1.5rem;
+      font-size: 0.9rem;
+    }
+    footer a { color: rgba(255,255,255,.85); text-decoration: none; }
+    footer a:hover { color: #fff; text-decoration: underline; }
+    .footer-brand { line-height: 1; }
+    .footer-brand img { height: 32px; width: auto; display: block; opacity: 0.95; }
+
+    /* Modal atención / videollamada (misma API que iniciar-videollamada) */
+    .modal-atencion .form-label { font-weight: 600; color: var(--andreani-gray); }
+    .modal-atencion .form-control {
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+    }
+    .modal-atencion .form-control:focus {
+      border-color: var(--andreani-red);
+      box-shadow: 0 0 0 3px rgba(227,6,19,.15);
+    }
+    .modal-atencion .btn-generar-atencion {
+      background: var(--andreani-red);
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      width: 100%;
+    }
+    .modal-atencion .btn-generar-atencion:hover { background: var(--andreani-red-dark); color: #fff; }
+    .modal-atencion .btn-generar-atencion:disabled { opacity: 0.75; cursor: not-allowed; }
+    .modal-atencion .info-text-fv {
+      background: var(--andreani-red-light);
+      border-left: 4px solid var(--andreani-red);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #4b5563;
+    }
+    .fv-turn-info-section { display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #e5e7eb; }
+    .fv-turn-info-section.active { display: block; }
+    .fv-info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      background: #f9fafb;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .fv-info-label { font-weight: 600; color: #4b5563; }
+    .fv-info-value { font-weight: 700; color: var(--andreani-red); text-align: right; word-break: break-word; }
+    .fv-status-warn { color: #f59e0b !important; }
+    .fv-status-ok { color: #10b981 !important; }
+    .fv-status-done { color: #3b82f6 !important; }
+    .fv-status-err { color: #ef4444 !important; }
+    .fv-success-badge {
+      background: #10b981;
+      color: white;
+      padding: 0.35rem 0.85rem;
+      border-radius: 50px;
+      display: inline-block;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .fv-btn-video {
+      background: var(--andreani-red);
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 0.65rem 1.25rem;
+      width: 100%;
+    }
+    .fv-btn-video:hover:not(:disabled) { background: var(--andreani-red-dark); color: #fff; }
+    .fv-btn-video:disabled { opacity: 0.6; cursor: not-allowed; }
+    .fv-video-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,.85);
+      z-index: 1060;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .fv-video-modal.active { display: flex; }
+    .fv-video-container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1rem 1.25rem;
+      max-width: 90vw;
+      max-height: 90vh;
+      width: 100%;
+      max-width: 960px;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .fv-video-iframe { flex: 1; border: none; border-radius: 8px; width: 100%; min-height: 0; }
+    .fv-btn-close-video {
+      background: transparent;
+      border: none;
+      font-size: 1.35rem;
+      color: var(--andreani-gray);
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      line-height: 1;
+    }
+    .fv-btn-close-video:hover { background: #f3f4f6; }
+  </style>
+</head>
+<body>
+  <div class="top-bar d-none d-md-block">
+    <div class="container d-flex justify-content-between align-items-center">
+      <span><i class="bi bi-telephone me-1"></i>0800-122-1112</span>
+      <div class="d-flex gap-4">
+        <a href="#"><i class="bi bi-geo-alt me-1"></i>Sucursales</a>
+        <a href="#"><i class="bi bi-question-circle me-1"></i>Ayuda</a>
+        <a href="#"><i class="bi bi-person me-1"></i>Mi cuenta</a>
+      </div>
+    </div>
+  </div>
+
+  <nav class="navbar navbar-expand-lg navbar-light navbar-main sticky-top">
+    <div class="container">
+      <a class="navbar-brand navbar-brand-logo" href="#"><img src="images/andreani-logo.png" alt="Andreani" width="200" height="42" /></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+          <li class="nav-item"><a class="nav-link nav-link-main active" href="#envio">Hacer un envío</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-main" href="#seguimiento">Seguir un envío</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-main" href="#negocio">Para tu negocio</a></li>
+          <li class="nav-item ms-lg-2"><a class="btn btn-andreani" href="#envio">Cotizar envío</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container position-relative">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h1>Envíos a todo el país con la red logística más grande de Argentina</h1>
+          <p class="lead">Mandá paquetes, seguí tu envío en tiempo real y soluciones pensadas para tu empresa.</p>
+        </div>
+        <div class="col-lg-6">
+          <div class="tracking-box">
+            <label for="trackingHero"><i class="bi bi-search me-1"></i>Seguimiento de envío</label>
+            <div class="input-group flex-column flex-sm-row gap-2">
+              <input type="text" class="form-control" id="trackingHero" placeholder="Ingresá el número de seguimiento" maxlength="20" />
+              <button type="button" class="btn btn-track" id="btnTrackHero">Seguir envío</button>
+            </div>
+            <p class="small text-muted mt-2 mb-0">Probá con: <strong>AND123456789AR</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hacer un envío -->
+  <section id="envio" class="py-5">
+    <div class="container">
+      <h2 class="section-title">Hacer un envío</h2>
+      <p class="section-sub">Completá los datos de origen, destino y paquete. El flujo es orientativo para demo (sin backend real).</p>
+
+      <div class="step-indicator" id="stepsEnvio">
+        <div class="step active">1. Origen</div>
+        <div class="step">2. Destino</div>
+        <div class="step">3. Paquete</div>
+        <div class="step">4. Confirmación</div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <div class="card border-0 shadow-sm rounded-3 p-4" id="panelEnvio">
+            <div class="envio-step" data-step="1">
+              <h5 class="fw-bold mb-3">Datos de origen</h5>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Provincia</label>
+                  <select class="form-select form-select-lg">
+                    <option>Buenos Aires</option>
+                    <option>Córdoba</option>
+                    <option>Santa Fe</option>
+                    <option>Mendoza</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Localidad</label>
+                  <input type="text" class="form-control form-control-lg" placeholder="Calle y altura" />
+                </div>
+                <div class="col-12">
+                  <label class="form-label small fw-semibold">Retiro en sucursal</label>
+                  <select class="form-select">
+                    <option>Seleccioná sucursal...</option>
+                    <option>Andreani - Centro</option>
+                    <option>Andreani - Zona Norte</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="envio-step d-none" data-step="2">
+              <h5 class="fw-bold mb-3">Datos de destino</h5>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Nombre destinatario</label>
+                  <input type="text" class="form-control" placeholder="Nombre y apellido" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Teléfono</label>
+                  <input type="tel" class="form-control" placeholder="11 1234-5678" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">CP</label>
+                  <input type="text" class="form-control" placeholder="Código postal" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Entrega</label>
+                  <select class="form-select">
+                    <option>En domicilio</option>
+                    <option>En sucursal Andreani</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="envio-step d-none" data-step="3">
+              <h5 class="fw-bold mb-3">Características del paquete</h5>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label small fw-semibold">Peso (kg)</label>
+                  <input type="number" class="form-control" value="2" min="0.1" step="0.1" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-semibold">Alto (cm)</label>
+                  <input type="number" class="form-control" value="20" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-semibold">Largo (cm)</label>
+                  <input type="number" class="form-control" value="30" />
+                </div>
+                <div class="col-12">
+                  <label class="form-label small fw-semibold">Contenido declarado</label>
+                  <input type="text" class="form-control" placeholder="Descripción breve" />
+                </div>
+              </div>
+            </div>
+            <div class="envio-step d-none" data-step="4">
+              <div class="text-center py-4">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                <h5 class="fw-bold mt-3">Resumen del envío</h5>
+                <p class="text-muted">Cotización estimada: <strong class="text-dark">$ 4.850</strong> (demo)</p>
+                <p class="small text-muted">En producción podrías abonar y generar la etiqueta de envío.</p>
+                <button type="button" class="btn btn-andreani btn-lg px-4">Confirmar y pagar (demo)</button>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-outline-secondary" id="btnEnvioPrev" disabled>Anterior</button>
+              <button type="button" class="btn btn-andreani" id="btnEnvioNext">Siguiente</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="feature-card h-100">
+            <div class="icon-wrap"><i class="bi bi-box-seam"></i></div>
+            <h3>¿Qué podés enviar?</h3>
+            <p class="mb-3">Paquetes, documentos y productos de e-commerce hasta el peso y medidas permitidas por la normativa.</p>
+            <ul class="small text-muted ps-3 mb-0">
+              <li>Envíos puerta a puerta o sucursal</li>
+              <li>Seguimiento online</li>
+              <li>Seguro opcional</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Seguir un envío -->
+  <section id="seguimiento" class="py-5 bg-light-section">
+    <div class="container">
+      <h2 class="section-title">Seguir un envío</h2>
+      <p class="section-sub">Ingresá el número de seguimiento para ver el estado actualizado de tu envío.</p>
+
+      <div class="row g-4">
+        <div class="col-lg-5">
+          <div class="card border-0 shadow-sm rounded-3 p-4">
+            <label class="form-label fw-semibold">Número de seguimiento</label>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control form-control-lg" id="trackingInput" placeholder="Ej: AND123456789AR" />
+              <button class="btn btn-andreani" type="button" id="btnTrackSection">Buscar</button>
+            </div>
+            <p class="small text-muted mb-0">Demo: usá <code>AND123456789AR</code> para ver un recorrido de ejemplo.</p>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="card border-0 shadow-sm rounded-3 p-4" id="trackingResult" style="display: none;">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+              <div>
+                <span class="badge bg-success me-2">En tránsito</span>
+                <strong id="trackNumDisplay">AND123456789AR</strong>
+              </div>
+              <span class="text-muted small">Estimado entrega: 2 días hábiles</span>
+            </div>
+            <div class="timeline-track">
+              <div class="item">
+                <strong>En distribución</strong>
+                <p class="small text-muted mb-0">Centro de clasificación - CABA · Hoy 08:42</p>
+              </div>
+              <div class="item">
+                <strong>En tránsito</strong>
+                <p class="small text-muted mb-0">En camino a sucursal destino · Ayer</p>
+              </div>
+              <div class="item">
+                <strong>Ingresado</strong>
+                <p class="small text-muted mb-0">Sucursal origen · Hace 2 días</p>
+              </div>
+            </div>
+          </div>
+          <div class="card border-0 shadow-sm rounded-3 p-4 text-center text-muted" id="trackingEmpty">
+            <i class="bi bi-inbox" style="font-size: 2.5rem;"></i>
+            <p class="mb-0 mt-2">Ingresá un número para ver el seguimiento.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Para tu negocio -->
+  <section id="negocio" class="py-5">
+    <div class="container">
+      <h2 class="section-title">Para tu negocio</h2>
+      <p class="section-sub">Soluciones logísticas para e-commerce, tiendas y empresas que necesitan escalar sus envíos.</p>
+
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-card">
+            <div class="icon-wrap"><i class="bi bi-shop"></i></div>
+            <h3>Integración e-commerce</h3>
+            <p>Conectá tu tienda Shopify, Tienda Nube, WooCommerce y más. Etiquetas y tracking automáticos.</p>
+            <a href="javascript:void(0)" role="button" class="text-decoration-none fw-semibold link-conocer-mas" style="color: var(--andreani-red);" data-bs-toggle="modal" data-bs-target="#modalAtencion">Conocer más →</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-card">
+            <div class="icon-wrap"><i class="bi bi-graph-up-arrow"></i></div>
+            <h3>Logística B2B</h3>
+            <p>Distribución nacional, cross-docking y gestión de inventario para tu cadena de suministro.</p>
+            <a href="javascript:void(0)" role="button" class="text-decoration-none fw-semibold link-conocer-mas" style="color: var(--andreani-red);" data-bs-toggle="modal" data-bs-target="#modalAtencion">Conocer más →</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-card">
+            <div class="icon-wrap"><i class="bi bi-truck"></i></div>
+            <h3>Última milla</h3>
+            <p>Entregas en domicilio con cobertura amplia y ventanas horarias para mejorar la experiencia del cliente.</p>
+            <a href="javascript:void(0)" role="button" class="text-decoration-none fw-semibold link-conocer-mas" style="color: var(--andreani-red);" data-bs-toggle="modal" data-bs-target="#modalAtencion">Conocer más →</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-card">
+            <div class="icon-wrap"><i class="bi bi-arrow-return-left"></i></div>
+            <h3>Devoluciones</h3>
+            <p>Gestioná cambios y devoluciones con trazabilidad completa para tu operación.</p>
+            <a href="javascript:void(0)" role="button" class="text-decoration-none fw-semibold link-conocer-mas" style="color: var(--andreani-red);" data-bs-toggle="modal" data-bs-target="#modalAtencion">Conocer más →</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-card">
+            <div class="icon-wrap"><i class="bi bi-headset"></i></div>
+            <h3>Atención dedicada</h3>
+            <p>Equipo comercial y soporte para cuentas corporativas y volumen alto de envíos.</p>
+            <a href="#" class="text-decoration-none fw-semibold" style="color: var(--andreani-red);">Contactar →</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="feature-card">
+            <div class="icon-wrap"><i class="bi bi-file-earmark-bar-graph"></i></div>
+            <h3>Reportes y métricas</h3>
+            <p>Panel con KPIs de entregas, tiempos y rechazos para optimizar tu operación.</p>
+            <a href="javascript:void(0)" role="button" class="text-decoration-none fw-semibold link-conocer-mas" style="color: var(--andreani-red);" data-bs-toggle="modal" data-bs-target="#modalAtencion">Conocer más →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-5 p-4 rounded-3" style="background: linear-gradient(135deg, var(--andreani-red-light), #fff); border: 1px solid rgba(227,6,19,.2);">
+        <h3 class="fw-bold mb-2">¿Tenés un volumen de envíos mensual?</h3>
+        <p class="text-muted mb-3">Solicitá una propuesta comercial personalizada (demo).</p>
+        <button type="button" class="btn btn-andreani btn-lg">Solicitar cotización</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popup: formulario videollamada / misma API que iniciar-videollamada.html -->
+  <div class="modal fade" id="modalAtencion" tabindex="-1" aria-labelledby="modalAtencionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+      <div class="modal-content modal-atencion">
+        <div class="modal-header border-0 pb-0">
+          <div>
+            <h5 class="modal-title fw-bold" id="modalAtencionLabel"><i class="bi bi-camera-video me-2"></i>Conocer más — atención</h5>
+            <p class="small text-muted mb-0">Completá tus datos para continuar.</p>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body pt-2">
+          <div id="fvFormAlert" class="alert d-none" role="alert"></div>
+          <form id="fvGuardiaForm" class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-control" name="firstName" required autocomplete="given-name" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Apellido</label>
+              <input type="text" class="form-control" name="lastName" required autocomplete="family-name" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">DNI</label>
+              <input type="text" class="form-control" name="rut" required autocomplete="off" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Teléfono</label>
+              <input type="tel" class="form-control" name="phone" required autocomplete="tel" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" name="email" required autocomplete="email" />
+            </div>
+          </form>
+          <div class="info-text-fv">
+            <i class="bi bi-info-circle"></i> Al continuar, te asignaremos una atención y verás una sala de espera. Cuando el agente esté listo, podrás iniciar una videollamada.
+          </div>
+          <div class="mt-3">
+            <button type="button" id="fvBtnEnviarTurno" class="btn-generar-atencion">
+              <i class="bi bi-check2-circle me-2"></i>Generar atención
+            </button>
+          </div>
+          <div id="fvTurnInfoSection" class="fv-turn-info-section">
+            <div class="text-center mb-3">
+              <div class="fv-success-badge mb-2">
+                <i class="bi bi-check2-circle me-1"></i>Atención reservada
+              </div>
+              <div class="text-success fw-semibold small">Tu atención fue generada en el sistema.</div>
+            </div>
+            <div class="row g-2">
+              <div class="col-12">
+                <div class="fv-info-item">
+                  <span class="fv-info-label">Código de la atención</span>
+                  <span class="fv-info-value" id="fvTurnCodeDisplay">—</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="fv-info-item">
+                  <span class="fv-info-label">Número de atención</span>
+                  <span class="fv-info-value" id="fvTurnNumber">—</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="fv-info-item">
+                  <span class="fv-info-label">Estado</span>
+                  <span class="fv-info-value fv-status-warn" id="fvTurnStatus">Consultando...</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="fv-info-item">
+                  <span class="fv-info-label">Tiempo de espera actual</span>
+                  <span class="fv-info-value" id="fvCurrentWaitingTime">N/A</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="fv-info-item">
+                  <span class="fv-info-label">Tiempo promedio</span>
+                  <span class="fv-info-value" id="fvAvgWaitingTime">N/A</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="fv-info-item">
+                  <span class="fv-info-label">Cola / servicio</span>
+                  <span class="fv-info-value" id="fvQueueName">—</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="fv-info-item">
+                  <span class="fv-info-label">Sala de espera</span>
+                  <span class="fv-info-value" id="fvWaitingRoomName">—</span>
+                </div>
+              </div>
+            </div>
+            <div class="text-center mt-3">
+              <button type="button" id="fvBtnAbrirVideo" class="fv-btn-video" disabled>
+                <i class="bi bi-camera-video me-2"></i>Conectarme a videollamada
+              </button>
+              <div class="form-text mt-2 small">El botón se habilitará cuando el agente te llame.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fv-video-modal" id="fvVideoModal" aria-hidden="true">
+    <div class="fv-video-container">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="mb-0 fw-semibold"><i class="bi bi-camera-video me-2"></i>Videollamada</h6>
+        <button type="button" class="fv-btn-close-video" id="fvBtnCloseVideo" aria-label="Cerrar videollamada">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <iframe id="fvVideoFrame" class="fv-video-iframe" src="about:blank" title="Videollamada"
+        allow="camera; microphone; autoplay; fullscreen; clipboard-write; display-capture"
+        referrerpolicy="no-referrer" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="footer-brand mb-2"><img src="images/andreani-logo.png" alt="Andreani" width="160" height="32" /></div>
+          <p class="small">Líderes en soluciones logísticas en Argentina. Este es un portal de demostración visual.</p>
+        </div>
+        <div class="col-6 col-lg-2">
+          <div class="fw-bold text-white mb-2">Envíos</div>
+          <ul class="list-unstyled small">
+            <li><a href="#envio">Hacer un envío</a></li>
+            <li><a href="#seguimiento">Seguimiento</a></li>
+            <li><a href="#">Cotizador</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <div class="fw-bold text-white mb-2">Empresa</div>
+          <ul class="list-unstyled small">
+            <li><a href="#negocio">Para tu negocio</a></li>
+            <li><a href="#">Trabajá con nosotros</a></li>
+            <li><a href="#">Prensa</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4">
+          <div class="fw-bold text-white mb-2">Contacto</div>
+          <p class="small mb-1"><i class="bi bi-telephone me-1"></i>0800-122-1112</p>
+          <p class="small mb-0"><i class="bi bi-envelope me-1"></i>atenciondigital@andreani.com</p>
+        </div>
+      </div>
+      <hr class="border-secondary my-4" />
+      <p class="small text-center mb-0 opacity-75">© 2025 Demo inspirada en <a href="https://www.andreani.com/" target="_blank" rel="noopener">https://www.andreani.com/</a> — Sin afiliación oficial.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const DEMO_TRACK = 'AND123456789AR';
+
+    function showTracking() {
+      document.getElementById('trackingResult').style.display = 'block';
+      document.getElementById('trackingEmpty').style.display = 'none';
+      const num = document.getElementById('trackingInput').value.trim() || DEMO_TRACK;
+      document.getElementById('trackNumDisplay').textContent = num.toUpperCase();
+    }
+
+    function trackFromInput(val) {
+      const v = (val || '').trim().toUpperCase();
+      if (!v) return;
+      document.getElementById('trackingInput').value = v;
+      showTracking();
+    }
+
+    document.getElementById('btnTrackHero').addEventListener('click', () => {
+      const v = document.getElementById('trackingHero').value;
+      document.getElementById('trackingInput').value = v || DEMO_TRACK;
+      document.getElementById('seguimiento').scrollIntoView({ behavior: 'smooth' });
+      setTimeout(showTracking, 400);
+    });
+
+    document.getElementById('btnTrackSection').addEventListener('click', () => {
+      trackFromInput(document.getElementById('trackingInput').value);
+    });
+
+    document.getElementById('trackingInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const v = document.getElementById('trackingInput').value.trim();
+        if (v) trackFromInput(v);
+      }
+    });
+
+    // Fila Virtual — misma API que iniciar-videollamada.html
+    const FV_TOKEN = 'XlOIHNe0yDnF6htBZWhdv3uFHxQKanqdVNQZC17w';
+    const FV_QUEUE = 16223;
+    const FV_BRANCH = 10750;
+    const FV_BASE = 'https://filavirtual2.debmedia.com/api/v1';
+
+    let fvPollingInterval = null;
+    let lastFvTurnCode = null;
+    window.fvCurrentVideoCallUrl = 'about:blank';
+
+    const fvFormEl = document.getElementById('fvGuardiaForm');
+    const fvFormAlert = document.getElementById('fvFormAlert');
+    const fvBtnEnviarTurno = document.getElementById('fvBtnEnviarTurno');
+    const fvTurnInfoSection = document.getElementById('fvTurnInfoSection');
+    const fv$ = (id) => document.getElementById(id);
+
+    function fvSetFormAlert(type, msg) {
+      fvFormAlert.className = `alert alert-${type}`;
+      fvFormAlert.textContent = msg;
+      fvFormAlert.classList.remove('d-none');
+    }
+
+    function fvClearFormAlert() {
+      fvFormAlert.className = 'alert d-none';
+      fvFormAlert.textContent = '';
+    }
+
+    function fvStopPolling() {
+      if (fvPollingInterval) {
+        clearInterval(fvPollingInterval);
+        fvPollingInterval = null;
+      }
+    }
+
+    function fvResetModal() {
+      fvStopPolling();
+      if (fvFormEl) {
+        fvFormEl.reset();
+        fvFormEl.querySelectorAll('input').forEach((input) => { input.disabled = false; });
+      }
+      fvClearFormAlert();
+      if (fvTurnInfoSection) fvTurnInfoSection.classList.remove('active');
+      if (fvBtnEnviarTurno) {
+        fvBtnEnviarTurno.disabled = false;
+        fvBtnEnviarTurno.style.display = '';
+        fvBtnEnviarTurno.innerHTML = '<i class="bi bi-check2-circle me-2"></i>Generar atención';
+      }
+      const vf = document.getElementById('fvVideoFrame');
+      if (vf) vf.src = 'about:blank';
+      window.fvCurrentVideoCallUrl = 'about:blank';
+      lastFvTurnCode = null;
+      const vm = document.getElementById('fvVideoModal');
+      if (vm) {
+        vm.classList.remove('active');
+        vm.setAttribute('aria-hidden', 'true');
+      }
+      document.body.style.overflow = '';
+    }
+
+    const modalAtencionEl = document.getElementById('modalAtencion');
+    if (modalAtencionEl) {
+      modalAtencionEl.addEventListener('hidden.bs.modal', fvResetModal);
+    }
+
+    function fvFillWaitInfo({ code, number, avgWait, queueName, waitingRoom }) {
+      fv$('fvTurnCodeDisplay').textContent = code;
+      fv$('fvTurnNumber').textContent = number;
+      fv$('fvAvgWaitingTime').textContent = avgWait;
+      fv$('fvQueueName').textContent = queueName;
+      fv$('fvWaitingRoomName').textContent = waitingRoom;
+      fv$('fvTurnStatus').textContent = 'Consultando...';
+      fv$('fvTurnStatus').className = 'fv-info-value fv-status-warn';
+      fv$('fvCurrentWaitingTime').textContent = 'N/A';
+      fv$('fvBtnAbrirVideo').disabled = true;
+    }
+
+    function fvStartPolling(turnCode) {
+      fvStopPolling();
+      const url = `${FV_BASE}/turn/code/${encodeURIComponent(turnCode)}`;
+      const mapStatus = (s) => {
+        if (s === 'ANNOUNCED') return { text: 'Lo estamos llamando', cls: 'fv-status-ok' };
+        if (s === 'WAITING_TO_BE_CALLED') return { text: 'En breve lo llamaremos', cls: 'fv-status-warn' };
+        if (s === 'FINALIZED') return { text: 'Atención finalizada', cls: 'fv-status-done' };
+        return { text: s || 'Desconocido', cls: 'fv-status-warn' };
+      };
+
+      const tick = async () => {
+        try {
+          const res = await fetch(url, {
+            headers: {
+              'x-api-token': FV_TOKEN,
+              'Content-Type': 'text/plain'
+            }
+          });
+          if (!res.ok) throw new Error(`Estado no disponible (${res.status})`);
+          const data = await res.json();
+          const m = mapStatus(data.status);
+          fv$('fvTurnStatus').textContent = m.text;
+          fv$('fvTurnStatus').className = `fv-info-value ${m.cls}`;
+          const avg = (data.averageWaitingTime ?? data.serviceTime);
+          if (avg !== undefined && avg !== null && !isNaN(avg)) {
+            fv$('fvCurrentWaitingTime').textContent = `${Math.floor(parseFloat(avg))} min`;
+          }
+          if (data.status === 'ANNOUNCED') {
+            fv$('fvBtnAbrirVideo').disabled = false;
+          }
+        } catch (e) {
+          fv$('fvTurnStatus').textContent = 'Error al consultar';
+          fv$('fvTurnStatus').className = 'fv-info-value fv-status-err';
+        }
+      };
+
+      tick();
+      fvPollingInterval = setInterval(tick, 5000);
+    }
+
+    if (fvBtnEnviarTurno && fvFormEl) {
+      fvBtnEnviarTurno.addEventListener('click', async () => {
+        fvClearFormAlert();
+        const data = Object.fromEntries(new FormData(fvFormEl).entries());
+        if (!data.firstName || !data.lastName || !data.rut || !data.email || !data.phone) {
+          fvSetFormAlert('danger', 'Completa todos los campos.');
+          return;
+        }
+
+        fvBtnEnviarTurno.disabled = true;
+        fvBtnEnviarTurno.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generando...';
+
+        try {
+          const url = `${FV_BASE}/queue/${FV_QUEUE}/branch/${FV_BRANCH}/enqueue`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'x-api-token': FV_TOKEN,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              firstName: data.firstName,
+              lastName: data.lastName,
+              dni: data.rut,
+              email: data.email,
+              phone: data.phone
+            })
+          });
+
+          const out = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            throw new Error(out?.message || `Error en servidor (${res.status})`);
+          }
+
+          const turnCode = out.code || '—';
+          lastFvTurnCode = turnCode;
+          try { localStorage.setItem('turnCode', turnCode); } catch (e) { /* ignore */ }
+
+          const turnNumber = out.jsonDetails?.turn || out.jsonDetails?.actualTurn || '—';
+          const avgWait = out.jsonDetails?.averageWaitingTime ?? out.jsonDetails?.serviceTime ?? 'N/A';
+          const queueName = out.jsonDetails?.queue?.name || '—';
+          const wrName = out.jsonDetails?.waitingRoom?.name || '—';
+          const videoCallUrl = out.jsonDetails?.videoCallUrl || 'about:blank';
+          window.fvCurrentVideoCallUrl = videoCallUrl;
+
+          const urlWithParam = videoCallUrl.includes('?')
+            ? `${videoCallUrl}&videocallUser=mobile`
+            : `${videoCallUrl}?videocallUser=mobile`;
+          const vf = document.getElementById('fvVideoFrame');
+          if (vf) vf.src = urlWithParam;
+
+          fvFillWaitInfo({
+            code: turnCode,
+            number: turnNumber,
+            avgWait: isFinite(avgWait) ? `${Math.floor(parseFloat(avgWait))} min` : 'N/A',
+            queueName,
+            waitingRoom: wrName
+          });
+
+          fvTurnInfoSection.classList.add('active');
+          fvFormEl.querySelectorAll('input').forEach((input) => { input.disabled = true; });
+          fvBtnEnviarTurno.disabled = true;
+          fvBtnEnviarTurno.style.display = 'none';
+
+          fvStartPolling(turnCode);
+        } catch (err) {
+          fvSetFormAlert('danger', err.message);
+        } finally {
+          fvBtnEnviarTurno.disabled = false;
+          fvBtnEnviarTurno.innerHTML = '<i class="bi bi-check2-circle me-2"></i>Generar atención';
+        }
+      });
+    }
+
+    const fvBtnAbrirVideo = document.getElementById('fvBtnAbrirVideo');
+    if (fvBtnAbrirVideo) {
+      fvBtnAbrirVideo.addEventListener('click', () => {
+        const videoUrl = window.fvCurrentVideoCallUrl || 'about:blank';
+        const urlWithParam = videoUrl.includes('?')
+          ? `${videoUrl}&videocallUser=mobile`
+          : `${videoUrl}?videocallUser=mobile`;
+        const vf = document.getElementById('fvVideoFrame');
+        if (vf) vf.src = urlWithParam;
+        const vm = document.getElementById('fvVideoModal');
+        if (vm) {
+          vm.classList.add('active');
+          vm.setAttribute('aria-hidden', 'false');
+        }
+        document.body.style.overflow = 'hidden';
+      });
+    }
+
+    const fvBtnCloseVideo = document.getElementById('fvBtnCloseVideo');
+    const fvVideoModal = document.getElementById('fvVideoModal');
+    if (fvBtnCloseVideo && fvVideoModal) {
+      fvBtnCloseVideo.addEventListener('click', () => {
+        fvVideoModal.classList.remove('active');
+        fvVideoModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      });
+      fvVideoModal.addEventListener('click', (e) => {
+        if (e.target === fvVideoModal) {
+          fvVideoModal.classList.remove('active');
+          fvVideoModal.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const vm = document.getElementById('fvVideoModal');
+      if (e.key === 'Escape' && vm && vm.classList.contains('active')) {
+        vm.classList.remove('active');
+        vm.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Wizard envío
+    let envioStep = 1;
+    const totalSteps = 4;
+    const stepsEl = document.querySelectorAll('#stepsEnvio .step');
+    const panels = document.querySelectorAll('.envio-step');
+
+    function updateEnvioUI() {
+      panels.forEach((p, i) => {
+        p.classList.toggle('d-none', parseInt(p.dataset.step, 10) !== envioStep);
+      });
+      stepsEl.forEach((s, i) => s.classList.toggle('active', i + 1 === envioStep));
+      document.getElementById('btnEnvioPrev').disabled = envioStep === 1;
+      document.getElementById('btnEnvioNext').textContent = envioStep === totalSteps ? 'Reiniciar demo' : 'Siguiente';
+    }
+
+    document.getElementById('btnEnvioNext').addEventListener('click', () => {
+      if (envioStep < totalSteps) {
+        envioStep++;
+        updateEnvioUI();
+      } else {
+        envioStep = 1;
+        updateEnvioUI();
+      }
+    });
+    document.getElementById('btnEnvioPrev').addEventListener('click', () => {
+      if (envioStep > 1) {
+        envioStep--;
+        updateEnvioUI();
+      }
+    });
+
+    updateEnvioUI();
+  </script>
+</body>
+</html>
